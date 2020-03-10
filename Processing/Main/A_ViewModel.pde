@@ -74,9 +74,9 @@ public class ViewModel {
     
     // Make color map
     viewColor = new HashMap<Enum, Integer>();
-    viewColor.put(Demographic.CHILD, CHILD_COLOR);
-    viewColor.put(Demographic.ADULT, ADULT_COLOR);
-    viewColor.put(Demographic.SENIOR, SENIOR_COLOR);
+    viewColor.put(HostDemographic.CHILD, CHILD_COLOR);
+    viewColor.put(HostDemographic.ADULT, ADULT_COLOR);
+    viewColor.put(HostDemographic.SENIOR, SENIOR_COLOR);
     viewColor.put(EnvironmentType.DWELLING, DWELLING_COLOR);
     viewColor.put(EnvironmentType.OFFICE, OFFICE_COLOR);
     viewColor.put(EnvironmentType.RETAIL, RETAIL_COLOR);
@@ -97,9 +97,9 @@ public class ViewModel {
 
     // Make name map
     viewName = new HashMap<Enum, String>();
-    viewName.put(Demographic.CHILD, CHILD_NAME);
-    viewName.put(Demographic.ADULT, ADULT_NAME);
-    viewName.put(Demographic.SENIOR, SENIOR_NAME);
+    viewName.put(HostDemographic.CHILD, CHILD_NAME);
+    viewName.put(HostDemographic.ADULT, ADULT_NAME);
+    viewName.put(HostDemographic.SENIOR, SENIOR_NAME);
     viewName.put(EnvironmentType.DWELLING, DWELLING_NAME);
     viewName.put(EnvironmentType.OFFICE, OFFICE_NAME);
     viewName.put(EnvironmentType.RETAIL, RETAIL_NAME);
@@ -167,7 +167,7 @@ public class ViewModel {
    * Get color associated with Host Demographic
    */
   public color getColor(Host h) {
-    Demographic d = h.getDemographic();
+    HostDemographic d = h.getDemographic();
     color col; 
     if(viewColor.containsKey(d)) {
       col = viewColor.get(d);
@@ -195,6 +195,7 @@ public class ViewModel {
    * Expect this to be Overridden by Child Class
    */
   public void draw() {
+    
   }
 }
 
@@ -253,10 +254,10 @@ class SimpleViewModel extends ViewModel {
   }
   
   private void drawCommute(Host h) {
-    int x1 = (int) h.getPrimaryLocation().getCoordinate().getX();
-    int y1 = (int) h.getPrimaryLocation().getCoordinate().getY();
-    int x2 = (int) h.getSecondaryLocation().getCoordinate().getX();
-    int y2 = (int) h.getSecondaryLocation().getCoordinate().getY();
+    int x1 = (int) h.getPrimaryEnvironment().getCoordinate().getX();
+    int y1 = (int) h.getPrimaryEnvironment().getCoordinate().getY();
+    int x2 = (int) h.getSecondaryEnvironment().getCoordinate().getX();
+    int y2 = (int) h.getSecondaryEnvironment().getCoordinate().getY();
     stroke(DEFAULT_STROKE);
     line(x1, y1, x2, y2);
   }

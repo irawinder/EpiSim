@@ -18,8 +18,8 @@ void test() {
   adult.setUID(counter); counter++;
   adult.setName("Ira");
   adult.setAge(32);
-  adult.setPrimaryLocation(home);
-  adult.setSecondaryLocation(work);
+  adult.setPrimaryEnvironment(home);
+  adult.setSecondaryEnvironment(work);
   
   Agent corona = new Agent();
   corona.setUID(counter); counter++;
@@ -31,8 +31,8 @@ void test() {
   println("---");
   
   println(adult);
-  println("- Primary Loc: " + adult.getPrimaryLocation());
-  println("- Secondary Loc: " + adult.getSecondaryLocation());
+  println("- Primary Loc: " + adult.getPrimaryEnvironment());
+  println("- Secondary Loc: " + adult.getSecondaryEnvironment());
   println("---");
   
   println(corona);

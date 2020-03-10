@@ -41,7 +41,7 @@ class EpiModel {
   /**
    * Iterates and returns the next Unique ID
    */
-  public int getUID() {
+  public int nextUID() {
     uidCounter++;
     return uidCounter;
   }
@@ -110,50 +110,6 @@ class EpiModel {
   }
   
   /**
-   * Get a random secondary Environment from within list of existing Environments
-   *
-   * @param h Host
-   */
-  public Environment getRandomSecondaryLocation(Host h) {
-    
-    // Set secondary location to be same as primary location by default
-    Environment secondaryLocation = h.getPrimaryLocation();
-    
-    int numEnvironments = environmentList.size();
-    int counter = 0;
-    boolean found = false;
-    while(found == false) {
-      
-      if(counter < 1000) {
-        counter++;
-      } else {
-        break; // give up after 100 tries
-      }
-      
-      // grab a random envirnment and check if it's a Secondary Typology
-      int random_index = (int) random(0, numEnvironments);
-      Environment thisLocation = environmentList.get(random_index);
-      if(thisLocation.isSecondary(h)) {
-        secondaryLocation = thisLocation;
-        found = true;
-      }
-      
-    }
-    
-    return secondaryLocation;
-  }
-}
-
-class SimpleEpiModel extends EpiModel {
-    
-  // Random variance added to coordinates to avoid overlap
-  private final int JITTER = 5;
-  
-  public SimpleEpiModel() {
-    super();
-  }
-  
-  /**
    * Add randomly placed Environments to Model within a specified rectangle
    *
    * @param amount
@@ -164,10 +120,10 @@ class SimpleEpiModel extends EpiModel {
    * @param minX
    * @param maxY
    */
-  public void addEnvironments(int amount, String name_prefix, EnvironmentType type, int x, int y, int w, int h, int minArea, int maxArea) {
+  public void randomEnvironments(int amount, String name_prefix, EnvironmentType type, int x, int y, int w, int h, int minArea, int maxArea) {
     for(int i=0; i<amount; i++) {
       Environment e = new Environment();
-      int new_uid = this.getUID();
+      int new_uid = this.nextUID();
       e.setUID(new_uid);
       e.setCoordinate(new Coordinate(random(x, x+w), random(y, x+h)));
       e.setName(name_prefix + " " + e.getUID());
@@ -185,7 +141,7 @@ class SimpleEpiModel extends EpiModel {
    * @param minDwellingSize smallest household size of a dwelling unit
    * @param maxDwellingSize largest household size of a dwelling unit
    */
-  private void populate(int minAge, int maxAge, int minDwellingSize, int maxDwellingSize) {
+  public void populate(int minAge, int maxAge, int minDwellingSize, int maxDwellingSize) {
     for(Environment e : this.getEnvironments()) {
       if(e.getType() == EnvironmentType.DWELLING) {
         int numTenants = (int) random(minDwellingSize, maxDwellingSize+1);
@@ -193,7 +149,7 @@ class SimpleEpiModel extends EpiModel {
           Host person = new Host();
           
           // Set Unique ID
-          int new_uid = this.getUID();
+          int new_uid = this.nextUID();
           person.setUID(new_uid);
           person.setName("House of " + e.getUID() + ", " + person.getUID());
           
@@ -202,24 +158,69 @@ class SimpleEpiModel extends EpiModel {
           person.setAge(age);
           this.add(person);
           
-          // Set Primary Location
-          person.setPrimaryLocation(e);
+          // Set Primary Environment
+          person.setPrimaryEnvironment(e);
           
-          // Set Secondary Location
-          Environment secondaryLocation = this.getRandomSecondaryLocation(person);
-          person.setSecondaryLocation(secondaryLocation);
+          // Set Secondary Environment
+          Environment secondaryEnvironment = this.getRandomSecondaryEnvironment(person);
+          person.setSecondaryEnvironment(secondaryEnvironment);
           
-          // Set Current Location
-          Coordinate home = person.getPrimaryLocation().getCoordinate();
-          Coordinate jitter_home = new Coordinate();
-          int jitterX = (int)random(-JITTER, JITTER);
-          int jitterY = (int)random(-JITTER, JITTER);
-          jitter_home.setX(home.getX() + jitterX);
-          jitter_home.setY(home.getY() + jitterY);
-          jitter_home.setZ(home.getZ());
-          person.setCoordinate(jitter_home);
+          // Set Current Environment and Location to Primary
+          person.setEnvironment(person.getPrimaryEnvironment());
+          
+          e.addElement(person);
         }
       }
+    }
+  }
+  
+  /**
+   * Get a random secondary Environment from within list of existing Environments
+   *
+   * @param h Host
+   */
+  public Environment getRandomSecondaryEnvironment(Host h) {
+    
+    // Set secondary environment to be same as primary environment by default
+    Environment secondaryEnvironment = h.getPrimaryEnvironment();
+    
+    int numEnvironments = environmentList.size();
+    int counter = 0;
+    boolean found = false;
+    while(found == false) {
+      
+      if(counter < 1000) {
+        counter++;
+      } else {
+        break; // give up after 100 tries
+      }
+      
+      // grab a random envirnment and check if it's a Secondary Typology
+      int random_index = (int) random(0, numEnvironments);
+      Environment thisEnvironment = environmentList.get(random_index);
+      if(thisEnvironment.isSecondary(h)) {
+        secondaryEnvironment = thisEnvironment;
+        found = true;
+      }
+    }
+    return secondaryEnvironment;
+  }
+  
+  /**
+   * Force movement of all Hosts to their secondary environment
+   */
+  public void allToSecondary() {
+    for(Host h : this.getHosts()) {
+      h.moveToSecondary();
+    }
+  }
+  
+  /**
+   * Force movement of all Hosts to their primary environment
+   */
+  public void allToPrimary() {
+    for(Host h : this.getHosts()) {
+      h.moveToPrimary();
     }
   }
 }

@@ -16,19 +16,19 @@ public class Host extends Element {
   private int age;
   
   // Demographic of Host
-  private Demographic demographic;
+  private HostDemographic demographic;
   
   // Infectious Agent Status
   HashMap<AgentType, AgentStatus> agentStatus;
   
-  // Agent's current location
-  private Environment location;
+  // Agent's current Environment
+  private Environment environment;
   
-  // Primary Location (e.g. home, dwelling, etc)
-  private Environment primaryLocation;
+  // Primary Environment (e.g. home, dwelling, etc)
+  private Environment primaryEnvironment;
   
-  // Secondary Location (e.g. work, school, daycare)
-  private Environment secondaryLocation;
+  // Secondary Environment (e.g. work, school, daycare)
+  private Environment secondaryEnvironment;
   
   /**
    * Set the Host's age
@@ -54,18 +54,18 @@ public class Host extends Element {
    */
   private void setDemographic() {
     if (age < ADULT_AGE) {
-      this.demographic = Demographic.CHILD;
+      this.demographic = HostDemographic.CHILD;
     } else if (age < SENIOR_AGE) {
-      this.demographic = Demographic.ADULT;
+      this.demographic = HostDemographic.ADULT;
     } else {
-      this.demographic = Demographic.SENIOR;
+      this.demographic = HostDemographic.SENIOR;
     }
   }
   
   /**
    * Get the Host's Demographic
    */
-  public Demographic getDemographic() {
+  public HostDemographic getDemographic() {
     return this.demographic;
   }
   
@@ -95,45 +95,78 @@ public class Host extends Element {
   }
   
   /**
-   * Set the Host's current location
+   * Set the Host's current environment
    */
-  public void setLocation(Environment location) {
-    this.location = location;
+  public void setEnvironment(Environment environment) {
+    this.environment = environment;
+    this.setCoordinate(environment.getCoordinate().jitter(JITTER));
   }
   
   /**
-   * Get the Host's current location
+   * Get the Host's current environment
    */
-  public Environment getLocation() {
-    return location;
+  public Environment getEnvironment() {
+    return environment;
   }
   
   /**
-   * Set the Host's primary location (e.g. home, dwelling, etc)
+   * Set the Host's primary environment (e.g. home, dwelling, etc)
    */
-  public void setPrimaryLocation(Environment primaryLocation) {
-    this.primaryLocation = primaryLocation;
+  public void setPrimaryEnvironment(Environment primaryEnvironment) {
+    this.primaryEnvironment = primaryEnvironment;
   }
   
   /**
-   * Get the Host's primary location (e.g. home, dwelling, etc)
+   * Get the Host's primary environment (e.g. home, dwelling, etc)
    */
-  public Environment getPrimaryLocation() {
-    return primaryLocation;
+  public Environment getPrimaryEnvironment() {
+    return primaryEnvironment;
   }
   
   /**
-   * Set the Host's secondary location (e.g. work, school, daycare)
+   * Set the Host's secondary environment (e.g. work, school, daycare)
    */
-  public void setSecondaryLocation(Environment secondaryLocation) {
-    this.secondaryLocation = secondaryLocation;
+  public void setSecondaryEnvironment(Environment secondaryEnvironment) {
+    this.secondaryEnvironment = secondaryEnvironment;
   }
   
   /**
-   * Get the Host's secondary location (e.g. work, school, daycare)
+   * Get the Host's secondary environment (e.g. work, school, daycare)
    */
-  public Environment getSecondaryLocation() {
-    return secondaryLocation;
+  public Environment getSecondaryEnvironment() {
+    return secondaryEnvironment;
+  }
+  
+  /**
+   * Move Host to Primary Environment
+   */
+  public void moveToPrimary() {
+    Environment destination = this.getPrimaryEnvironment();
+    this.move(destination);
+  }
+  
+  /**
+   * Move Host to Secondary Environment
+   */
+  public void moveToSecondary() {
+    Environment destination = this.getSecondaryEnvironment();
+    this.move(destination);
+  }
+  
+  /**
+   * Move Host to another Environment
+   *
+   * @param destination
+   */
+  public void move(Environment destination) {
+    Environment origin = environment;
+    if(origin != destination) {
+      origin.removeElement(this);
+      destination.addElement(this);
+      this.setEnvironment(destination);
+    } else {
+      println("Host is already at this Environment");
+    }
   }
   
   @Override
@@ -142,6 +175,7 @@ public class Host extends Element {
       "Host UID: " + getUID() 
       + "; Name: " + getName()
       + "; Age: " + getAge()
+      + "; Demographic: " + getDemographic()
       ;
   }
 }

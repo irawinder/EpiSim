@@ -1,12 +1,12 @@
+public enum EnvironmentPriority {
+  PRIMARY, SECONDARY, TERTIARY
+}
+
 public enum EnvironmentType {
   DWELLING, OFFICE, RETAIL, SCHOOL, OPENSPACE, HOSPITAL
 }
 
-public enum Location {
-  PRIMARY, SECONDARY, TERTIARY
-}
-
-public enum Demographic {
+public enum HostDemographic {
   CHILD, ADULT, SENIOR
 }
 

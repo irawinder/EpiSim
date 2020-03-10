@@ -44,4 +44,18 @@ public class Coordinate {
     return this.z;
   }
   
+  /**
+   * return a new Coordinate that is slightly jittered from the Parent
+   *
+   * @param jitter amount of jitter
+   */
+  public Coordinate jitter(double amount) {
+    Coordinate jittered = new Coordinate();
+    double jitterX = amount*(2*Math.random() - 1);
+    double jitterY = amount*(2*Math.random() - 1);
+    jittered.setX(this.getX() + jitterX);
+    jittered.setY(this.getY() + jitterY);
+    jittered.setZ(this.getZ());
+    return jittered;
+  }
 }
