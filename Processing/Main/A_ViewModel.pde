@@ -6,7 +6,7 @@ public class ViewModel {
   // color(red, green, blue, alpha) where values are between 0 and 255
   
   // Graphics Constants
-  public final color DEFAULT_STROKE           = color(  0,   0,   0, 100); // Black
+  public final color DEFAULT_STROKE           = color(  0,   0,   0,  25); // Light Gray
   public final color DEFAULT_FILL             = color(255, 255, 255, 255); // White
   
   // Host Demographic Names
