@@ -120,12 +120,12 @@ class EpiModel {
    * @param minX
    * @param maxY
    */
-  public void randomEnvironments(int amount, String name_prefix, EnvironmentType type, int x, int y, int w, int h, int minArea, int maxArea) {
+  public void randomEnvironments(int amount, String name_prefix, EnvironmentType type, int x1, int y1, int x2, int y2, int minArea, int maxArea) {
     for(int i=0; i<amount; i++) {
       Environment e = new Environment();
       int new_uid = this.nextUID();
       e.setUID(new_uid);
-      e.setCoordinate(new Coordinate(random(x, x+w), random(y, x+h)));
+      e.setCoordinate(new Coordinate(random(x1, x2), random(y1, y2)));
       e.setName(name_prefix + " " + e.getUID());
       e.setType(type);
       e.setArea(random(minArea, maxArea));

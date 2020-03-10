@@ -52,6 +52,13 @@ public class Host extends Element {
   /**
    * Set the Host's Demographic
    */
+  private void setDemographic(HostDemographic d) {
+    this.demographic = d;
+  }
+  
+  /**
+   * Set the Host's Demographic using Age Value
+   */
   private void setDemographic() {
     if (age < ADULT_AGE) {
       this.demographic = HostDemographic.CHILD;

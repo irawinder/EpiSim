@@ -6,8 +6,14 @@ public class ViewModel {
   // color(red, green, blue, alpha) where values are between 0 and 255
   
   // Graphics Constants
-  public final color DEFAULT_STROKE           = color(  0,   0,   0,  25); // Light Gray
+  public final color EDGE_STROKE              = color(  0,   0,   0,  25); // Light Gray
+  public final color POLYGON_STROKE           = color(255, 255, 255, 255); // White
+  public final color NODE_STROKE              = color(  0,   0,   0, 200); // Dark Gray
   public final color DEFAULT_FILL             = color(255, 255, 255, 255); // White
+  public final color DEFAULT_TEXT_FILL        = color(  0,   0,   0, 200); // Dark Gray
+  
+  public final int HOST_DIAMETER              = 5; // pixels
+  public final int TEXT_HEIGHT                = 15; // pixels
   
   // Host Demographic Names
   public final String CHILD_NAME              = "Child";
@@ -50,10 +56,10 @@ public class ViewModel {
   public final color INCUBATING_COLOR         = color( 50,  50, 200, 255); // Yellow
   public final color INFECTIOUS_MILD_COLOR    = color(200,  50, 200, 255); // Light Red
   public final color INFECTIOUS_SEVERE_COLOR  = color(200,  50,  50, 255); // Dark Red
-  public final color CONVALESCENT_COLOR       = color( 50, 200,  50, 255); // Yellow
-  public final color HOSPITALIZED_COLOR       = color( 50, 200,  50, 255); // Orange
-  public final color RECOVERED_COLOR          = color( 50, 200,  50, 255); // Black
-  public final color DEAD_COLOR               = color( 50, 200,  50, 255); // Magenta
+  public final color CONVALESCENT_COLOR       = color(200, 200,  50, 255); // Yellow
+  public final color HOSPITALIZED_COLOR       = color(200, 150,  50, 255); // Orange
+  public final color RECOVERED_COLOR          = color(  0,   0,   0, 255); // Black
+  public final color DEAD_COLOR               = color(200,   0, 200, 255); // Magenta
   
   // AgentType Names
   public final String COVID_19_NAME           = "Covid-19";
@@ -138,6 +144,20 @@ public class ViewModel {
   }
   
   /**
+   * Get name associated with Enviroment
+   */
+  public String getName(Environment e) {
+    String name; 
+    EnvironmentType type = e.getType();
+    if(viewColor.containsKey(type)) {
+      name = viewName.get(type);
+    } else {
+      name = ""; // default blank
+    }
+    return name;
+  }
+  
+  /**
    * Get color associated with Enviroment Type
    */
   public color getColor(EnvironmentType type) {
@@ -151,7 +171,20 @@ public class ViewModel {
   }
   
   /**
-   * Get status color associated with status type
+   * Get name associated with Enviroment Type
+   */
+  public String getName(EnvironmentType type) {
+    String name;
+    if(viewName.containsKey(type)) {
+      name = viewName.get(type);
+    } else {
+      name = ""; // default blank
+    }
+    return name;
+  }
+  
+  /**
+   * Get color associated with AgentStatus type
    */
   public color getColor(AgentStatus status) {
     color col; 
@@ -161,6 +194,19 @@ public class ViewModel {
       col = color(0); // default black
     }
     return col;
+  }
+  
+  /**
+   * Get name associated with AgentStatus type
+   */
+  public String getName(AgentStatus status) {
+    String name; 
+    if(viewName.containsKey(status)) {
+      name = viewName.get(status);
+    } else {
+      name = ""; // default blank
+    }
+    return name;
   }
   
   /**
@@ -178,6 +224,20 @@ public class ViewModel {
   }
   
   /**
+   * Get name associated with Host Demographic
+   */
+  public String getName(Host h) {
+    HostDemographic d = h.getDemographic();
+    String name; 
+    if(viewName.containsKey(d)) {
+      name = viewName.get(d);
+    } else {
+      name = ""; // default blank
+    }
+    return name;
+  }
+  
+  /**
    * Get color associated with Host AgentStatus for specified AgentType
    */
   public color getColor(Host h, AgentType type) {
@@ -189,6 +249,20 @@ public class ViewModel {
       col = color(0); // default black
     }
     return col;
+  }
+  
+  /**
+   * Get name associated with Host AgentStatus for specified AgentType
+   */
+  public String getName(Host h, AgentType type) {
+    AgentStatus status = h.getStatus(type);
+    String name; 
+    if(viewName.containsKey(status)) {
+      name = viewName.get(status);
+    } else {
+      name = ""; // default blank
+    }
+    return name;
   }
   
   /**
@@ -227,6 +301,10 @@ class SimpleViewModel extends ViewModel {
     for(Host h : model.getHosts()) {
       this.drawHost(h);
     }
+    
+    // Draw Legends:
+    drawEnvironmentLegend(100, 100);
+    drawHostLegend(100, 230);
   }
   
   private void drawEnvironment(Environment e) {
@@ -235,7 +313,7 @@ class SimpleViewModel extends ViewModel {
     int w = (int) Math.sqrt(e.getArea());
     color viewColor = this.getColor(e);
     
-    noStroke();
+    stroke(POLYGON_STROKE);
     fill(viewColor);
     rectMode(CENTER);
     rect(x, y, w, w);
@@ -244,13 +322,12 @@ class SimpleViewModel extends ViewModel {
   private void drawHost(Host h) {
     int x = (int) h.getCoordinate().getX();
     int y = (int) h.getCoordinate().getY();
-    int w = (int) 5;
     color viewColor = this.getColor(h);
     
-    stroke(this.DEFAULT_STROKE);
+    stroke(this.NODE_STROKE);
     fill(viewColor);
     ellipseMode(CENTER);
-    ellipse(x, y, w, w);
+    ellipse(x, y, HOST_DIAMETER, HOST_DIAMETER);
   }
   
   private void drawCommute(Host h) {
@@ -258,7 +335,50 @@ class SimpleViewModel extends ViewModel {
     int y1 = (int) h.getPrimaryEnvironment().getCoordinate().getY();
     int x2 = (int) h.getSecondaryEnvironment().getCoordinate().getX();
     int y2 = (int) h.getSecondaryEnvironment().getCoordinate().getY();
-    stroke(DEFAULT_STROKE);
+    stroke(EDGE_STROKE);
     line(x1, y1, x2, y2);
+  }
+  
+  private void drawHostLegend(int x, int y) {
+    fill(DEFAULT_TEXT_FILL);
+    text("Host Demographics:", x, y);
+    
+    // Iterate through all possible host types
+    int yOffset = TEXT_HEIGHT/2;
+    for (HostDemographic d : HostDemographic.values()) {
+      yOffset += TEXT_HEIGHT;
+      
+      // Create and Draw a Straw-man Host for Lengend Item
+      Host h = new Host();
+      h.setDemographic(d);
+      h.setCoordinate(new Coordinate(x + HOST_DIAMETER, y + yOffset - 0.25*TEXT_HEIGHT));
+      drawHost(h);
+      
+      // Draw Symbol Label
+      fill(DEFAULT_TEXT_FILL);
+      text(this.getName(h), x + 4*HOST_DIAMETER, y + yOffset);
+    }
+  }
+  
+  private void drawEnvironmentLegend(int x, int y) {
+    fill(DEFAULT_TEXT_FILL);
+    text("Environment Types:", x, y);
+    
+    // Iterate through all possible host types
+    int yOffset = TEXT_HEIGHT/2;
+    for (EnvironmentType eT : EnvironmentType.values()) {
+      yOffset += TEXT_HEIGHT;
+      
+      // Create and Draw a Straw-man Host for Lengend Item
+      Environment e = new Environment();
+      e.setType(eT);
+      e.setArea(50);
+      e.setCoordinate(new Coordinate(x + HOST_DIAMETER, y + yOffset - 0.25*TEXT_HEIGHT));
+      drawEnvironment(e);
+      
+      // Draw Symbol Label
+      fill(DEFAULT_TEXT_FILL);
+      text(this.getName(e), x + 4*HOST_DIAMETER, y + yOffset);
+    }
   }
 }

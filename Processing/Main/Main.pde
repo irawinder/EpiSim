@@ -54,7 +54,7 @@ private static int JITTER;
 public void setup() {
   
   // Windowed Application Size (pixels)
-  size(1000, 1000);
+  size(1200, 1000);
   
   // Initialize "Back-End" Object Model
   configureObjectModel();
@@ -109,20 +109,20 @@ private void configureObjectModel() {
    * @param amount
    * @param name_prefix
    * @param type
-   * @param x
-   * @param y
-   * @param w
-   * @param h
+   * @param x1
+   * @param y1
+   * @param x2
+   * @param y2
    * @param minArea
    * @param maxArea
    */
-  int MARGIN = 75; // Window Border Margin
-  epidemic.randomEnvironments(25,  "Open Space",      EnvironmentType.OPENSPACE, 1*MARGIN, 1*MARGIN, width - 2*MARGIN, height - 2*MARGIN, 500, 2000);
-  epidemic.randomEnvironments(150, "Dwelling Unit",   EnvironmentType.DWELLING,  1*MARGIN, 1*MARGIN, width - 2*MARGIN, height - 2*MARGIN, 50, 200);
-  epidemic.randomEnvironments(10,  "Office Space",    EnvironmentType.OFFICE,    4*MARGIN, 4*MARGIN, width - 8*MARGIN, height - 8*MARGIN, 500, 2000);
-  epidemic.randomEnvironments(2,   "Daycare Center",  EnvironmentType.SCHOOL,    4*MARGIN, 4*MARGIN, width - 8*MARGIN, height - 8*MARGIN, 500, 2000);
-  epidemic.randomEnvironments(25,  "Retail Shopping", EnvironmentType.RETAIL,    2*MARGIN, 2*MARGIN, width - 4*MARGIN, height - 4*MARGIN, 50, 1000);
-  epidemic.randomEnvironments(1,   "Hospital",        EnvironmentType.HOSPITAL,  4*MARGIN, 4*MARGIN, width - 8*MARGIN, height - 8*MARGIN, 2000, 2000);
+  int MARGIN = 100; // Window Border Margin
+  epidemic.randomEnvironments(25,  "Open Space",      EnvironmentType.OPENSPACE, 2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 500, 2000);
+  epidemic.randomEnvironments(150, "Dwelling Unit",   EnvironmentType.DWELLING,  2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 50, 200);
+  epidemic.randomEnvironments(10,  "Office Space",    EnvironmentType.OFFICE,    2*MARGIN + 4*MARGIN, 4*MARGIN, width - 4*MARGIN, height - 4*MARGIN, 500, 2000);
+  epidemic.randomEnvironments(2,   "Daycare Center",  EnvironmentType.SCHOOL,    2*MARGIN + 4*MARGIN, 4*MARGIN, width - 4*MARGIN, height - 4*MARGIN, 500, 2000);
+  epidemic.randomEnvironments(25,  "Retail Shopping", EnvironmentType.RETAIL,    2*MARGIN + 2*MARGIN, 2*MARGIN, width - 2*MARGIN, height - 2*MARGIN, 50, 1000);
+  epidemic.randomEnvironments(1,   "Hospital",        EnvironmentType.HOSPITAL,  2*MARGIN + 4*MARGIN, 4*MARGIN, width - 4*MARGIN, height - 4*MARGIN, 2000, 2000);
   
   /**
    * Add hosts to model, initially located at their respective dwellings
