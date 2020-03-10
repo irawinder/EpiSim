@@ -101,7 +101,7 @@ private void configureObjectModel() {
   ADULT_AGE = 18;
   SENIOR_AGE = 65;
   
-  JITTER = 5; // pixels
+  JITTER = 7; // pixels
   
   /**
    * Add randomly placed Environments to Model within a specified rectangle
@@ -118,11 +118,11 @@ private void configureObjectModel() {
    */
   int MARGIN = 100; // Window Border Margin
   epidemic.randomEnvironments(25,  "Open Space",      EnvironmentType.OPENSPACE, 2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 500, 2000);
-  epidemic.randomEnvironments(150, "Dwelling Unit",   EnvironmentType.DWELLING,  2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 50, 200);
-  epidemic.randomEnvironments(10,  "Office Space",    EnvironmentType.OFFICE,    2*MARGIN + 4*MARGIN, 4*MARGIN, width - 4*MARGIN, height - 4*MARGIN, 500, 2000);
-  epidemic.randomEnvironments(2,   "Daycare Center",  EnvironmentType.SCHOOL,    2*MARGIN + 4*MARGIN, 4*MARGIN, width - 4*MARGIN, height - 4*MARGIN, 500, 2000);
+  epidemic.randomEnvironments(250, "Dwelling Unit",   EnvironmentType.DWELLING,  2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 50, 200);
+  epidemic.randomEnvironments(10,  "Office Space",    EnvironmentType.OFFICE,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500, 2000);
+  epidemic.randomEnvironments(2,   "Daycare Center",  EnvironmentType.SCHOOL,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500, 2000);
   epidemic.randomEnvironments(25,  "Retail Shopping", EnvironmentType.RETAIL,    2*MARGIN + 2*MARGIN, 2*MARGIN, width - 2*MARGIN, height - 2*MARGIN, 50, 1000);
-  epidemic.randomEnvironments(1,   "Hospital",        EnvironmentType.HOSPITAL,  2*MARGIN + 4*MARGIN, 4*MARGIN, width - 4*MARGIN, height - 4*MARGIN, 2000, 2000);
+  epidemic.randomEnvironments(1,   "Hospital",        EnvironmentType.HOSPITAL,  2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 2000, 2000);
   
   /**
    * Add hosts to model, initially located at their respective dwellings
