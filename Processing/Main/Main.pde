@@ -47,9 +47,6 @@ ViewModel viz;
 private static int ADULT_AGE;
 private static int SENIOR_AGE;
 
-// Random Variance added to coordinates to avoid overlap
-private static int JITTER;
-
 // setup() runs once at the very beginning
 public void setup() {
   
@@ -100,8 +97,6 @@ private void configureObjectModel() {
   // Global Demographic Threshold
   ADULT_AGE = 18;
   SENIOR_AGE = 65;
-  
-  JITTER = 7; // pixels
   
   /**
    * Add randomly placed Environments to Model within a specified rectangle

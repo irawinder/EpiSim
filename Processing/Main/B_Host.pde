@@ -106,7 +106,8 @@ public class Host extends Element {
    */
   public void setEnvironment(Environment environment) {
     this.environment = environment;
-    this.setCoordinate(environment.getCoordinate().jitter(JITTER));
+    int jitter = (int)(0.35*Math.sqrt(this.environment.getArea()));
+    this.setCoordinate(environment.getCoordinate().jitter(jitter));
   }
   
   /**
