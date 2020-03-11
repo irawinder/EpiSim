@@ -1,15 +1,15 @@
 /** 
- * Viral Agent that can exist in Host or Envoronment
+ * Unit Instance of an Infectious Agent that can exist in Host or Environment
  */
 public class Agent extends Element {
   
-  private AgentType type;
+  private Pathogen type;
   
-  public void setType(AgentType type) {
+  public void setPathogen(Pathogen type) {
     this.type = type;
   }
   
-  public AgentType getType() {
+  public Pathogen getPathogen() {
     return this.type;
   }
   

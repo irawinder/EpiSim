@@ -141,21 +141,21 @@ public class SimpleEpiModel extends EpiModel {
    * @param minX
    * @param maxY
    */
-  public void randomEnvironments(int amount, String name_prefix, EnvironmentType type, int x1, int y1, int x2, int y2, int minArea, int maxArea) {
+  public void randomEnvironments(int amount, String name_prefix, LandUse type, int x1, int y1, int x2, int y2, int minArea, int maxArea) {
     for(int i=0; i<amount; i++) {
       Environment e = new Environment();
       int new_uid = this.nextUID();
       e.setUID(new_uid);
       e.setCoordinate(new Coordinate(random(x1, x2), random(y1, y2)));
       e.setName(name_prefix + " " + e.getUID());
-      e.setType(type);
+      e.setUse(type);
       e.setArea(random(minArea, maxArea));
       this.add(e);
     }
   }
   
   /**
-   * Add hosts to model, initially located at their respective dwellings
+   * Adds hosts to model, initially located at their respective dwellings
    *
    * @param minAge
    * @param maxAge
@@ -164,7 +164,7 @@ public class SimpleEpiModel extends EpiModel {
    */
   public void populate(int minAge, int maxAge, int minDwellingSize, int maxDwellingSize) {
     for(Environment e : this.getEnvironments()) {
-      if(e.getType() == EnvironmentType.DWELLING) {
+      if(e.getUse() == LandUse.DWELLING) {
         int numTenants = (int) random(minDwellingSize, maxDwellingSize+1);
         for (int i=0; i<numTenants; i++) {
           Host person = new Host();
@@ -216,14 +216,67 @@ public class SimpleEpiModel extends EpiModel {
         break; // give up after 100 tries
       }
       
-      // grab a random envirnment and check if it's a Secondary Typology
+      // grab a random environment and check if it's a Secondary Typology
       int random_index = (int) random(0, numEnvironments);
       Environment thisEnvironment = this.getEnvironments().get(random_index);
-      if(thisEnvironment.isSecondary(h)) {
+      if(isSecondary(h, thisEnvironment)) {
         secondaryEnvironment = thisEnvironment;
         found = true;
       }
     }
     return secondaryEnvironment;
+  }
+  
+  /**
+   * Determine if this environment qualifies as a Primary Environment for this Host
+   *
+   * @param e Environment
+   */
+  public boolean isPrimary(Host h, Environment e) {
+    LandUse type = e.getUse();
+    if(type == LandUse.DWELLING) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  /**
+   * Determine if this environment qualifies as a Secondary Environment for this Host (i.e. the host spends the day at this Environment for work or school)
+   *
+   * @param e Environment
+   */
+  public boolean isSecondary(Host h, Environment e) {
+    LandUse type = e.getUse();
+    Demographic d = h.getDemographic();
+    if(d == Demographic.CHILD) {
+      if(type == LandUse.SCHOOL) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (d == Demographic.ADULT) {
+      if(type == LandUse.OFFICE || type == LandUse.RETAIL || type == LandUse.SCHOOL || type == LandUse.HOSPITAL) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+  
+  /**
+   * Determine if this environment qualifies as a Tertiary Environment for this Host
+   *
+   * @param e Environment
+   */
+  public boolean isTertiary(Host h, Environment e) {
+    LandUse type = e.getUse();
+    if(type != LandUse.DWELLING && type != LandUse.OFFICE) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

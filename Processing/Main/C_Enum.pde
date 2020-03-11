@@ -1,20 +1,16 @@
-public enum EnvironmentPriority {
-  PRIMARY, SECONDARY, TERTIARY
-}
-
-public enum EnvironmentType {
+public enum LandUse {
   DWELLING, OFFICE, RETAIL, SCHOOL, OPENSPACE, HOSPITAL
 }
 
-public enum HostDemographic {
+public enum Demographic {
   CHILD, ADULT, SENIOR
 }
 
-public enum AgentStatus {
-  SUSCEPTIBLE, INCUBATING, INFECTIOUS_MILD, INFECTIOUS_SEVERE, CONVALESCENT, HOSPITALIZED, RECOVERED, DEAD
+public enum Compartment {
+  SUSCEPTIBLE, EXPOSED, INFECTIOUS, RECOVERED, DEAD
 }
 
-public enum AgentType { 
+public enum Pathogen { 
   COVID_19, INFLUENZA, COMMON_COLD
 }
 

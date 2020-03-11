@@ -3,6 +3,10 @@
  */
 public class ViewModel {
   
+  // Object Model in need of visual representation
+  public EpiModel model;
+  
+  // Color Definition:
   // color(red, green, blue, alpha) where values are between 0 and 255
   
   // Graphics Constants
@@ -41,90 +45,80 @@ public class ViewModel {
   public final color OPENSPACE_COLOR          = color( 50, 200,  50, 100); // Green
   public final color HOSPITAL_COLOR           = color(  0, 255, 255, 200); // Teal
   
-  // AgentStatus Names
+  // Compartment Names
   public final String SUSCEPTIBLE_NAME        = "Susceptible";
-  public final String INCUBATING_NAME         = "Incubating";
-  public final String INFECTIOUS_MILD_NAME    = "Mildly Infectious";
-  public final String INFECTIOUS_SEVERE_NAME  = "Severely Infectious";
-  public final String CONVALESCENT_NAME       = "Convalescent";
-  public final String HOSPITALIZED_NAME       = "Hospitalized";
+  public final String EXPOSED_NAME            = "Exposed";
+  public final String INFECTIOUS_NAME         = "Infectious";
   public final String RECOVERED_NAME          = "Recovered";
   public final String DEAD_NAME               = "Dead";
   
-  // AgentStatus Colors
+  // Compartment Colors
   public final color SUSCEPTIBLE_COLOR        = color(100, 100, 100, 255); // White
-  public final color INCUBATING_COLOR         = color( 50,  50, 200, 255); // Yellow
-  public final color INFECTIOUS_MILD_COLOR    = color(200,  50, 200, 255); // Light Red
-  public final color INFECTIOUS_SEVERE_COLOR  = color(200,  50,  50, 255); // Dark Red
-  public final color CONVALESCENT_COLOR       = color(200, 200,  50, 255); // Yellow
-  public final color HOSPITALIZED_COLOR       = color(200, 150,  50, 255); // Orange
+  public final color EXPOSED_COLOR            = color( 50,  50, 200, 255); // Yellow
+  public final color INFECTIOUS_COLOR         = color(200,  50,  50, 255); // Dark Red
   public final color RECOVERED_COLOR          = color(  0,   0,   0, 255); // Black
   public final color DEAD_COLOR               = color(200,   0, 200, 255); // Magenta
   
-  // AgentType Names
+  // Pathogen Names
   public final String COVID_19_NAME           = "Covid-19";
   public final String INFLUENZA_NAME          = "Influenza";
   public final String COMMON_COLD_NAME        = "Common Cold";
   
-  // AgentType Colors
+  // Pathogen Colors
   public final color COVID_19_COLOR           = color(255,   0,   0, 255); // Red
   public final color INFLUENZA_COLOR          = color(  0, 255,   0, 255); // Green
   public final color COMMON_COLD_COLOR        = color(  0,   0, 255, 255); // Blue
   
+  // Dictionaries for View Attributes
   private HashMap<Enum, Integer> viewColor;
   private HashMap<Enum, String> viewName;
-  
-  public EpiModel model;
   
   public ViewModel() {
     
     // Make color map
     viewColor = new HashMap<Enum, Integer>();
-    viewColor.put(HostDemographic.CHILD, CHILD_COLOR);
-    viewColor.put(HostDemographic.ADULT, ADULT_COLOR);
-    viewColor.put(HostDemographic.SENIOR, SENIOR_COLOR);
-    viewColor.put(EnvironmentType.DWELLING, DWELLING_COLOR);
-    viewColor.put(EnvironmentType.OFFICE, OFFICE_COLOR);
-    viewColor.put(EnvironmentType.RETAIL, RETAIL_COLOR);
-    viewColor.put(EnvironmentType.SCHOOL, SCHOOL_COLOR);
-    viewColor.put(EnvironmentType.OPENSPACE, OPENSPACE_COLOR);
-    viewColor.put(EnvironmentType.HOSPITAL, HOSPITAL_COLOR);
-    viewColor.put(AgentStatus.SUSCEPTIBLE, SUSCEPTIBLE_COLOR);
-    viewColor.put(AgentStatus.INCUBATING, INCUBATING_COLOR);
-    viewColor.put(AgentStatus.INFECTIOUS_MILD, INFECTIOUS_MILD_COLOR);
-    viewColor.put(AgentStatus.INFECTIOUS_SEVERE, INFECTIOUS_SEVERE_COLOR);
-    viewColor.put(AgentStatus.CONVALESCENT, CONVALESCENT_COLOR);
-    viewColor.put(AgentStatus.HOSPITALIZED, HOSPITALIZED_COLOR);
-    viewColor.put(AgentStatus.RECOVERED, RECOVERED_COLOR);
-    viewColor.put(AgentStatus.DEAD, DEAD_COLOR);
-    viewColor.put(AgentType.COVID_19, COVID_19_COLOR);
-    viewColor.put(AgentType.INFLUENZA, INFLUENZA_COLOR);
-    viewColor.put(AgentType.COMMON_COLD, COMMON_COLD_COLOR);
+    viewColor.put(Demographic.CHILD, CHILD_COLOR);
+    viewColor.put(Demographic.ADULT, ADULT_COLOR);
+    viewColor.put(Demographic.SENIOR, SENIOR_COLOR);
+    viewColor.put(LandUse.DWELLING, DWELLING_COLOR);
+    viewColor.put(LandUse.OFFICE, OFFICE_COLOR);
+    viewColor.put(LandUse.RETAIL, RETAIL_COLOR);
+    viewColor.put(LandUse.SCHOOL, SCHOOL_COLOR);
+    viewColor.put(LandUse.OPENSPACE, OPENSPACE_COLOR);
+    viewColor.put(LandUse.HOSPITAL, HOSPITAL_COLOR);
+    viewColor.put(Compartment.SUSCEPTIBLE, SUSCEPTIBLE_COLOR);
+    viewColor.put(Compartment.EXPOSED, EXPOSED_COLOR);
+    viewColor.put(Compartment.INFECTIOUS, INFECTIOUS_COLOR);
+    viewColor.put(Compartment.RECOVERED, RECOVERED_COLOR);
+    viewColor.put(Compartment.DEAD, DEAD_COLOR);
+    viewColor.put(Pathogen.COVID_19, COVID_19_COLOR);
+    viewColor.put(Pathogen.INFLUENZA, INFLUENZA_COLOR);
+    viewColor.put(Pathogen.COMMON_COLD, COMMON_COLD_COLOR);
 
     // Make name map
     viewName = new HashMap<Enum, String>();
-    viewName.put(HostDemographic.CHILD, CHILD_NAME);
-    viewName.put(HostDemographic.ADULT, ADULT_NAME);
-    viewName.put(HostDemographic.SENIOR, SENIOR_NAME);
-    viewName.put(EnvironmentType.DWELLING, DWELLING_NAME);
-    viewName.put(EnvironmentType.OFFICE, OFFICE_NAME);
-    viewName.put(EnvironmentType.RETAIL, RETAIL_NAME);
-    viewName.put(EnvironmentType.SCHOOL, SCHOOL_NAME);
-    viewName.put(EnvironmentType.OPENSPACE, OPENSPACE_NAME);
-    viewName.put(EnvironmentType.HOSPITAL, HOSPITAL_NAME);
-    viewName.put(AgentStatus.SUSCEPTIBLE, SUSCEPTIBLE_NAME);
-    viewName.put(AgentStatus.INCUBATING, INCUBATING_NAME);
-    viewName.put(AgentStatus.INFECTIOUS_MILD, INFECTIOUS_MILD_NAME);
-    viewName.put(AgentStatus.INFECTIOUS_SEVERE, INFECTIOUS_SEVERE_NAME);
-    viewName.put(AgentStatus.CONVALESCENT, CONVALESCENT_NAME);
-    viewName.put(AgentStatus.HOSPITALIZED, HOSPITALIZED_NAME);
-    viewName.put(AgentStatus.RECOVERED, RECOVERED_NAME);
-    viewName.put(AgentStatus.DEAD, DEAD_NAME);
-    viewName.put(AgentType.COVID_19, COVID_19_NAME);
-    viewName.put(AgentType.INFLUENZA, INFLUENZA_NAME);
-    viewName.put(AgentType.COMMON_COLD, COMMON_COLD_NAME);
+    viewName.put(Demographic.CHILD, CHILD_NAME);
+    viewName.put(Demographic.ADULT, ADULT_NAME);
+    viewName.put(Demographic.SENIOR, SENIOR_NAME);
+    viewName.put(LandUse.DWELLING, DWELLING_NAME);
+    viewName.put(LandUse.OFFICE, OFFICE_NAME);
+    viewName.put(LandUse.RETAIL, RETAIL_NAME);
+    viewName.put(LandUse.SCHOOL, SCHOOL_NAME);
+    viewName.put(LandUse.OPENSPACE, OPENSPACE_NAME);
+    viewName.put(LandUse.HOSPITAL, HOSPITAL_NAME);
+    viewName.put(Compartment.SUSCEPTIBLE, SUSCEPTIBLE_NAME);
+    viewName.put(Compartment.EXPOSED, EXPOSED_NAME);
+    viewName.put(Compartment.INFECTIOUS, INFECTIOUS_NAME);
+    viewName.put(Compartment.RECOVERED, RECOVERED_NAME);
+    viewName.put(Compartment.DEAD, DEAD_NAME);
+    viewName.put(Pathogen.COVID_19, COVID_19_NAME);
+    viewName.put(Pathogen.INFLUENZA, INFLUENZA_NAME);
+    viewName.put(Pathogen.COMMON_COLD, COMMON_COLD_NAME);
   }
   
+  /**
+   * Set the Object Model to be viewed
+   */
   public void setModel(EpiModel model) {
     this.model = model;
   }
@@ -134,7 +128,7 @@ public class ViewModel {
    */
   public color getColor(Environment e) {
     color col; 
-    EnvironmentType type = e.getType();
+    LandUse type = e.getUse();
     if(viewColor.containsKey(type)) {
       col = viewColor.get(type);
     } else {
@@ -148,7 +142,7 @@ public class ViewModel {
    */
   public String getName(Environment e) {
     String name; 
-    EnvironmentType type = e.getType();
+    LandUse type = e.getUse();
     if(viewColor.containsKey(type)) {
       name = viewName.get(type);
     } else {
@@ -160,7 +154,7 @@ public class ViewModel {
   /**
    * Get color associated with Enviroment Type
    */
-  public color getColor(EnvironmentType type) {
+  public color getColor(LandUse type) {
     color col;
     if(viewColor.containsKey(type)) {
       col = viewColor.get(type);
@@ -173,7 +167,7 @@ public class ViewModel {
   /**
    * Get name associated with Enviroment Type
    */
-  public String getName(EnvironmentType type) {
+  public String getName(LandUse type) {
     String name;
     if(viewName.containsKey(type)) {
       name = viewName.get(type);
@@ -184,9 +178,9 @@ public class ViewModel {
   }
   
   /**
-   * Get color associated with AgentStatus type
+   * Get color associated with Compartment type
    */
-  public color getColor(AgentStatus status) {
+  public color getColor(Compartment status) {
     color col; 
     if(viewColor.containsKey(status)) {
       col = viewColor.get(status);
@@ -197,9 +191,9 @@ public class ViewModel {
   }
   
   /**
-   * Get name associated with AgentStatus type
+   * Get name associated with Compartment type
    */
-  public String getName(AgentStatus status) {
+  public String getName(Compartment status) {
     String name; 
     if(viewName.containsKey(status)) {
       name = viewName.get(status);
@@ -213,7 +207,7 @@ public class ViewModel {
    * Get color associated with Host Demographic
    */
   public color getColor(Host h) {
-    HostDemographic d = h.getDemographic();
+    Demographic d = h.getDemographic();
     color col; 
     if(viewColor.containsKey(d)) {
       col = viewColor.get(d);
@@ -227,7 +221,7 @@ public class ViewModel {
    * Get name associated with Host Demographic
    */
   public String getName(Host h) {
-    HostDemographic d = h.getDemographic();
+    Demographic d = h.getDemographic();
     String name; 
     if(viewName.containsKey(d)) {
       name = viewName.get(d);
@@ -238,10 +232,10 @@ public class ViewModel {
   }
   
   /**
-   * Get color associated with Host AgentStatus for specified AgentType
+   * Get color associated with Host Compartment for specified Pathogen
    */
-  public color getColor(Host h, AgentType type) {
-    AgentStatus status = h.getStatus(type);
+  public color getColor(Host h, Pathogen type) {
+    Compartment status = h.getCompartment(type);
     color col; 
     if(viewColor.containsKey(status)) {
       col = viewColor.get(status);
@@ -252,10 +246,10 @@ public class ViewModel {
   }
   
   /**
-   * Get name associated with Host AgentStatus for specified AgentType
+   * Get name associated with Host Compartment for specified Pathogen
    */
-  public String getName(Host h, AgentType type) {
-    AgentStatus status = h.getStatus(type);
+  public String getName(Host h, Pathogen type) {
+    Compartment status = h.getCompartment(type);
     String name; 
     if(viewName.containsKey(status)) {
       name = viewName.get(status);
@@ -341,11 +335,11 @@ class SimpleViewModel extends ViewModel {
   
   private void drawHostLegend(int x, int y) {
     fill(DEFAULT_TEXT_FILL);
-    text("Host Demographics:", x, y);
+    text("Demographics:", x, y);
     
     // Iterate through all possible host types
     int yOffset = TEXT_HEIGHT/2;
-    for (HostDemographic d : HostDemographic.values()) {
+    for (Demographic d : Demographic.values()) {
       yOffset += TEXT_HEIGHT;
       
       // Create and Draw a Straw-man Host for Lengend Item
@@ -362,16 +356,16 @@ class SimpleViewModel extends ViewModel {
   
   private void drawEnvironmentLegend(int x, int y) {
     fill(DEFAULT_TEXT_FILL);
-    text("Environment Types:", x, y);
+    text("Land Uses:", x, y);
     
     // Iterate through all possible host types
     int yOffset = TEXT_HEIGHT/2;
-    for (EnvironmentType eT : EnvironmentType.values()) {
+    for (LandUse type : LandUse.values()) {
       yOffset += TEXT_HEIGHT;
       
       // Create and Draw a Straw-man Host for Lengend Item
       Environment e = new Environment();
-      e.setType(eT);
+      e.setUse(type);
       e.setArea(50);
       e.setCoordinate(new Coordinate(x + HOST_DIAMETER, y + yOffset - 0.25*TEXT_HEIGHT));
       drawEnvironment(e);

@@ -1,5 +1,5 @@
 /**
- * A Host is a person element that may carry and/or transmit an Agent 
+ * A Host is a person element that may carry and/or transmit an Agent
  *
  * Refer to Compartmental models in epidemiology (Susceptible, Infectious, Carrier, Recovered):
  * https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology
@@ -9,6 +9,24 @@
  * 
  * GLEAMviz Models:
  * http://www.gleamviz.org/simulator/models/
+ *
+ *   Demographic:
+ *     Host's attributes that affect its suceptibility to a Pathogen (e.g. Child, Adult, Senior)
+ *
+ *   Compartment:  
+ *     The Host's status with respect to a Pathogen (e.g. Suceptible, Exposed, Infectious, Recovered, or Dead)
+ *
+ *   Primary Environment:
+ *     The host's primary residence when they are not working or shopping. This often
+ *     represents a dwelling with multiple household memebers
+ *
+ *   Secondary Environment:  
+ *     The environment where the host usually spends their time during the day. This is
+ *     often at an office or employer for adults, or at school for children.
+ *
+ *   Tertiary Environment: 
+ *     All other environments that a host may spend their time throughout the day. This
+ *     includes shopping, walking, commuting, dining, etc.
  */
 public class Host extends Element {
 
@@ -16,10 +34,10 @@ public class Host extends Element {
   private int age;
   
   // Demographic of Host
-  private HostDemographic demographic;
+  private Demographic demographic;
   
   // Infectious Agent Status
-  HashMap<AgentType, AgentStatus> agentStatus;
+  HashMap<Pathogen, Compartment> statusMap;
   
   // Agent's current Environment
   private Environment environment;
@@ -52,7 +70,7 @@ public class Host extends Element {
   /**
    * Set the Host's Demographic
    */
-  private void setDemographic(HostDemographic d) {
+  private void setDemographic(Demographic d) {
     this.demographic = d;
   }
   
@@ -61,41 +79,41 @@ public class Host extends Element {
    */
   private void setDemographic() {
     if (age < ADULT_AGE) {
-      this.demographic = HostDemographic.CHILD;
+      this.demographic = Demographic.CHILD;
     } else if (age < SENIOR_AGE) {
-      this.demographic = HostDemographic.ADULT;
+      this.demographic = Demographic.ADULT;
     } else {
-      this.demographic = HostDemographic.SENIOR;
+      this.demographic = Demographic.SENIOR;
     }
   }
   
   /**
    * Get the Host's Demographic
    */
-  public HostDemographic getDemographic() {
+  public Demographic getDemographic() {
     return this.demographic;
   }
   
   /**
    * Set the Host's Agent Status for a Particular Agent Type
    */
-  public void setStatus(AgentType type, AgentStatus status) {
-    agentStatus.put(type, status);
+  public void setCompartment(Pathogen type, Compartment status) {
+    statusMap.put(type, status);
   }
   
   /**
-   * Get the Host's Statuses for All AgentTypes
+   * Get the Host's Statuses for All Pathogens
    */
-  public HashMap<AgentType, AgentStatus> getStatus() {
-    return agentStatus;
+  public HashMap<Pathogen, Compartment> getCompartment() {
+    return statusMap;
   }
   
   /**
-   * Get the Host's Status for specified AgentType
+   * Get the Host's Status for specified Pathogen
    */
-  public AgentStatus getStatus(AgentType type) {
-    if(agentStatus.containsKey(type)) {
-      return agentStatus.get(type);
+  public Compartment getCompartment(Pathogen type) {
+    if(statusMap.containsKey(type)) {
+      return statusMap.get(type);
     } else {
       return null;
     }
@@ -173,7 +191,7 @@ public class Host extends Element {
       destination.addElement(this);
       this.setEnvironment(destination);
     } else {
-      println("Host is already at this Environment");
+      println(this.getName() + " is already at this Environment");
     }
   }
   
