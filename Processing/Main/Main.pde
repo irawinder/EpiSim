@@ -8,13 +8,16 @@
   *     * Dependency or Parent
   * 
   * Object Map:
+  *
   * - Processing Main()
   *    * SimpleEpiModel()
   *    * SimpleViewModel()
+  
   * - SimpleViewModel()
   *     * extends ViewModel()
   * - ViewModel()
   *     * SimpleEpiModel()
+  *
   * - SimpleEpiModel()
   *     * extends EpiModel()
   *     * depends on Person()
@@ -23,23 +26,29 @@
   *     * depends on Agent()
   *     * depends on Host()
   *     * depends on Environment()
+  *
   * - Person()
   *     * extends Host()
+  *     * depends on Place()
   *     * enum Demographic
   * - Host()
   *     * extends Element()
   *     * depends on Environment()
   *     * enum Compartment  
+  *
   * - Agent()
   *     * extends Element()
   *     * enum Pathogen
+  *
   * - Place()
   *     * extends Environment()
   *     * enum LandUse
   * - Environment()
   *     * extends Element()
+  *
   * - Element()
   *     * Coordinate()
+  * - Coordinate()
   */
   
 import java.util.Random;
