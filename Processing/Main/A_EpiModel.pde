@@ -197,9 +197,14 @@ class EpiModel {
    * @param a Agent
    */
   public void infect(Host h, Agent a) {
-    this.add(a);
-    Pathogen p = a.getPathogen();
+    
+    //Update Agent Location to Host and Add to Model Dictionaries
+    a.setCoordinate(h.getCoordinate());
     h.addElement(a);
+    this.add(a);
+    
+    // Update Host's Compartment Status
+    Pathogen p = a.getPathogen();
     if(h.getCompartment(p) == Compartment.SUSCEPTIBLE) {
       h.setCompartment(p, Compartment.INFECTIOUS);
     }
@@ -281,7 +286,7 @@ public class SimpleEpiModel extends EpiModel {
   }
   
   /**
-   * Add Infectious Agents to Model
+   * Add Infectious Agents to Model at one or more patients "zero"
    *
    * @param pathogen
    * @param numHosts
@@ -289,14 +294,13 @@ public class SimpleEpiModel extends EpiModel {
   public void patientZero(Pathogen pathogen, int numHosts) {
     this.add(pathogen);
     for(int i=0; i<numHosts; i++) {
+      Agent initial = new Agent();
+      int new_uid = this.nextUID();
+      initial.setUID(new_uid);
+      initial.setPathogen(pathogen);
       Host host = this.getRandomHost();
       if(host instanceof Person) {
         Person person = (Person) host;
-        Agent initial = new Agent();
-        int new_uid = this.nextUID();
-        initial.setUID(new_uid);
-        initial.setPathogen(pathogen);
-        
         this.infect(person, initial);
       }
     }
