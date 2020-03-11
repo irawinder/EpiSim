@@ -83,7 +83,7 @@ public class Element {
       map.remove(e.getUID());
       list.remove(e);
     } else {
-      println("No such element exists as a child of this environment");
+      println("No such element exists as a child of this element");
     }
   }
   
@@ -101,7 +101,7 @@ public class Element {
     if (map.containsKey(uid)) {
       return map.get(uid);
     } else {
-      println("No such UID is associated with a child of this environment");
+      println("No such UID is associated with a child of this element");
       return null;
     }
   }

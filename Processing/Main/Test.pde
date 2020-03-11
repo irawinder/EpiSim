@@ -2,24 +2,24 @@ void test() {
   
   int counter = 0;
   
-  Environment home = new Environment();
+  Place home = new Place();
   home.setUID(counter); counter++;
   home.setName("Ira' House");
   home.setUse(LandUse.DWELLING);
   home.setArea(100);
   
-  Environment work = new Environment();
+  Place work = new Place();
   work.setUID(counter); counter++;
   work.setName("EDGEof");
   work.setUse(LandUse.OFFICE);
   work.setArea(1000);
   
-  Host adult = new Host();
+  Person adult = new Person();
   adult.setUID(counter); counter++;
   adult.setName("Ira");
   adult.setAge(32);
-  adult.setPrimaryEnvironment(home);
-  adult.setSecondaryEnvironment(work);
+  adult.setPrimaryPlace(home);
+  adult.setSecondaryPlace(work);
   
   Agent corona = new Agent();
   corona.setUID(counter); counter++;
@@ -31,8 +31,8 @@ void test() {
   println("---");
   
   println(adult);
-  println("- Primary Loc: " + adult.getPrimaryEnvironment());
-  println("- Secondary Loc: " + adult.getSecondaryEnvironment());
+  println("- Primary Loc: " + adult.getPrimaryPlace());
+  println("- Secondary Loc: " + adult.getSecondaryPlace());
   println("---");
   
   println(corona);

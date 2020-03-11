@@ -20,8 +20,8 @@
  *     affect an agent’s ability to thrive, as might the quality of drinking water 
  *     or the accessibility of adequate medical facilities.
  * 
- * Refer to Model of the Epidemiological Triangle:
- * https://www.rivier.edu/academics/blog-posts/what-is-the-epidemiologic-triangle/
+ *   Refer to Model of the Epidemiological Triangle:
+ *   https://www.rivier.edu/academics/blog-posts/what-is-the-epidemiologic-triangle/
  */
 class EpiModel {
   
@@ -108,26 +108,11 @@ class EpiModel {
   public ArrayList<Environment> getEnvironments() {
     return environmentList;
   }
-  
-  /**
-   * Force movement of all Hosts to their secondary environment
-   */
-  public void allToSecondary() {
-    for(Host h : this.getHosts()) {
-      h.moveToSecondary();
-    }
-  }
-  
-  /**
-   * Force movement of all Hosts to their primary environment
-   */
-  public void allToPrimary() {
-    for(Host h : this.getHosts()) {
-      h.moveToPrimary();
-    }
-  }
 }
 
+/*
+ * Simple extentsion of EpiModel that allows initialization of basic configuration
+ */
 public class SimpleEpiModel extends EpiModel {
   
   /**
@@ -141,16 +126,16 @@ public class SimpleEpiModel extends EpiModel {
    * @param minX
    * @param maxY
    */
-  public void randomEnvironments(int amount, String name_prefix, LandUse type, int x1, int y1, int x2, int y2, int minArea, int maxArea) {
+  public void randomPlaces(int amount, String name_prefix, LandUse type, int x1, int y1, int x2, int y2, int minArea, int maxArea) {
     for(int i=0; i<amount; i++) {
-      Environment e = new Environment();
+      Place l = new Place();
       int new_uid = this.nextUID();
-      e.setUID(new_uid);
-      e.setCoordinate(new Coordinate(random(x1, x2), random(y1, y2)));
-      e.setName(name_prefix + " " + e.getUID());
-      e.setUse(type);
-      e.setArea(random(minArea, maxArea));
-      this.add(e);
+      l.setUID(new_uid);
+      l.setCoordinate(new Coordinate(random(x1, x2), random(y1, y2)));
+      l.setName(name_prefix + " " + l.getUID());
+      l.setUse(type);
+      l.setArea(random(minArea, maxArea));
+      this.add(l);
     }
   }
   
@@ -164,32 +149,36 @@ public class SimpleEpiModel extends EpiModel {
    */
   public void populate(int minAge, int maxAge, int minDwellingSize, int maxDwellingSize) {
     for(Environment e : this.getEnvironments()) {
-      if(e.getUse() == LandUse.DWELLING) {
-        int numTenants = (int) random(minDwellingSize, maxDwellingSize+1);
-        for (int i=0; i<numTenants; i++) {
-          Host person = new Host();
-          
-          // Set Unique ID
-          int new_uid = this.nextUID();
-          person.setUID(new_uid);
-          person.setName("House of " + e.getUID() + ", " + person.getUID());
-          
-          // Set Age and Demographic
-          int age = (int) random(minAge, maxAge);
-          person.setAge(age);
-          this.add(person);
-          
-          // Set Primary Environment
-          person.setPrimaryEnvironment(e);
-          
-          // Set Secondary Environment
-          Environment secondaryEnvironment = this.getRandomSecondaryEnvironment(person);
-          person.setSecondaryEnvironment(secondaryEnvironment);
-          
-          // Set Current Environment and Location to Primary
-          person.setEnvironment(person.getPrimaryEnvironment());
-          
-          e.addElement(person);
+      if(e instanceof Place) {
+        Place l = (Place) e;
+        if(l.getUse() == LandUse.DWELLING) {
+          int numTenants = (int) random(minDwellingSize, maxDwellingSize+1);
+          for (int i=0; i<numTenants; i++) {
+            Person person = new Person();
+            
+            // Set Unique ID
+            int new_uid = this.nextUID();
+            person.setUID(new_uid);
+            person.setName("House of " + l.getUID() + ", " + person.getUID());
+            
+            // Set Age and Demographic
+            int age = (int) random(minAge, maxAge);
+            person.setAge(age);
+            
+            // Set Primary Place
+            person.setPrimaryPlace(l);
+            
+            // Set Secondary Place
+            Place secondaryPlace = this.getRandomSecondaryPlace(person);
+            person.setSecondaryPlace(secondaryPlace);
+            
+            // Set Current Environment and Location to Primary
+            person.setEnvironment(person.getPrimaryPlace());
+            
+            // Add Person to List
+            this.add(person);
+            l.addElement(person);
+          }
         }
       }
     }
@@ -198,12 +187,12 @@ public class SimpleEpiModel extends EpiModel {
   /**
    * Get a random secondary Environment from within list of existing Environments
    *
-   * @param h Host
+   * @param p Person
    */
-  public Environment getRandomSecondaryEnvironment(Host h) {
+  public Place getRandomSecondaryPlace(Person p) {
     
     // Set secondary environment to be same as primary environment by default
-    Environment secondaryEnvironment = h.getPrimaryEnvironment();
+    Place secondaryPlace = p.getPrimaryPlace();
     
     int numEnvironments = this.getEnvironments().size();
     int counter = 0;
@@ -213,27 +202,31 @@ public class SimpleEpiModel extends EpiModel {
       if(counter < 1000) {
         counter++;
       } else {
-        break; // give up after 100 tries
+        break; // give up after 1000 tries
       }
       
       // grab a random environment and check if it's a Secondary Typology
       int random_index = (int) random(0, numEnvironments);
       Environment thisEnvironment = this.getEnvironments().get(random_index);
-      if(isSecondary(h, thisEnvironment)) {
-        secondaryEnvironment = thisEnvironment;
-        found = true;
+      if(thisEnvironment instanceof Place) {
+        Place thisPlace = (Place) thisEnvironment;
+        if(isSecondary(p, thisPlace)) {
+          secondaryPlace = thisPlace;
+          found = true;
+        }
       }
     }
-    return secondaryEnvironment;
+    return secondaryPlace;
   }
   
   /**
    * Determine if this environment qualifies as a Primary Environment for this Host
    *
-   * @param e Environment
+   * @param p Person
+   * @param l Place
    */
-  public boolean isPrimary(Host h, Environment e) {
-    LandUse type = e.getUse();
+  public boolean isPrimary(Person p, Place l) {
+    LandUse type = l.getUse();
     if(type == LandUse.DWELLING) {
       return true;
     } else {
@@ -244,11 +237,12 @@ public class SimpleEpiModel extends EpiModel {
   /**
    * Determine if this environment qualifies as a Secondary Environment for this Host (i.e. the host spends the day at this Environment for work or school)
    *
-   * @param e Environment
+   * @param p Person
+   * @param l Place
    */
-  public boolean isSecondary(Host h, Environment e) {
-    LandUse type = e.getUse();
-    Demographic d = h.getDemographic();
+  public boolean isSecondary(Person p, Place l) {
+    LandUse type = l.getUse();
+    Demographic d = p.getDemographic();
     if(d == Demographic.CHILD) {
       if(type == LandUse.SCHOOL) {
         return true;
@@ -267,16 +261,41 @@ public class SimpleEpiModel extends EpiModel {
   }
   
   /**
-   * Determine if this environment qualifies as a Tertiary Environment for this Host
+   * Determine if this environment qualifies as a Tertiary Environment for this Person
    *
-   * @param e Environment
+   * @param p Person
+   * @param l Place
    */
-  public boolean isTertiary(Host h, Environment e) {
-    LandUse type = e.getUse();
+  public boolean isTertiary(Person p, Place l) {
+    LandUse type = l.getUse();
     if(type != LandUse.DWELLING && type != LandUse.OFFICE) {
       return true;
     } else {
       return false;
+    }
+  }
+  
+  /**
+   * Force movement of all People to their secondary Place
+   */
+  public void allToSecondary() {
+    for(Host h : this.getHosts()) {
+      if (h instanceof Person) {
+        Person p = (Person) h;
+        p.moveToSecondary();
+      }
+    }
+  }
+  
+  /**
+   * Force movement of all People to their primary Place
+   */
+  public void allToPrimary() {
+    for(Host h : this.getHosts()) {
+      if (h instanceof Person) {
+        Person p = (Person) h;
+        p.moveToPrimary();
+      }
     }
   }
 }

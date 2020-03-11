@@ -17,24 +17,27 @@
   *     * SimpleEpiModel()
   * - SimpleEpiModel()
   *     * extends EpiModel()
+  *     * depends on Person()
+  *     * depends on Place()
   * - EpiModel()
-  *     * Agent()
-  *     * Host()
-  *     * Environment()
+  *     * depends on Agent()
+  *     * depends on Host()
+  *     * depends on Environment()
+  * - Person()
+  *     * extends Host()
+  *     * enum Demographic
+  * - Host()
+  *     * extends Element()
+  *     * depends on Environment()
+  *     * enum Compartment  
   * - Agent()
   *     * extends Element()
   *     * enum Pathogen
-  * - Host()
-  *     * Agent()
-  *     * extends Element()
-  *     * enum Demongraphic
-  *     * enum Compartment
-  * - Environment()
-  *     * Agent()
-  *     * Host()
-  *     * extends Element()
-  *     * enum EnvironmentPriority
+  * - Place()
+  *     * extends Environment()
   *     * enum LandUse
+  * - Environment()
+  *     * extends Element()
   * - Element()
   *     * Coordinate()
   */
@@ -103,7 +106,7 @@ private void configureObjectModel() {
   SENIOR_AGE = 65;
   
   /**
-   * Add randomly placed Environments to Model within a specified rectangle
+   * Add randomly placed Places to Model within a specified rectangle
    *
    * @param amount
    * @param name_prefix
@@ -116,12 +119,12 @@ private void configureObjectModel() {
    * @param maxArea
    */
   int MARGIN = 100; // Window Border Margin
-  epidemic.randomEnvironments(25,  "Open Space",      LandUse.OPENSPACE, 2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 500, 2000);
-  epidemic.randomEnvironments(250, "Dwelling Unit",   LandUse.DWELLING,  2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 50, 200);
-  epidemic.randomEnvironments(10,  "Office Space",    LandUse.OFFICE,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500, 2000);
-  epidemic.randomEnvironments(2,   "Daycare Center",  LandUse.SCHOOL,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500, 2000);
-  epidemic.randomEnvironments(25,  "Retail Shopping", LandUse.RETAIL,    2*MARGIN + 2*MARGIN, 2*MARGIN, width - 2*MARGIN, height - 2*MARGIN, 50, 1000);
-  epidemic.randomEnvironments(1,   "Hospital",        LandUse.HOSPITAL,  2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 2000, 2000);
+  epidemic.randomPlaces(25,  "Open Space",      LandUse.OPENSPACE, 2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 500, 2000);
+  epidemic.randomPlaces(250, "Dwelling Unit",   LandUse.DWELLING,  2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 50, 200);
+  epidemic.randomPlaces(10,  "Office Space",    LandUse.OFFICE,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500, 2000);
+  epidemic.randomPlaces(2,   "Daycare Center",  LandUse.SCHOOL,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500, 2000);
+  epidemic.randomPlaces(25,  "Retail Shopping", LandUse.RETAIL,    2*MARGIN + 2*MARGIN, 2*MARGIN, width - 2*MARGIN, height - 2*MARGIN, 50, 1000);
+  epidemic.randomPlaces(1,   "Hospital",        LandUse.HOSPITAL,  2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 2000, 2000);
   
   /**
    * Add hosts to model, initially located at their respective dwellings
@@ -132,12 +135,4 @@ private void configureObjectModel() {
    * @param maxDwellingSize largest household size of a dwelling unit
    */
   epidemic.populate(5, 85, 1, 5);
-  
-  //// Print Model Configuration to Console
-  //for(Environment env : epidemic.getEnvironments()) {
-  //  println(env);
-  //  for(Element ele : env.getElements()) {
-  //    println("   " + ele);
-  //  }
-  //}
 }

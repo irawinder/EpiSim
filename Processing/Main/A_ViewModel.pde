@@ -4,7 +4,7 @@
 public class ViewModel {
   
   // Object Model in need of visual representation
-  public EpiModel model;
+  private EpiModel model;
   
   // Color Definition:
   // color(red, green, blue, alpha) where values are between 0 and 255
@@ -29,7 +29,7 @@ public class ViewModel {
   public final color ADULT_COLOR              = color(255, 255,   0, 200); // Yellow
   public final color SENIOR_COLOR             = color(  0, 255, 255, 200); // Teal
   
-  // Environment Names
+  // Place Names
   public final String DWELLING_NAME           = "Dwelling Unit";
   public final String OFFICE_NAME             = "Office Space";
   public final String RETAIL_NAME             = "Retail Space";
@@ -37,7 +37,7 @@ public class ViewModel {
   public final String OPENSPACE_NAME          = "Open Space";
   public final String HOSPITAL_NAME           = "Hospital";
   
-  // Environment Colors
+  // Place Colors
   public final color DWELLING_COLOR           = color(100, 100, 100, 200); // Gray
   public final color OFFICE_COLOR             = color( 50,  50, 200, 200); // Blue
   public final color RETAIL_COLOR             = color(200,  50, 200, 200); // Magenta
@@ -124,11 +124,18 @@ public class ViewModel {
   }
   
   /**
+   * Get the Object Model to be viewed
+   */
+  public EpiModel getModel() {
+    return model;
+  }
+  
+  /**
    * Get color associated with Enviroment
    */
-  public color getColor(Environment e) {
+  public color getColor(Place l) {
     color col; 
-    LandUse type = e.getUse();
+    LandUse type = l.getUse();
     if(viewColor.containsKey(type)) {
       col = viewColor.get(type);
     } else {
@@ -140,9 +147,9 @@ public class ViewModel {
   /**
    * Get name associated with Enviroment
    */
-  public String getName(Environment e) {
+  public String getName(Place l) {
     String name; 
-    LandUse type = e.getUse();
+    LandUse type = l.getUse();
     if(viewColor.containsKey(type)) {
       name = viewName.get(type);
     } else {
@@ -206,8 +213,8 @@ public class ViewModel {
   /**
    * Get color associated with Host Demographic
    */
-  public color getColor(Host h) {
-    Demographic d = h.getDemographic();
+  public color getColor(Person p) {
+    Demographic d = p.getDemographic();
     color col; 
     if(viewColor.containsKey(d)) {
       col = viewColor.get(d);
@@ -220,8 +227,8 @@ public class ViewModel {
   /**
    * Get name associated with Host Demographic
    */
-  public String getName(Host h) {
-    Demographic d = h.getDemographic();
+  public String getName(Person p) {
+    Demographic d = p.getDemographic();
     String name; 
     if(viewName.containsKey(d)) {
       name = viewName.get(d);
@@ -267,45 +274,49 @@ public class ViewModel {
   }
 }
 
-class SimpleViewModel extends ViewModel {
-  
-  public SimpleViewModel() {
-    super();
-    init();
-  }
-  
-  private void init() {
-  }
+/**
+ * Simple extension for Visualization Model for Epidemiological Object Model
+ */
+public class SimpleViewModel extends ViewModel {
   
   @Override
   public void draw() {
     background(255);
     
     // Draw Commutes
-    for(Host h : model.getHosts()) {
-      this.drawCommute(h);
+    for(Host h : this.getModel().getHosts()) {
+      if(h instanceof Person) {
+        Person p = (Person) h;
+        this.drawCommute(p);
+      }
     }
     
-    // Draw Environment
-    for(Environment e : model.getEnvironments()) {
-      this.drawEnvironment(e);
+    // Draw Places
+    for(Environment e : this.getModel().getEnvironments()) {
+      if(e instanceof Place) {
+        Place l = (Place) e;
+        this.drawPlace(l);
+      }
     }
     
     // Draw People
-    for(Host h : model.getHosts()) {
-      this.drawHost(h);
+    for(Host h : this.getModel().getHosts()) {
+      if(h instanceof Person) {
+        Person p = (Person) h;
+        this.drawPerson(p);
+      }
     }
     
     // Draw Legends:
-    drawEnvironmentLegend(100, 100);
-    drawHostLegend(100, 230);
+    drawPlaceLegend(100, 100);
+    drawPersonLegend(100, 230);
   }
   
-  private void drawEnvironment(Environment e) {
-    int x = (int) e.getCoordinate().getX();
-    int y = (int) e.getCoordinate().getY();
-    int w = (int) Math.sqrt(e.getArea());
-    color viewColor = this.getColor(e);
+  private void drawPlace(Place l) {
+    int x = (int) l.getCoordinate().getX();
+    int y = (int) l.getCoordinate().getY();
+    int w = (int) Math.sqrt(l.getArea());
+    color viewColor = this.getColor(l);
     
     stroke(POLYGON_STROKE);
     fill(viewColor);
@@ -313,10 +324,10 @@ class SimpleViewModel extends ViewModel {
     rect(x, y, w, w);
   }
   
-  private void drawHost(Host h) {
-    int x = (int) h.getCoordinate().getX();
-    int y = (int) h.getCoordinate().getY();
-    color viewColor = this.getColor(h);
+  private void drawPerson(Person p) {
+    int x = (int) p.getCoordinate().getX();
+    int y = (int) p.getCoordinate().getY();
+    color viewColor = this.getColor(p);
     
     stroke(this.NODE_STROKE);
     fill(viewColor);
@@ -324,16 +335,16 @@ class SimpleViewModel extends ViewModel {
     ellipse(x, y, HOST_DIAMETER, HOST_DIAMETER);
   }
   
-  private void drawCommute(Host h) {
-    int x1 = (int) h.getPrimaryEnvironment().getCoordinate().getX();
-    int y1 = (int) h.getPrimaryEnvironment().getCoordinate().getY();
-    int x2 = (int) h.getSecondaryEnvironment().getCoordinate().getX();
-    int y2 = (int) h.getSecondaryEnvironment().getCoordinate().getY();
+  private void drawCommute(Person p) {
+    int x1 = (int) p.getPrimaryPlace().getCoordinate().getX();
+    int y1 = (int) p.getPrimaryPlace().getCoordinate().getY();
+    int x2 = (int) p.getSecondaryPlace().getCoordinate().getX();
+    int y2 = (int) p.getSecondaryPlace().getCoordinate().getY();
     stroke(EDGE_STROKE);
     line(x1, y1, x2, y2);
   }
   
-  private void drawHostLegend(int x, int y) {
+  private void drawPersonLegend(int x, int y) {
     fill(DEFAULT_TEXT_FILL);
     text("Demographics:", x, y);
     
@@ -343,18 +354,18 @@ class SimpleViewModel extends ViewModel {
       yOffset += TEXT_HEIGHT;
       
       // Create and Draw a Straw-man Host for Lengend Item
-      Host h = new Host();
-      h.setDemographic(d);
-      h.setCoordinate(new Coordinate(x + HOST_DIAMETER, y + yOffset - 0.25*TEXT_HEIGHT));
-      drawHost(h);
+      Person p = new Person();
+      p.setDemographic(d);
+      p.setCoordinate(new Coordinate(x + HOST_DIAMETER, y + yOffset - 0.25*TEXT_HEIGHT));
+      drawPerson(p);
       
       // Draw Symbol Label
       fill(DEFAULT_TEXT_FILL);
-      text(this.getName(h), x + 4*HOST_DIAMETER, y + yOffset);
+      text(this.getName(p), x + 4*HOST_DIAMETER, y + yOffset);
     }
   }
   
-  private void drawEnvironmentLegend(int x, int y) {
+  private void drawPlaceLegend(int x, int y) {
     fill(DEFAULT_TEXT_FILL);
     text("Land Uses:", x, y);
     
@@ -364,15 +375,15 @@ class SimpleViewModel extends ViewModel {
       yOffset += TEXT_HEIGHT;
       
       // Create and Draw a Straw-man Host for Lengend Item
-      Environment e = new Environment();
-      e.setUse(type);
-      e.setArea(50);
-      e.setCoordinate(new Coordinate(x + HOST_DIAMETER, y + yOffset - 0.25*TEXT_HEIGHT));
-      drawEnvironment(e);
+      Place l = new Place();
+      l.setUse(type);
+      l.setArea(50);
+      l.setCoordinate(new Coordinate(x + HOST_DIAMETER, y + yOffset - 0.25*TEXT_HEIGHT));
+      drawPlace(l);
       
       // Draw Symbol Label
       fill(DEFAULT_TEXT_FILL);
-      text(this.getName(e), x + 4*HOST_DIAMETER, y + yOffset);
+      text(this.getName(l), x + 4*HOST_DIAMETER, y + yOffset);
     }
   }
 }
