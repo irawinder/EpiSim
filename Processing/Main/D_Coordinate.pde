@@ -1,5 +1,9 @@
-public class Coordinate {
+/**
+ * 3D coordinate object
+ */
+ public class Coordinate {
   
+  // coordinates
   private double x, y, z;
   
   Coordinate() {
@@ -20,32 +24,56 @@ public class Coordinate {
     this.z = z;
   }
   
+  /**
+   * Set X Coordinate
+   *
+   * @param x
+   */
   public void setX(double x) {
     this.x = x;
   }
   
+  /**
+   * Set Y Coordinate
+   *
+   * @param y
+   */
   public void setY(double y) {
     this.y = y;
   }
   
+  /**
+   * Set Z Coordinate
+   *
+   * @param z
+   */
   public void setZ(double z) {
     this.z = z;
   }
   
+  /**
+   * Get X Coordinate
+   */
   public double getX() {
     return this.x;
   }
   
+  /**
+   * Get Y Coordinate
+   */
   public double getY() {
     return this.y;
   }
   
+  /**
+   * Get Z Coordinate
+   */
   public double getZ() {
     return this.z;
   }
   
   /**
-   * return a new Coordinate that is slightly jittered from the Parent
+   * Return a new Coordinate that is slightly jittered from the Parent
    *
    * @param jitter amount of jitter
    */

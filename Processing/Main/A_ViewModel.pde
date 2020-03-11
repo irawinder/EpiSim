@@ -9,15 +9,16 @@ public class ViewModel {
   // Color Definition:
   // color(red, green, blue, alpha) where values are between 0 and 255
   
-  // Graphics Constants
+  // Graphics Color Constants
   public final color EDGE_STROKE              = color(  0,   0,   0,  25); // Light Gray
   public final color POLYGON_STROKE           = color(255, 255, 255, 255); // White
   public final color NODE_STROKE              = color(  0,   0,   0, 200); // Dark Gray
   public final color DEFAULT_FILL             = color(255, 255, 255, 255); // White
   public final color DEFAULT_TEXT_FILL        = color(  0,   0,   0, 200); // Dark Gray
   
-  public final int HOST_DIAMETER              = 5; // pixels
-  public final int TEXT_HEIGHT                = 15; // pixels
+  // Graphics Numerical Constants
+  public final int HOST_DIAMETER              = 5;   // pixels
+  public final int TEXT_HEIGHT                = 15;  // pixels
   
   // Host Demographic Names
   public final String CHILD_NAME              = "Child";
@@ -118,6 +119,8 @@ public class ViewModel {
   
   /**
    * Set the Object Model to be viewed
+   *
+   * @param model
    */
   public void setModel(EpiModel model) {
     this.model = model;
@@ -131,7 +134,9 @@ public class ViewModel {
   }
   
   /**
-   * Get color associated with Enviroment
+   * Get color associated with Place
+   *
+   * @param l place
    */
   public color getColor(Place l) {
     color col; 
@@ -145,7 +150,9 @@ public class ViewModel {
   }
   
   /**
-   * Get name associated with Enviroment
+   * Get name associated with Place
+   *
+   * @param l place
    */
   public String getName(Place l) {
     String name; 
@@ -159,7 +166,9 @@ public class ViewModel {
   }
   
   /**
-   * Get color associated with Enviroment Type
+   * Get color associated with LandUse Type
+   *
+   * @param type LandUse
    */
   public color getColor(LandUse type) {
     color col;
@@ -172,7 +181,9 @@ public class ViewModel {
   }
   
   /**
-   * Get name associated with Enviroment Type
+   * Get name associated with LandUse Type
+   *
+   * @param type LandUse
    */
   public String getName(LandUse type) {
     String name;
@@ -186,6 +197,8 @@ public class ViewModel {
   
   /**
    * Get color associated with Compartment type
+   *
+   * @param status Compartment
    */
   public color getColor(Compartment status) {
     color col; 
@@ -199,6 +212,8 @@ public class ViewModel {
   
   /**
    * Get name associated with Compartment type
+   *
+   * @param status Compartment
    */
   public String getName(Compartment status) {
     String name; 
@@ -212,6 +227,8 @@ public class ViewModel {
   
   /**
    * Get color associated with Host Demographic
+   *
+   * @param p Person
    */
   public color getColor(Person p) {
     Demographic d = p.getDemographic();
@@ -226,6 +243,8 @@ public class ViewModel {
   
   /**
    * Get name associated with Host Demographic
+   *
+   * @param p Person
    */
   public String getName(Person p) {
     Demographic d = p.getDemographic();
@@ -240,6 +259,9 @@ public class ViewModel {
   
   /**
    * Get color associated with Host Compartment for specified Pathogen
+   *
+   * @param h Host
+   * @param type Pathogen
    */
   public color getColor(Host h, Pathogen type) {
     Compartment status = h.getCompartment(type);
@@ -254,6 +276,9 @@ public class ViewModel {
   
   /**
    * Get name associated with Host Compartment for specified Pathogen
+   *
+   * @param h Host
+   * @param type Pathogen
    */
   public String getName(Host h, Pathogen type) {
     Compartment status = h.getCompartment(type);
@@ -279,6 +304,9 @@ public class ViewModel {
  */
 public class SimpleViewModel extends ViewModel {
   
+  /**
+   * Render ViewModel to Processing Canvas
+   */
   @Override
   public void draw() {
     background(255);
@@ -312,6 +340,9 @@ public class SimpleViewModel extends ViewModel {
     drawPersonLegend(100, 230);
   }
   
+  /**
+   * Render a Single Place
+   */
   private void drawPlace(Place l) {
     int x = (int) l.getCoordinate().getX();
     int y = (int) l.getCoordinate().getY();
@@ -324,6 +355,9 @@ public class SimpleViewModel extends ViewModel {
     rect(x, y, w, w);
   }
   
+  /**
+   * Render a Single Person
+   */
   private void drawPerson(Person p) {
     int x = (int) p.getCoordinate().getX();
     int y = (int) p.getCoordinate().getY();
@@ -335,6 +369,9 @@ public class SimpleViewModel extends ViewModel {
     ellipse(x, y, HOST_DIAMETER, HOST_DIAMETER);
   }
   
+  /**
+   * Render a Single Person's Commute
+   */
   private void drawCommute(Person p) {
     int x1 = (int) p.getPrimaryPlace().getCoordinate().getX();
     int y1 = (int) p.getPrimaryPlace().getCoordinate().getY();
@@ -344,6 +381,9 @@ public class SimpleViewModel extends ViewModel {
     line(x1, y1, x2, y2);
   }
   
+  /**
+   * Render a Legend of Person Demographic Types
+   */
   private void drawPersonLegend(int x, int y) {
     fill(DEFAULT_TEXT_FILL);
     text("Demographics:", x, y);
@@ -365,6 +405,9 @@ public class SimpleViewModel extends ViewModel {
     }
   }
   
+  /**
+   * Render a Legend of Place Land Use Types
+   */
   private void drawPlaceLegend(int x, int y) {
     fill(DEFAULT_TEXT_FILL);
     text("Land Uses:", x, y);

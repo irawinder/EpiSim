@@ -37,6 +37,8 @@ public class Host extends Element {
   
   /**
    * Get the Host's Status for specified Pathogen
+   *
+   * @param type Pathogen
    */
   public Compartment getCompartment(Pathogen type) {
     if(statusMap.containsKey(type)) {
@@ -48,6 +50,8 @@ public class Host extends Element {
   
   /**
    * Set the Host's current environment
+   *
+   * @param environment
    */
   public void setEnvironment(Environment environment) {
     this.environment = environment;
@@ -65,7 +69,7 @@ public class Host extends Element {
   /**
    * Move Host to another Environment
    *
-   * @param destination
+   * @param destination Environment
    */
   public void move(Environment destination) {
     Environment origin = environment;
@@ -121,6 +125,8 @@ public class Person extends Host {
   
   /**
    * Set the Host's age
+   *
+   * @param age
    */
   public void setAge(int age) {
     if (age < 0) {
@@ -140,6 +146,8 @@ public class Person extends Host {
   
   /**
    * Set the Host's Demographic
+   *
+   * @param d Demographic
    */
   private void setDemographic(Demographic d) {
     this.demographic = d;
@@ -167,6 +175,8 @@ public class Person extends Host {
   
   /**
    * Set the Host's primary Place (e.g. home, dwelling, etc)
+   *
+   * @param primaryPlace Place
    */
   public void setPrimaryPlace(Place primaryPlace) {
     this.primaryPlace = primaryPlace;
@@ -181,6 +191,8 @@ public class Person extends Host {
   
   /**
    * Set the Host's secondary Place (e.g. work, school, daycare)
+   *
+   * @param secondaryPlace Place
    */
   public void setSecondaryPlace(Place secondaryPlace) {
     this.secondaryPlace = secondaryPlace;

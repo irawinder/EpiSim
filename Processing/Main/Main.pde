@@ -63,7 +63,9 @@ ViewModel viz;
 private static int ADULT_AGE;
 private static int SENIOR_AGE;
 
-// setup() runs once at the very beginning
+/**
+ * setup() runs once at the very beginning
+ */
 public void setup() {
   
   // Windowed Application Size (pixels)
@@ -80,12 +82,16 @@ public void setup() {
   viz.draw();
 }
 
-// draw() runs on an infinite loop after setup() is finished
+/**
+ * draw() runs on an infinite loop after setup() is finished
+ */
 public void draw() {
   
 }
 
-// keyPressed() runs whenever a key is pressed
+/**
+ * keyPressed() runs whenever a key is pressed
+ */
 public void keyPressed() {
   switch(key) {
     case 'r':
@@ -105,7 +111,9 @@ public void keyPressed() {
   }
 }
 
-//Configure a simple Epidemiological Model
+/**
+ * Configure a simple Epidemiological Model
+ */
 private void configureObjectModel() {
   
   epidemic = new SimpleEpiModel();
@@ -114,34 +122,28 @@ private void configureObjectModel() {
   ADULT_AGE = 18;
   SENIOR_AGE = 65;
   
+  // Window Border Margin
+  int MARGIN = 100; 
+  
   /**
    * Add randomly placed Places to Model within a specified rectangle
    *
-   * @param amount
-   * @param name_prefix
-   * @param type
-   * @param x1
-   * @param y1
-   * @param x2
-   * @param y2
-   * @param minArea
-   * @param maxArea
+   *                   (amount,   name_prefix,       type,              x1,                  y1,       x2,               y2,                minArea,   maxArea)
    */
-  int MARGIN = 100; // Window Border Margin
-  epidemic.randomPlaces(25,  "Open Space",      LandUse.OPENSPACE, 2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 500, 2000);
-  epidemic.randomPlaces(250, "Dwelling Unit",   LandUse.DWELLING,  2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 50, 200);
-  epidemic.randomPlaces(10,  "Office Space",    LandUse.OFFICE,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500, 2000);
-  epidemic.randomPlaces(2,   "Daycare Center",  LandUse.SCHOOL,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500, 2000);
-  epidemic.randomPlaces(25,  "Retail Shopping", LandUse.RETAIL,    2*MARGIN + 2*MARGIN, 2*MARGIN, width - 2*MARGIN, height - 2*MARGIN, 50, 1000);
-  epidemic.randomPlaces(1,   "Hospital",        LandUse.HOSPITAL,  2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 2000, 2000);
+  epidemic.randomPlaces(25,       "Open Space",      LandUse.OPENSPACE, 2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 500,       2000);
+  epidemic.randomPlaces(250,      "Dwelling Unit",   LandUse.DWELLING,  2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 50,        200);
+  epidemic.randomPlaces(10,       "Office Space",    LandUse.OFFICE,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500,       2000);
+  epidemic.randomPlaces(2,        "Daycare Center",  LandUse.SCHOOL,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500,       2000);
+  epidemic.randomPlaces(25,       "Retail Shopping", LandUse.RETAIL,    2*MARGIN + 2*MARGIN, 2*MARGIN, width - 2*MARGIN, height - 2*MARGIN, 50,        1000);
+  epidemic.randomPlaces(1,        "Hospital",        LandUse.HOSPITAL,  2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 2000,      2000);
   
   /**
    * Add hosts to model, initially located at their respective dwellings
    *
-   * @param minAge
-   * @param maxAge
-   * @param minDwellingSize smallest household size of a dwelling unit
-   * @param maxDwellingSize largest household size of a dwelling unit
+   * minAge
+   * maxAge
+   * minDwellingSize smallest household size of a dwelling unit
+   * maxDwellingSize largest household size of a dwelling unit
    */
   epidemic.populate(5, 85, 1, 5);
 }

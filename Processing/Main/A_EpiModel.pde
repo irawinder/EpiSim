@@ -48,6 +48,8 @@ class EpiModel {
   
   /** 
    * Add Host to Model
+   *
+   * @param h Host
    */
   public void add(Host h) {
     hostList.add(h);
@@ -55,6 +57,8 @@ class EpiModel {
   
   /** 
    * Add Agent to Model
+   *
+   * @param a Agent
    */
   public void add(Agent a) {
     agentList.add(a);
@@ -62,6 +66,8 @@ class EpiModel {
   
   /** 
    * Add Environment to Model
+   *
+   * @param e Environment
    */
   public void add(Environment e) {
     environmentList.add(e);
@@ -69,6 +75,8 @@ class EpiModel {
   
   /** 
    * Remove Host from Model
+   *
+   * @param h Host
    */
   public void remove(Host h) {
     hostList.remove(h);
@@ -76,6 +84,8 @@ class EpiModel {
   
   /** 
    * Remove Agent from Model
+   *
+   * @param a Agent
    */
   public void remove(Agent a) {
     agentList.remove(a);

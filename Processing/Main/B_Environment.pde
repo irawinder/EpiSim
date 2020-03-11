@@ -1,16 +1,23 @@
 /** 
  * Environment is an element that a Host and/or Agent can Occupy
- *
  */
 public class Environment extends Element {
   
   // The 2D area size of the environment
   private float area;
   
+  /**
+   * Set Environment Area
+   *
+   * @param area
+   */
   public void setArea(float area) {
     this.area = area;
   }
   
+  /**
+   * Get Environment Area
+   */
   public float getArea() {
     return this.area;
   }
@@ -26,7 +33,7 @@ public class Environment extends Element {
 }
 
 /** 
- * Place is an special Environment that a Host and/or Agent can Occupy
+ * Place is a special Environment that a Host and/or Agent can Occupy
  *
  */
 public class Place extends Environment {
@@ -34,10 +41,18 @@ public class Place extends Environment {
   // The type of use or activity in this Place
   private LandUse type;
   
+  /**
+   * Set Land Use
+   *
+   * @param area
+   */
   public void setUse(LandUse type) {
     this.type = type;
   }
   
+  /**
+   * Get Land Use
+   */
   public LandUse getUse() {
     return this.type;
   }

@@ -23,6 +23,8 @@ public class Element {
   
   /**
    * Set the Name of the Element
+   *
+   * @param name
    */
   void setName(String name) {
     this.name = name;
@@ -37,6 +39,8 @@ public class Element {
   
   /**
    * Set the Unique ID of the Element
+   *
+   * @param UID unique ID
    */
   void setUID(int UID) {
     this.UID = UID;
@@ -51,6 +55,8 @@ public class Element {
   
   /**
    * Set the Location of the Element
+   *
+   * @param location Coordinate
    */
   void setCoordinate(Coordinate location) {
     this.location = location;
@@ -65,6 +71,8 @@ public class Element {
   
   /**
    * Add a child Element
+   *
+   * @param e Element
    */
   public void addElement(Element e) {
     if (containsElement(e)) {
@@ -77,6 +85,8 @@ public class Element {
   
   /**
    * Remove a child Element
+   *
+   * @param e Element
    */
   public void removeElement(Element e) {
     if (containsElement(e)) {
@@ -96,6 +106,8 @@ public class Element {
   
   /**
    * Return a Child Element
+   *
+   * @param uid Unique ID
    */
   public Element getElement(int uid) {
     if (map.containsKey(uid)) {
@@ -108,6 +120,8 @@ public class Element {
   
   /**
    * Check if a child Element exists
+   *
+   * @param e Element
    */
   public boolean containsElement(Element e) {
     // returns true if Element e is already in map
