@@ -6,6 +6,9 @@ public class Rate {
   // Numerical Rate Value
   private double rate;
   
+  /**
+   * Construct new Rate
+   */
   public Rate() {
     rate = 0;
   }

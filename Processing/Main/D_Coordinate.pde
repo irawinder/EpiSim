@@ -6,18 +6,34 @@
   // coordinates
   private double x, y, z;
   
+  /**
+   * Construct new Coordinate
+   */
   Coordinate() {
     this.x = 0;
     this.y = 0;
     this.z = 0;
   }
   
+  /**
+   * Construct new Coordinate
+   *
+   * @param x
+   * @param y
+   */
   Coordinate(double x, double y) {
     this.x = x;
     this.y = y;
     this.z = 0;
   }
   
+  /**
+   * Construct new Coordinate
+   *
+   * @param x
+   * @param y
+   * @param z
+   */
   Coordinate(double x, double y, double z) {
     this.x = x;
     this.y = y;

@@ -72,7 +72,8 @@ public void setup() {
   size(1200, 1000);
   
   // Initialize "Back-End" Object Model
-  configureObjectModel();
+  epidemic = new SimpleEpiModel();
+  configureSimpleEpiModel();
   
   // Initialize "Front-End" View Model
   viz = new SimpleViewModel();
@@ -95,7 +96,8 @@ public void draw() {
 public void keyPressed() {
   switch(key) {
     case 'r':
-      configureObjectModel();
+      epidemic = new SimpleEpiModel();
+      configureSimpleEpiModel();
       viz = new SimpleViewModel();
       viz.setModel(epidemic);
       viz.draw();
@@ -114,21 +116,13 @@ public void keyPressed() {
 /**
  * Configure a simple Epidemiological Model
  */
-private void configureObjectModel() {
-  
-  epidemic = new SimpleEpiModel();
-  
-  // Global Demographic Threshold
-  ADULT_AGE = 18;
-  SENIOR_AGE = 65;
-  
-  // Window Border Margin
-  int MARGIN = 100; 
+private void configureSimpleEpiModel() {
   
   /**
    * Add randomly placed Places to Model within a specified rectangle (x1, y1, x2, y2)
    * Parameters (amount, name_prefix, type, x1, y1, x2, y2, minSize, maxSize)
    */
+  int MARGIN = 100; // Window Border Margin
   epidemic.randomPlaces(25,       "Open Space",      LandUse.OPENSPACE, 2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 500,       2000);
   epidemic.randomPlaces(250,      "Dwelling Unit",   LandUse.DWELLING,  2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 50,        200);
   epidemic.randomPlaces(10,       "Office Space",    LandUse.OFFICE,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500,       2000);
@@ -137,22 +131,37 @@ private void configureObjectModel() {
   epidemic.randomPlaces(1,        "Hospital",        LandUse.HOSPITAL,  2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 2000,      2000);
   
   /**
+   * Global Demographic Thresholds
+   */
+  ADULT_AGE = 18;
+  SENIOR_AGE = 65;
+  
+  /**
    * Add people to Model, initially located at their respective dwellings
    * Parameters (minAge, maxAge, minDwellingSize, maxDwellingSize)
    */
   epidemic.populate(5, 85, 1, 5);
   
-  // Configure Covid Pathogen
+  /**
+   * onfigure Covid Pathogen
+   */
   Pathogen covid = new Pathogen();
   configureCovid(covid);
+  epidemic.add(covid);
   
-  // Configure Cold Pathogen
+  /**
+   * Configure Cold Pathogen
+   */
   Pathogen cold = new Pathogen();
   configureCold(cold);
+  epidemic.add(cold);
   
-  // Deploy Pathogens as Agents into the Host (Person) Population
-  //epidemic.patientZero(cold, 10);
-  //epidemic.patientZero(covid, 1);
+  /**
+   * Deploy Pathogens as Agents into the Host (Person) Population
+   * Parameters: pathogen, initial host count
+   */
+  epidemic.patientZero(cold, 10);
+  epidemic.patientZero(covid, 1);
 }
 
 /**

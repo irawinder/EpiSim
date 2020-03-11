@@ -85,10 +85,13 @@ class EpiModel {
   /** 
    * Add Pathogen to Model
    *
-   * @param e Environment
+   * @param p Pathogen
    */
   public void add(Pathogen p) {
     pathogenList.add(p);
+    for(Host h : hostList) {
+      h.setCompartment(p, Compartment.SUSCEPTIBLE);
+    }
   }
   
   /** 
@@ -186,6 +189,21 @@ class EpiModel {
     int random_index = (int) random(0, pathogenList.size());
     return pathogenList.get(random_index);
   }
+  
+  /**
+   * Infect a Host with an infectious agent
+   *
+   * @param h Host
+   * @param a Agent
+   */
+  public void infect(Host h, Agent a) {
+    this.add(a);
+    Pathogen p = a.getPathogen();
+    h.addElement(a);
+    if(h.getCompartment(p) == Compartment.SUSCEPTIBLE) {
+      h.setCompartment(p, Compartment.INFECTIOUS);
+    }
+  }
 }
 
 /*
@@ -263,7 +281,7 @@ public class SimpleEpiModel extends EpiModel {
   }
   
   /**
-   * Adds Infectious Agents to Model
+   * Add Infectious Agents to Model
    *
    * @param pathogen
    * @param numHosts
@@ -275,16 +293,11 @@ public class SimpleEpiModel extends EpiModel {
       if(host instanceof Person) {
         Person person = (Person) host;
         Agent initial = new Agent();
-        
-        // Set Unique ID
         int new_uid = this.nextUID();
         initial.setUID(new_uid);
-        
-        // Set Pathogen
         initial.setPathogen(pathogen);
         
-        this.add(initial);
-        person.addElement(initial);
+        this.infect(person, initial);
       }
     }
   }
@@ -316,7 +329,7 @@ public class SimpleEpiModel extends EpiModel {
   }
   
   /**
-   * Determine if this environment qualifies as a Primary Environment for this Host
+   * Determine if this environment qualifies as a Primary Environment for this Person
    *
    * @param p Person
    * @param l Place

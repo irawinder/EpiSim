@@ -7,6 +7,12 @@ public class Environment extends Element {
   private float size;
   
   /**
+   * Construct new Environment
+   */
+  public Environment() {
+  }
+  
+  /**
    * Set Environment Size
    *
    * @param size
@@ -40,6 +46,12 @@ public class Place extends Environment {
   
   // The type of use or activity in this Place
   private LandUse type;
+  
+  /**
+   * Construct new Place
+   */
+  public Place() {
+  }
   
   /**
    * Set Land Use

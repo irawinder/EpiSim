@@ -61,7 +61,7 @@ public class ViewModel {
   public final color DEAD_COLOR               = color(200,   0, 200, 255); // Magenta
   
   // Pathogen Names
-  public final String COVID_19_NAME           = "Covid-19";
+  public final String COVID_19_NAME           = "Covid-2019";
   public final String INFLUENZA_NAME          = "Influenza";
   public final String COMMON_COLD_NAME        = "Common Cold";
   

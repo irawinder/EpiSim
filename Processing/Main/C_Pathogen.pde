@@ -27,6 +27,9 @@ public class Pathogen {
   // Rate of expression for various Symptoms
   private HashMap<Demographic, HashMap<Symptom, Rate>> symptomExpression;
   
+  /**
+   * Construct new Pathogen
+   */
   public Pathogen() {
     init();
   }

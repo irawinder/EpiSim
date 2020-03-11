@@ -21,11 +21,15 @@ public class Host extends Element {
   // Host's current Environment
   private Environment environment;
   
+  public Host() {
+    statusMap = new HashMap<Pathogen, Compartment>();
+  }
+  
   /**
    * Set the Host's Agent Status for a Particular Agent Type
    */
-  public void setCompartment(Pathogen type, Compartment status) {
-    statusMap.put(type, status);
+  public void setCompartment(Pathogen p, Compartment status) {
+    statusMap.put(p, status);
   }
   
   /**
@@ -40,9 +44,9 @@ public class Host extends Element {
    *
    * @param type Pathogen
    */
-  public Compartment getCompartment(Pathogen type) {
-    if(statusMap.containsKey(type)) {
-      return statusMap.get(type);
+  public Compartment getCompartment(Pathogen p) {
+    if(statusMap.containsKey(p)) {
+      return statusMap.get(p);
     } else {
       return null;
     }
@@ -92,7 +96,7 @@ public class Host extends Element {
 }
 
 /**
- * A Host is a human element that may carry and/or transmit an Agent
+ * A Person is a human Host Element that may carry and/or transmit an Agent
  *
  *   Demographic:
  *     Host's attributes that affect its suceptibility to a Pathogen (e.g. Child, Adult, Senior)
@@ -122,6 +126,12 @@ public class Person extends Host {
   
   // Secondary Environment (e.g. work, school, daycare)
   private Place secondaryPlace;
+  
+  /**
+   * Construct new Person
+   */
+  public Person() {
+  }
   
   /**
    * Set the Host's age
@@ -220,6 +230,19 @@ public class Person extends Host {
     Place destination = this.getSecondaryPlace();
     this.move(destination);
   }
+  
+  ///**
+  // * Update the Compartment value for the Host
+  // */
+  //public void updateCompartment() {
+  //  for(switch(Compartment) {
+  //    case SUCEPTIBLE:
+  //      // check for exposure
+  //      break;
+  //    case SUCEPTIBLE:
+  //      // check for exposure
+  //      break;
+  //}
   
   @Override
   public String toString() {

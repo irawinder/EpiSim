@@ -4,6 +4,13 @@
 public class Agent extends Element {
   
   private Pathogen pathogen;
+  
+  /**
+   * Construct new Agent
+   */
+  public Agent() {
+  }
+  
   /**
    * Set Pathogen Type
    *
