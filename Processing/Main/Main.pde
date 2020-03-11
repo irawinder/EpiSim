@@ -145,12 +145,10 @@ private void configureObjectModel() {
   // Configure Covid Pathogen
   Pathogen covid = new Pathogen();
   configureCovid(covid);
-  epidemic.add(covid);
   
   // Configure Cold Pathogen
   Pathogen cold = new Pathogen();
   configureCold(cold);
-  epidemic.add(cold);
   
   // Deploy Pathogens as Agents into the Host (Person) Population
   //epidemic.patientZero(cold, 10);

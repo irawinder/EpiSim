@@ -154,6 +154,38 @@ class EpiModel {
   public ArrayList<Pathogen> getPathogens() {
     return pathogenList;
   }
+  
+  /** 
+   * Get Random Host from Model
+   */
+  public Host getRandomHost() {
+    int random_index = (int) random(0, hostList.size());
+    return hostList.get(random_index);
+  }
+  
+  /** 
+   * Get Random Agent from Model
+   */
+  public Agent getRandomAgent() {
+    int random_index = (int) random(0, agentList.size());
+    return agentList.get(random_index);
+  }
+  
+  /** 
+   * Get Random Environment from Model
+   */
+  public Environment getRandomEnvironment() {
+    int random_index = (int) random(0, environmentList.size());
+    return environmentList.get(random_index);
+  }
+  
+  /** 
+   * Get Random Pathogen from Model
+   */
+  public Pathogen getRandomPathogen() {
+    int random_index = (int) random(0, pathogenList.size());
+    return pathogenList.get(random_index);
+  }
 }
 
 /*
@@ -231,15 +263,28 @@ public class SimpleEpiModel extends EpiModel {
   }
   
   /**
-   * Adds Viral Agents to Model
+   * Adds Infectious Agents to Model
    *
+   * @param pathogen
    * @param numHosts
    */
-  public void patientZero(int numHosts) {
-    for(Host h : this.getHosts()) {
-      if(h instanceof Person) {
-        Person p = (Person) h;
+  public void patientZero(Pathogen pathogen, int numHosts) {
+    this.add(pathogen);
+    for(int i=0; i<numHosts; i++) {
+      Host host = this.getRandomHost();
+      if(host instanceof Person) {
+        Person person = (Person) host;
         Agent initial = new Agent();
+        
+        // Set Unique ID
+        int new_uid = this.nextUID();
+        initial.setUID(new_uid);
+        
+        // Set Pathogen
+        initial.setPathogen(pathogen);
+        
+        this.add(initial);
+        person.addElement(initial);
       }
     }
   }
@@ -254,27 +299,18 @@ public class SimpleEpiModel extends EpiModel {
     // Set secondary environment to be same as primary environment by default
     Place secondaryPlace = p.getPrimaryPlace();
     
-    int numEnvironments = this.getEnvironments().size();
+    // Grab a random environment and check if it's a Secondary Typology
     int counter = 0;
-    boolean found = false;
-    while(found == false) {
-      
-      if(counter < 1000) {
-        counter++;
-      } else {
-        break; // give up after 1000 tries
-      }
-      
-      // grab a random environment and check if it's a Secondary Typology
-      int random_index = (int) random(0, numEnvironments);
-      Environment thisEnvironment = this.getEnvironments().get(random_index);
+    while(counter < 1000) { // Give up after 1000 tries
+      Environment thisEnvironment = this.getRandomEnvironment();
       if(thisEnvironment instanceof Place) {
         Place thisPlace = (Place) thisEnvironment;
         if(isSecondary(p, thisPlace)) {
           secondaryPlace = thisPlace;
-          found = true;
+          break;
         }
       }
+      counter++;
     }
     return secondaryPlace;
   }
