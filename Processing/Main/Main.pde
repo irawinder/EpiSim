@@ -9,12 +9,14 @@
   * 
   * Object Map:
   * - Processing Main()
-  *    * EpiModel()
+  *    * SimpleEpiModel()
   *    * SimpleViewModel()
   * - SimpleViewModel()
   *     * extends ViewModel()
   * - ViewModel()
-  *     * EpiModel()
+  *     * SimpleEpiModel()
+  * - SimpleEpiModel()
+  *     * extends EpiModel()
   * - EpiModel()
   *     * Agent()
   *     * Host()
@@ -38,7 +40,7 @@
   */
   
 // Object Model of Epidemic
-EpiModel epidemic;
+SimpleEpiModel epidemic;
 
 // Visualization Model for Object Model
 ViewModel viz;
@@ -92,7 +94,7 @@ public void keyPressed() {
 //Configure a simple Epidemiological Model
 private void configureObjectModel() {
   
-  epidemic = new EpiModel();
+  epidemic = new SimpleEpiModel();
   
   // Global Demographic Threshold
   ADULT_AGE = 18;

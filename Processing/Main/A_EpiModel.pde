@@ -110,6 +110,27 @@ class EpiModel {
   }
   
   /**
+   * Force movement of all Hosts to their secondary environment
+   */
+  public void allToSecondary() {
+    for(Host h : this.getHosts()) {
+      h.moveToSecondary();
+    }
+  }
+  
+  /**
+   * Force movement of all Hosts to their primary environment
+   */
+  public void allToPrimary() {
+    for(Host h : this.getHosts()) {
+      h.moveToPrimary();
+    }
+  }
+}
+
+public class SimpleEpiModel extends EpiModel {
+  
+  /**
    * Add randomly placed Environments to Model within a specified rectangle
    *
    * @param amount
@@ -184,7 +205,7 @@ class EpiModel {
     // Set secondary environment to be same as primary environment by default
     Environment secondaryEnvironment = h.getPrimaryEnvironment();
     
-    int numEnvironments = environmentList.size();
+    int numEnvironments = this.getEnvironments().size();
     int counter = 0;
     boolean found = false;
     while(found == false) {
@@ -197,30 +218,12 @@ class EpiModel {
       
       // grab a random envirnment and check if it's a Secondary Typology
       int random_index = (int) random(0, numEnvironments);
-      Environment thisEnvironment = environmentList.get(random_index);
+      Environment thisEnvironment = this.getEnvironments().get(random_index);
       if(thisEnvironment.isSecondary(h)) {
         secondaryEnvironment = thisEnvironment;
         found = true;
       }
     }
     return secondaryEnvironment;
-  }
-  
-  /**
-   * Force movement of all Hosts to their secondary environment
-   */
-  public void allToSecondary() {
-    for(Host h : this.getHosts()) {
-      h.moveToSecondary();
-    }
-  }
-  
-  /**
-   * Force movement of all Hosts to their primary environment
-   */
-  public void allToPrimary() {
-    for(Host h : this.getHosts()) {
-      h.moveToPrimary();
-    }
   }
 }
