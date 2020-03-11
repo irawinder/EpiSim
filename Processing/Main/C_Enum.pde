@@ -10,8 +10,12 @@ public enum Compartment {
   SUSCEPTIBLE, EXPOSED, INFECTIOUS, RECOVERED, DEAD
 }
 
-public enum Pathogen { 
-  COVID_19, INFLUENZA, COMMON_COLD
+public enum Symptom {
+  FEVER, COUGH, SHORTNESS_OF_BREATH, FATIGUE, MUSCLE_ACHE, DIARRHEA
+}
+
+public enum PathogenType { 
+  COVID_19, COMMON_COLD, INFLUENZA
 }
 
 public enum Day { 

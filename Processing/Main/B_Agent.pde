@@ -3,23 +3,21 @@
  */
 public class Agent extends Element {
   
-  // The specific variety of this pathogen (e.g. INFLUENZA)
-  private Pathogen type;
-  
+  private Pathogen pathogen;
   /**
    * Set Pathogen Type
    *
-   * @param type Pathogen
+   * @param p Pathogen
    */
-  public void setPathogen(Pathogen type) {
-    this.type = type;
+  public void setPathogen(Pathogen p) {
+    this.pathogen = p;
   }
   
   /**
-   * Get Pathogen Type
+   * Get Pathogen
    */
   public Pathogen getPathogen() {
-    return this.type;
+    return this.pathogen;
   }
   
   @Override

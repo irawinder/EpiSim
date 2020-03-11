@@ -1,9 +1,13 @@
 /**
  * Epidemiological Model:
  *
+ *   Pathogen: 
+ *     The pathogen is the microorganism that actually causes the disease in question. 
+ *     An pathogen could be some form of bacteria, virus, fungus, or parasite.
+ *
  *   Agent:
- *     The agent is the microorganism that actually causes the disease in question. 
- *     An agent could be some form of bacteria, virus, fungus, or parasite.
+ *     Agents are the vessels by which Pathogens spread. In a models there may be
+ *     numerous Agents referencing the same generic Pathogen definition.
  *
  *   Host:  
  *     The agent infects the host, which is the organism that carries the disease. 
@@ -24,15 +28,20 @@
  *   https://www.rivier.edu/academics/blog-posts/what-is-the-epidemiologic-triangle/
  */
 class EpiModel {
-  
-  // Epidimiological Model Objects
+
   private int uidCounter;
+  
+  // Generic Pathogen Types
+  private ArrayList<Pathogen> pathogenList;
+  
+  // Epidimiological Model Objects (Elements)
   private ArrayList<Environment> environmentList;
   private ArrayList<Host> hostList;
   private ArrayList<Agent> agentList;
   
   public EpiModel() {
     uidCounter = -1;
+    pathogenList = new ArrayList<Pathogen>();
     environmentList = new ArrayList<Environment>();
     hostList = new ArrayList<Host>();
     agentList = new ArrayList<Agent>();
@@ -74,6 +83,15 @@ class EpiModel {
   }
   
   /** 
+   * Add Pathogen to Model
+   *
+   * @param e Environment
+   */
+  public void add(Pathogen p) {
+    pathogenList.add(p);
+  }
+  
+  /** 
    * Remove Host from Model
    *
    * @param h Host
@@ -93,9 +111,20 @@ class EpiModel {
   
   /** 
    * Remove Environment from Model
+   *
+   * @param e Environment
    */
   public void remove(Environment e) {
     environmentList.remove(e);
+  }
+  
+  /** 
+   * Remove Pathogen from Model
+   *
+   * @param p Pathogen
+   */
+  public void remove(Pathogen p) {
+    pathogenList.remove(p);
   }
   
   /** 
@@ -118,6 +147,13 @@ class EpiModel {
   public ArrayList<Environment> getEnvironments() {
     return environmentList;
   }
+  
+  /** 
+   * Get the List of Model Pathogens
+   */
+  public ArrayList<Pathogen> getPathogens() {
+    return pathogenList;
+  }
 }
 
 /*
@@ -131,12 +167,12 @@ public class SimpleEpiModel extends EpiModel {
    * @param amount
    * @param name_prefix
    * @param type
-   * @param minArea
-   * @param maxArea
+   * @param minSize
+   * @param maxSize
    * @param minX
    * @param maxY
    */
-  public void randomPlaces(int amount, String name_prefix, LandUse type, int x1, int y1, int x2, int y2, int minArea, int maxArea) {
+  public void randomPlaces(int amount, String name_prefix, LandUse type, int x1, int y1, int x2, int y2, int minSize, int maxSize) {
     for(int i=0; i<amount; i++) {
       Place l = new Place();
       int new_uid = this.nextUID();
@@ -144,7 +180,7 @@ public class SimpleEpiModel extends EpiModel {
       l.setCoordinate(new Coordinate(random(x1, x2), random(y1, y2)));
       l.setName(name_prefix + " " + l.getUID());
       l.setUse(type);
-      l.setArea(random(minArea, maxArea));
+      l.setSize(random(minSize, maxSize));
       this.add(l);
     }
   }
@@ -190,6 +226,20 @@ public class SimpleEpiModel extends EpiModel {
             l.addElement(person);
           }
         }
+      }
+    }
+  }
+  
+  /**
+   * Adds Viral Agents to Model
+   *
+   * @param numHosts
+   */
+  public void patientZero(int numHosts) {
+    for(Host h : this.getHosts()) {
+      if(h instanceof Person) {
+        Person p = (Person) h;
+        Agent initial = new Agent();
       }
     }
   }

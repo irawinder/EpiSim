@@ -3,30 +3,30 @@
  */
 public class Environment extends Element {
   
-  // The 2D area size of the environment
-  private float area;
+  // The 2D Size size of the environment
+  private float size;
   
   /**
-   * Set Environment Area
+   * Set Environment Size
    *
-   * @param area
+   * @param size
    */
-  public void setArea(float area) {
-    this.area = area;
+  public void setSize(float size) {
+    this.size = size;
   }
   
   /**
-   * Get Environment Area
+   * Get Environment Size
    */
-  public float getArea() {
-    return this.area;
+  public float getSize() {
+    return this.size;
   }
   
   @Override
   public String toString() {
     String info = 
       "Environment UID: " + getUID()
-      + "; Area: " + getArea()
+      + "; Size: " + getSize()
       ;
     return info;
   }
@@ -44,7 +44,7 @@ public class Place extends Environment {
   /**
    * Set Land Use
    *
-   * @param area
+   * @param size
    */
   public void setUse(LandUse type) {
     this.type = type;
@@ -62,7 +62,7 @@ public class Place extends Environment {
     String info = 
       "Place UID: " + getUID()
       + "; Type: " + getUse() 
-      + "; Area: " + getArea()
+      + "; Size: " + getSize()
       ;
     return info;
   }

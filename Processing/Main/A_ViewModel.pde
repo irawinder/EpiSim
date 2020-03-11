@@ -92,9 +92,9 @@ public class ViewModel {
     viewColor.put(Compartment.INFECTIOUS, INFECTIOUS_COLOR);
     viewColor.put(Compartment.RECOVERED, RECOVERED_COLOR);
     viewColor.put(Compartment.DEAD, DEAD_COLOR);
-    viewColor.put(Pathogen.COVID_19, COVID_19_COLOR);
-    viewColor.put(Pathogen.INFLUENZA, INFLUENZA_COLOR);
-    viewColor.put(Pathogen.COMMON_COLD, COMMON_COLD_COLOR);
+    viewColor.put(PathogenType.COVID_19, COVID_19_COLOR);
+    viewColor.put(PathogenType.INFLUENZA, INFLUENZA_COLOR);
+    viewColor.put(PathogenType.COMMON_COLD, COMMON_COLD_COLOR);
 
     // Make name map
     viewName = new HashMap<Enum, String>();
@@ -112,9 +112,9 @@ public class ViewModel {
     viewName.put(Compartment.INFECTIOUS, INFECTIOUS_NAME);
     viewName.put(Compartment.RECOVERED, RECOVERED_NAME);
     viewName.put(Compartment.DEAD, DEAD_NAME);
-    viewName.put(Pathogen.COVID_19, COVID_19_NAME);
-    viewName.put(Pathogen.INFLUENZA, INFLUENZA_NAME);
-    viewName.put(Pathogen.COMMON_COLD, COMMON_COLD_NAME);
+    viewName.put(PathogenType.COVID_19, COVID_19_NAME);
+    viewName.put(PathogenType.INFLUENZA, INFLUENZA_NAME);
+    viewName.put(PathogenType.COMMON_COLD, COMMON_COLD_NAME);
   }
   
   /**
@@ -346,7 +346,7 @@ public class SimpleViewModel extends ViewModel {
   private void drawPlace(Place l) {
     int x = (int) l.getCoordinate().getX();
     int y = (int) l.getCoordinate().getY();
-    int w = (int) Math.sqrt(l.getArea());
+    int w = (int) Math.sqrt(l.getSize());
     color viewColor = this.getColor(l);
     
     stroke(POLYGON_STROKE);
@@ -420,7 +420,7 @@ public class SimpleViewModel extends ViewModel {
       // Create and Draw a Straw-man Host for Lengend Item
       Place l = new Place();
       l.setUse(type);
-      l.setArea(50);
+      l.setSize(50);
       l.setCoordinate(new Coordinate(x + HOST_DIAMETER, y + yOffset - 0.25*TEXT_HEIGHT));
       drawPlace(l);
       

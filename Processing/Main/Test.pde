@@ -6,13 +6,13 @@ void test() {
   home.setUID(counter); counter++;
   home.setName("Ira' House");
   home.setUse(LandUse.DWELLING);
-  home.setArea(100);
+  home.setSize(100);
   
   Place work = new Place();
   work.setUID(counter); counter++;
   work.setName("EDGEof");
   work.setUse(LandUse.OFFICE);
-  work.setArea(1000);
+  work.setSize(1000);
   
   Person adult = new Person();
   adult.setUID(counter); counter++;
@@ -24,7 +24,6 @@ void test() {
   Agent corona = new Agent();
   corona.setUID(counter); counter++;
   corona.setName("COVID-19");
-  corona.setPathogen(Pathogen.COVID_19);
   
   println(home);
   println(work);
@@ -72,13 +71,4 @@ void test() {
     println("- " + e);
   }
   println("---");
-  
-  // create random object 
-  Random ran = new Random(); 
-
-  // generating next gaussian
-  double nxt = ran.nextGaussian(); 
-
-  // Printing the random Number 
-  System.out.println("The next Gaussian value generated is : " + nxt); 
 }
