@@ -89,8 +89,10 @@ class EpiModel {
    */
   public void add(Pathogen p) {
     pathogenList.add(p);
+    
+    // Initialize Host Compartment with New Pathogen
     for(Host h : hostList) {
-      h.setCompartment(p, Compartment.SUSCEPTIBLE);
+      h.setCompartment(p.getType(), Compartment.SUSCEPTIBLE);
     }
   }
   
@@ -205,8 +207,9 @@ class EpiModel {
     
     // Update Host's Compartment Status
     Pathogen p = a.getPathogen();
-    if(h.getCompartment(p) == Compartment.SUSCEPTIBLE) {
-      h.setCompartment(p, Compartment.INFECTIOUS);
+    PathogenType pType = p.getType();
+    if(h.getCompartment(pType) == Compartment.SUSCEPTIBLE) {
+      h.setCompartment(pType, Compartment.INFECTIOUS);
     }
   }
 }

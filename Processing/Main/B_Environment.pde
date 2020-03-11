@@ -4,7 +4,7 @@
 public class Environment extends Element {
   
   // The 2D Size size of the environment
-  private float size;
+  private double size;
   
   /**
    * Construct new Environment
@@ -17,14 +17,14 @@ public class Environment extends Element {
    *
    * @param size
    */
-  public void setSize(float size) {
+  public void setSize(double size) {
     this.size = size;
   }
   
   /**
    * Get Environment Size
    */
-  public float getSize() {
+  public double getSize() {
     return this.size;
   }
   

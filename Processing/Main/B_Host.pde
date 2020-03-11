@@ -16,26 +16,26 @@
 public class Host extends Element {
   
   // Infectious Agent Status
-  private HashMap<Pathogen, Compartment> statusMap;
+  private HashMap<PathogenType, Compartment> statusMap;
   
   // Host's current Environment
   private Environment environment;
   
   public Host() {
-    statusMap = new HashMap<Pathogen, Compartment>();
+    statusMap = new HashMap<PathogenType, Compartment>();
   }
   
   /**
    * Set the Host's Agent Status for a Particular Agent Type
    */
-  public void setCompartment(Pathogen p, Compartment status) {
-    statusMap.put(p, status);
+  public void setCompartment(PathogenType pType, Compartment status) {
+    statusMap.put(pType, status);
   }
   
   /**
    * Get the Host's Statuses for All Pathogens
    */
-  public HashMap<Pathogen, Compartment> getCompartment() {
+  public HashMap<PathogenType, Compartment> getCompartment() {
     return statusMap;
   }
   
@@ -44,9 +44,9 @@ public class Host extends Element {
    *
    * @param type Pathogen
    */
-  public Compartment getCompartment(Pathogen p) {
-    if(statusMap.containsKey(p)) {
-      return statusMap.get(p);
+  public Compartment getCompartment(PathogenType pType) {
+    if(statusMap.containsKey(pType)) {
+      return statusMap.get(pType);
     } else {
       return null;
     }
@@ -61,6 +61,13 @@ public class Host extends Element {
     this.environment = environment;
     int jitter = (int)(0.35*Math.sqrt(this.environment.getSize()));
     this.setCoordinate(environment.getCoordinate().jitter(jitter));
+    
+    // Move all associated agents along with host
+    for(Element el : this.getElements()) {
+      if(el instanceof Agent) {
+        el.setCoordinate(this.getCoordinate());
+      }
+    }
   }
   
   /**

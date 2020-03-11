@@ -57,7 +57,7 @@
 private SimpleEpiModel epidemic;
 
 // Visualization Model for Object Model
-private ViewModel viz;
+private SimpleViewModel viz;
 
 // Global Demographic Thresholds
 private static int ADULT_AGE;
@@ -98,19 +98,42 @@ public void keyPressed() {
     case 'r':
       epidemic = new SimpleEpiModel();
       configureSimpleEpiModel();
-      viz = new SimpleViewModel();
       viz.setModel(epidemic);
-      viz.draw();
+      break;
+    case 'h':
+      epidemic.allToPrimary();
+      break;
+    case 'w':
+      epidemic.allToSecondary();
+      break;
+    case '1':
+      viz.showPlaces = !viz.showPlaces;
+      break;
+    case '2':
+      viz.showPersons = !viz.showPersons;
+      break;
+    case '3':
+      viz.showCommutes = !viz.showCommutes;
+      break;
+    case '4':
+      viz.showAgents = !viz.showAgents;
       break;
     case 'p':
-      epidemic.allToPrimary();
-      viz.draw();
+      if(viz.pathogenType == PathogenType.COVID_19) {
+        viz.pathogenType = PathogenType.COMMON_COLD;
+      } else {
+        viz.pathogenType = PathogenType.COVID_19;
+      }
       break;
     case 's':
-      epidemic.allToSecondary();
-      viz.draw();
+      if(viz.personViewMode == PersonViewMode.DEMOGRAPHIC) {
+        viz.personViewMode = PersonViewMode.COMPARTMENT;
+      } else {
+        viz.personViewMode = PersonViewMode.DEMOGRAPHIC;
+      }
       break;
   }
+  viz.draw();
 }
 
 /**

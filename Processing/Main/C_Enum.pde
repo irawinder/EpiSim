@@ -15,7 +15,7 @@ public enum Symptom {
 }
 
 public enum PathogenType { 
-  COVID_19, COMMON_COLD, INFLUENZA
+  COVID_19, COMMON_COLD
 }
 
 public enum Day { 
@@ -24,4 +24,12 @@ public enum Day {
 
 public enum Time {
   EARLY_MORNING, MORNING_COMMUTE, LATE_MORNING, LUNCH, AFTERNOON, AFTERNOON_COMMUTE, EVENING, NIGHT
+}
+
+public enum PersonViewMode {
+  DEMOGRAPHIC, COMPARTMENT
+}
+
+public enum PlaceViewMode {
+  LANDUSE, DENSITY
 }
