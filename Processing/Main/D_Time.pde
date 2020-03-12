@@ -43,14 +43,14 @@ public class TimeInterval {
   /**
    * Get the initial time
    */ 
-  public Time getInitial() {
+  public Time getInitialTime() {
     return this.timeInitial;
   }
   
   /**
    * Get the final time
    */ 
-  public Time getFinal() {
+  public Time getFinalTime() {
     return this.timeFinal;
   }
   
@@ -63,7 +63,7 @@ public class TimeInterval {
   
   @Override
   public String toString() {
-    return "Initial Time: " + this.getInitial() + "\nFinal Time: " + this.getFinal() + "\nDuration: " + this.getDuration();
+    return "Initial Time: " + this.getInitialTime() + "\nFinal Time: " + this.getFinalTime() + "\nDuration: " + this.getDuration();
   }
 }
 
@@ -88,6 +88,14 @@ public class Time {
    */ 
   public Time() {
     this.setUnit(TimeUnit.SECOND);
+    this.setAmount(0);
+  }
+  
+  /**
+   * Construct 0 units of time
+   */ 
+  public Time(TimeUnit unit) {
+    this.setUnit(unit);
     this.setAmount(0);
   }
   
@@ -197,6 +205,20 @@ public class Time {
     b.reconcile(this); 
     
     double result = this.getAmount() / b.getAmount();
+    return new Time(result, this.getUnit());
+  }
+  
+  /**
+   * Returns a copy of the specified value modulo'd by this time.
+   *
+   * @param b time
+   */
+  public Time modulo(Time b) {
+    
+    // Check and convert mismatched units
+    b.reconcile(this); 
+    
+    double result = this.getAmount() % b.getAmount();
     return new Time(result, this.getUnit());
   }
   

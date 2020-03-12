@@ -39,12 +39,25 @@ class EpiModel implements Model, Cloneable {
   private ArrayList<Host> hostList;
   private ArrayList<Agent> agentList;
   
+  // The current time of the model (begins at t=0)
+  private Time currentTime;
+  
+  // Amount of time to pass during each iteration of the model
+  private Time timeStep;
+  
   public EpiModel() {
-    uidCounter = -1;
-    pathogenList = new ArrayList<Pathogen>();
-    environmentList = new ArrayList<Environment>();
-    hostList = new ArrayList<Host>();
-    agentList = new ArrayList<Agent>();
+    
+    // Time Dimension (Initialize to t = 0 seconds)
+    this.currentTime = new Time(0);
+    
+    // Time Step (Initialize to 1 second per step)
+    this.timeStep = new Time(1);
+    
+    this.uidCounter = -1;
+    this.pathogenList = new ArrayList<Pathogen>();
+    this.environmentList = new ArrayList<Environment>();
+    this.hostList = new ArrayList<Host>();
+    this.agentList = new ArrayList<Agent>();
   }
   
   /**
@@ -60,6 +73,38 @@ class EpiModel implements Model, Cloneable {
   public int nextUID() {
     uidCounter++;
     return uidCounter;
+  }
+  
+  /**
+   * Set the current time
+   *
+   * @param t time
+   */ 
+  public void setTime(Time t) {
+    this.currentTime = t;
+  }
+  
+  /**
+   * Get the current time
+   */ 
+  public Time getTime() {
+    return this.currentTime;
+  }
+  
+  /**
+   * Set the Time Step
+   *
+   * @param t time
+   */ 
+  public void setTimeStep(Time t) {
+    this.timeStep = t;
+  }
+  
+  /**
+   * Get the current time
+   */ 
+  public Time getTimeStep() {
+    return this.timeStep;
   }
   
   /** 
