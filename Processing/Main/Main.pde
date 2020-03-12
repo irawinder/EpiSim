@@ -1,6 +1,6 @@
 /** 
   * Planetary Insight Center 
-  * Agent Based Simulation of Viral Outbreak
+  * Agent Based Simulation of Epidemic
   * Ira Winder, jiw@mit.edu
   *
   * Legend:
@@ -10,13 +10,13 @@
   * Object Map:
   *
   * - Processing Main()
-  *    * SimpleEpiModel()
-  *    * SimpleViewModel()
+  *    * depends on SimpleEpiModel()
+  *    * depends on SimpleViewModel()
   
   * - SimpleViewModel()
   *     * extends ViewModel()
   * - ViewModel()
-  *     * SimpleEpiModel()
+  *     * depends on SimpleEpiModel()
   *
   * - SimpleEpiModel()
   *     * extends EpiModel()
@@ -49,7 +49,7 @@
   * - Pathogen()
   *     * enum PathogenType
   * - Element()
-  *     * Coordinate()
+  *     * depends on Coordinate()
   * - Coordinate()
   */
 
