@@ -72,3 +72,18 @@ void test() {
   }
   println("---");
 }
+
+public void testTime() {
+  Time i = new Time(72, TimeUnit.HOUR);
+  Time f = new Time(7, TimeUnit.DAY);
+  TimeInterval step = new TimeInterval(i, f);
+  Time duration = step.getDuration();
+  
+  println(i);
+  println(f);
+  println(step);
+  
+  println("Expect: '168.0 HOUR'; Returns: '" + f.getAmount() + " " + f.getUnit() + "'");
+  println("Expect: '96.0 HOUR'; Returns: '" + duration.getAmount() + " " + duration.getUnit() + "'");
+  
+}
