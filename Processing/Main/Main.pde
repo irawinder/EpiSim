@@ -3,7 +3,7 @@
   * Agent Based Simulation of Epidemic
   * Ira Winder, jiw@mit.edu
   *
-  * Legend:
+  * Object Map Legend:
   * - Class() or Enum dependency
   * @ Interface
   * 
