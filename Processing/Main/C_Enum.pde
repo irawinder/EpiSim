@@ -27,7 +27,7 @@ public enum TimeUnit {
 }
 
 public enum Phase {
-  HOME, GO_WORK, WORK, WORK_LUNCH, LEISURE, GO_HOME, HOSPITAL
+  SLEEP, HOME, GO_WORK, WORK, WORK_LUNCH, LEISURE, GO_HOME, HOSPITAL
 }
 
 public enum PersonViewMode {

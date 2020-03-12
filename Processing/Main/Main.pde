@@ -216,24 +216,27 @@ private void configureSimpleEpiModel() {
 public void configureNineToFive(Schedule nineToFive) {
   
   // Sunday
-  nineToFive.addPhase(Phase.HOME,               new Time(24, TimeUnit.HOUR)); // 00:00 - 24:00
+  nineToFive.addPhase(Phase.SLEEP,              new Time( 6, TimeUnit.HOUR)); // 00:00 - 06:00
+  nineToFive.addPhase(Phase.HOME,               new Time(16, TimeUnit.HOUR)); // 06:00 - 22:00
+  nineToFive.addPhase(Phase.SLEEP,              new Time( 2, TimeUnit.HOUR)); // 22:00 - 24:00
   
   // Monday - Friday
   for(int i=0; i<5; i++) {
-    nineToFive.addPhase(Phase.HOME,             new Time( 7, TimeUnit.HOUR)); // 00:00 - 07:00
+    nineToFive.addPhase(Phase.SLEEP,            new Time( 6, TimeUnit.HOUR)); // 00:00 - 06:00
+    nineToFive.addPhase(Phase.HOME,             new Time( 1, TimeUnit.HOUR)); // 06:00 - 07:00
     nineToFive.addPhase(Phase.GO_WORK,          new Time( 2, TimeUnit.HOUR)); // 07:00 - 09:00
     nineToFive.addPhase(Phase.WORK,             new Time( 3, TimeUnit.HOUR)); // 09:00 - 12:00
     nineToFive.addPhase(Phase.WORK_LUNCH,       new Time( 1, TimeUnit.HOUR)); // 12:00 - 13:00
     nineToFive.addPhase(Phase.WORK,             new Time( 4, TimeUnit.HOUR)); // 13:00 - 17:00
     nineToFive.addPhase(Phase.GO_HOME,          new Time( 2, TimeUnit.HOUR)); // 17:00 - 19:00
     nineToFive.addPhase(Phase.LEISURE,          new Time( 3, TimeUnit.HOUR)); // 19:00 - 22:00
-    nineToFive.addPhase(Phase.HOME,             new Time( 2, TimeUnit.HOUR)); // 22:00 - 24:00
+    nineToFive.addPhase(Phase.SLEEP,            new Time( 2, TimeUnit.HOUR)); // 22:00 - 24:00
   }
   
   // Saturday
-  nineToFive.addPhase(Phase.HOME,               new Time( 9, TimeUnit.HOUR)); // 00:00 - 09:00
+  nineToFive.addPhase(Phase.SLEEP,              new Time( 9, TimeUnit.HOUR)); // 00:00 - 09:00
   nineToFive.addPhase(Phase.LEISURE,            new Time(12, TimeUnit.HOUR)); // 09:00 - 21:00
-  nineToFive.addPhase(Phase.HOME,               new Time( 3, TimeUnit.HOUR)); // 21:00 - 24:00
+  nineToFive.addPhase(Phase.SLEEP,              new Time( 3, TimeUnit.HOUR)); // 21:00 - 24:00
 }
 
 /**
