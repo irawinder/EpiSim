@@ -4,48 +4,63 @@
   * Ira Winder, jiw@mit.edu
   *
   * Object Map Legend:
-  * - Class() or Enum dependency
-  * @ Interface
+  *   - Class() dependency
+  *   * Enum dependency
+  *   @ Interface
   * 
-  * Object Map:
+  * Object Map (Updated 2020.03.13):
   *
   * @ Model
   * @ Simulation
-  *    - depends on Time()
-  *    - depends on Model()
+  *    - Time()
+  *    @ Model()
   * @ ViewModel
-  *    - depends on Model()
+  *    @Model()
   * - Processing Main()
-  *    - depends on SimpleEpiModel()
-  *    - depends on SimpleEpiView()
-  *    - depends on EpiSim()
+  *    - SimpleEpiModel()
+  *    - SimpleEpiView()
+  *    - EpiSim()
   * - EpiModel() implements @Model
+  *     - Time()
   *     - Pathogen()
-  *         - enum PathogenType
+  *         * PathogenType
   *     - Agent() extends Element()
-  *         - depends on Pathogen()
+  *         - Pathogen()
+  *         * Compartment
   *     - Environment() extends Element()
   *     - Host() extends Element()
-  *         - depends on Environment()
-  *         - enum Compartment 
+  *         - Environment()
+  *         * Compartment 
   * - SimpleEpiModel() extends EpiModel()
+  *     - Schedule()
+  *         - Time()
   *     - Person() extends Host()
-  *         - depends on Place()
-  *         - enum Demographic
+  *         - Place()
+  *         * Demographic
   *     - Place() extends Environment()
-  *         - enum LandUse
+  *         * LandUse
   * - EpiSim() implements @Simulation
-  *    - depends on Time()
-  *    - depends on Model()
+  *    - Time()
+  *    @ Model()
   * - EpiView() implements @ViewModel
-  *     - depends on EpiModel()
+  *     - EpiModel()
+  *     * PersonViewMode
+  *     * PlaceViewMode
   * - SimpleEpiView() extends EpiView()
-  *     - depends on SimpleEpiModel()
+  *     - SimpleEpiModel()
   * - Element()
-  *     * depends on Coordinate()
+  *     - Coordinate()
   * - Coordinate()
   * - Time()
+  *     * TimeUnit
   * - TimeInterval()
+  *     - Time()
+  *     * TimeUnit
+  * - Schedule()
+  *     - Time()
+  *     - TimeInterval()
+  *     * TimeUnit
+  *     * Phase
   */
 
 // Object Model of Epidemic
@@ -127,6 +142,9 @@ public void keyPressed() {
         viz.personViewMode = PersonViewMode.DEMOGRAPHIC;
       }
       break;
+    case 't': // step model forward by one tick
+      epidemic.update();
+      break;
   }
   viz.draw();
 }
@@ -135,6 +153,9 @@ public void keyPressed() {
  * Configure a simple Epidemiological Model
  */
 private void configureSimpleEpiModel() {
+  
+  epidemic.setTime(new Time(0, TimeUnit.MINUTE));
+  epidemic.setTimeStep(new Time(15, TimeUnit.MINUTE));
   
   /**
    * Add randomly placed Places to Model within a specified rectangle (x1, y1, x2, y2)
@@ -160,8 +181,13 @@ private void configureSimpleEpiModel() {
    */
   epidemic.populate(5, 85, 1, 5);
   
+  
+  Schedule nineToFive = new Schedule();
+  configureNineToFive(nineToFive);
+  epidemic.setSchedule(nineToFive);
+  
   /**
-   * onfigure Covid Pathogen
+   * Configure Covid Pathogen
    */
   Pathogen covid = new Pathogen();
   configureCovid(covid);
@@ -180,6 +206,34 @@ private void configureSimpleEpiModel() {
    */
   epidemic.patientZero(cold, 10);
   epidemic.patientZero(covid, 1);
+}
+
+/**
+ * Configure a 9-to-5 schedule
+ *
+ * @param nineToFive Schedule
+ */
+public void configureNineToFive(Schedule nineToFive) {
+  
+  // Sunday
+  nineToFive.addPhase(Phase.HOME,               new Time(24, TimeUnit.HOUR)); // 00:00 - 24:00
+  
+  // Monday - Friday
+  for(int i=0; i<5; i++) {
+    nineToFive.addPhase(Phase.HOME,             new Time( 7, TimeUnit.HOUR)); // 00:00 - 07:00
+    nineToFive.addPhase(Phase.GO_WORK,          new Time( 2, TimeUnit.HOUR)); // 07:00 - 09:00
+    nineToFive.addPhase(Phase.WORK,             new Time( 3, TimeUnit.HOUR)); // 09:00 - 12:00
+    nineToFive.addPhase(Phase.WORK_LUNCH,       new Time( 1, TimeUnit.HOUR)); // 12:00 - 13:00
+    nineToFive.addPhase(Phase.WORK,             new Time( 4, TimeUnit.HOUR)); // 13:00 - 17:00
+    nineToFive.addPhase(Phase.GO_HOME,          new Time( 2, TimeUnit.HOUR)); // 17:00 - 19:00
+    nineToFive.addPhase(Phase.LEISURE,          new Time( 3, TimeUnit.HOUR)); // 19:00 - 22:00
+    nineToFive.addPhase(Phase.HOME,             new Time( 2, TimeUnit.HOUR)); // 22:00 - 24:00
+  }
+  
+  // Saturday
+  nineToFive.addPhase(Phase.HOME,               new Time( 9, TimeUnit.HOUR)); // 00:00 - 09:00
+  nineToFive.addPhase(Phase.LEISURE,            new Time(12, TimeUnit.HOUR)); // 09:00 - 21:00
+  nineToFive.addPhase(Phase.HOME,               new Time( 3, TimeUnit.HOUR)); // 21:00 - 24:00
 }
 
 /**

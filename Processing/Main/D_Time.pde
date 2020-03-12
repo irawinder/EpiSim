@@ -160,9 +160,9 @@ public class Time {
   public Time add(Time b) {
     
     // Check and convert mismatched units
-    b.reconcile(this); 
+    Time bClean = b.reconcile(this); 
     
-    double result = this.getAmount() + b.getAmount();
+    double result = this.getAmount() + bClean.getAmount();
     return new Time(result, this.getUnit());
   }
   
@@ -174,9 +174,9 @@ public class Time {
   public Time subtract(Time b) {
     
     // Check and convert mismatched units
-    b.reconcile(this); 
+    Time bClean = b.reconcile(this); 
     
-    double result = this.getAmount() - b.getAmount();
+    double result = this.getAmount() - bClean.getAmount();
     return new Time(result, this.getUnit());
   }
   
@@ -188,9 +188,9 @@ public class Time {
   public Time multiply(Time b) {
     
     // Check and convert mismatched units
-    b.reconcile(this); 
+    Time bClean = b.reconcile(this); 
     
-    double result = this.getAmount() * b.getAmount();
+    double result = this.getAmount() * bClean.getAmount();
     return new Time(result, this.getUnit());
   }
   
@@ -202,9 +202,9 @@ public class Time {
   public Time divide(Time b) {
     
     // Check and convert mismatched units
-    b.reconcile(this); 
+    Time bClean = b.reconcile(this); 
     
-    double result = this.getAmount() / b.getAmount();
+    double result = this.getAmount() / bClean.getAmount();
     return new Time(result, this.getUnit());
   }
   
@@ -216,22 +216,25 @@ public class Time {
   public Time modulo(Time b) {
     
     // Check and convert mismatched units
-    b.reconcile(this); 
+    Time bClean = b.reconcile(this); 
     
-    double result = this.getAmount() % b.getAmount();
+    double result = this.getAmount() % bClean.getAmount();
     return new Time(result, this.getUnit());
   }
   
   /**
-   * Convert time to new units
+   * Return a copy of Time converted to new units.
    *
    * @param unit TimeUnits to convert to
    */
   public Time convert(TimeUnit newUnit) {
     
+    Time converted = new Time(this.getAmount(), newUnit);;
+    
     // Return current time if new units already equal current units
     if(this.getUnit() == newUnit) {
       println("Time is already in " + this.getUnit() + " unit");
+      converted.setAmount(this.getAmount());
       return this;
     
     // Otherwise carry on with conversion
@@ -240,19 +243,19 @@ public class Time {
       // Step 1: Convert current time to Milliseconds
       switch(this.getUnit()) {
         case YEAR:
-          this.setAmount(this.getAmount() * MONTHS_IN_YEAR);
+          converted.setAmount(converted.getAmount() * MONTHS_IN_YEAR);
         case MONTH:
-          this.setAmount(this.getAmount() * WEEKS_IN_MONTH);
+          converted.setAmount(converted.getAmount() * WEEKS_IN_MONTH);
         case WEEK:
-          this.setAmount(this.getAmount() * DAYS_IN_WEEK);
+          converted.setAmount(converted.getAmount() * DAYS_IN_WEEK);
         case DAY:
-          this.setAmount(this.getAmount() * HOURS_IN_DAY);
+          converted.setAmount(converted.getAmount() * HOURS_IN_DAY);
         case HOUR:
-          this.setAmount(this.getAmount() * MINUTES_IN_HOUR);
+          converted.setAmount(converted.getAmount() * MINUTES_IN_HOUR);
         case MINUTE:
-          this.setAmount(this.getAmount() * SECONDS_IN_MINUTE);
+          converted.setAmount(converted.getAmount() * SECONDS_IN_MINUTE);
         case SECOND:
-          this.setAmount(this.getAmount() * MILLISECONDS_IN_SECOND);
+          converted.setAmount(converted.getAmount() * MILLISECONDS_IN_SECOND);
         case MILLISECOND:
           // Do Nothing
           break;
@@ -261,43 +264,41 @@ public class Time {
       // Step 2: Convert time to new units
       switch(newUnit) {
         case YEAR:
-          this.setAmount(this.getAmount() / MONTHS_IN_YEAR);
+          converted.setAmount(converted.getAmount() / MONTHS_IN_YEAR);
         case MONTH:
-          this.setAmount(this.getAmount() / WEEKS_IN_MONTH);
+          converted.setAmount(converted.getAmount() / WEEKS_IN_MONTH);
         case WEEK:
-          this.setAmount(this.getAmount() / DAYS_IN_WEEK);
+          converted.setAmount(converted.getAmount() / DAYS_IN_WEEK);
         case DAY:
-          this.setAmount(this.getAmount() / HOURS_IN_DAY);
+          converted.setAmount(converted.getAmount() / HOURS_IN_DAY);
         case HOUR:
-          this.setAmount(this.getAmount() / MINUTES_IN_HOUR);
+          converted.setAmount(converted.getAmount() / MINUTES_IN_HOUR);
         case MINUTE:
-          this.setAmount(this.getAmount() / SECONDS_IN_MINUTE);
+          converted.setAmount(converted.getAmount() / SECONDS_IN_MINUTE);
         case SECOND:
-          this.setAmount(this.getAmount() / MILLISECONDS_IN_SECOND);
+          converted.setAmount(converted.getAmount() / MILLISECONDS_IN_SECOND);
         case MILLISECOND:
           // Do Nothing
           break;
       }
       
-      // Step 3: Change units to new UnitType
-      this.setUnit(newUnit);
-      
-      return this;
+      return converted;
     }
   }
   
   /** 
-   * Reconcile units with another time by converting the units of this time.
+   * Return new time that is reconciled to have same units as specified time
    *
    * @param dominant Time value whose existing units you would like to respect in reconciliation
    */
   public Time reconcile(Time dominant) {
     TimeUnit dominantUnit = dominant.getUnit();
     if(dominantUnit != this.getUnit()) {
-      println("Unit mismatch found. Converted " + this.getUnit() + " to " + dominantUnit + ".");
-      this.convert(dominantUnit);
+      println("Unit mismatch found. Converting " + this.getUnit() + " to " + dominantUnit + ".");
+      return convert(dominantUnit);
+    } else {
+      return this;
     }
-    return this;
   }
   
   @Override

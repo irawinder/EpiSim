@@ -388,8 +388,9 @@ public class SimpleEpiView extends EpiView {
     
     int X_INDENT = 50;
     
-    // Draw Info
+    // Draw Information
     drawInfo(X_INDENT, 100);
+    drawTime(X_INDENT, height - 75);
     
     // Draw Legends
     drawAgentLegend(X_INDENT, 350);
@@ -496,6 +497,7 @@ public class SimpleEpiView extends EpiView {
       
       "Simulation Controls:" + "\n" +
       "Press 'r' to regenerate random city" + "\n" +
+      "Press 't' to iterate one time step" + "\n" +
       "Press 'w' to send everyone to work" + "\n" +
       "Press 'h' to send everyone home" + "\n";
     fill(DEFAULT_TEXT_FILL);
@@ -607,4 +609,24 @@ public class SimpleEpiView extends EpiView {
       text(this.getName(a), x + 4*HOST_DIAMETER, y + yOffset);
     }
   }
+  
+  /**
+   * Render Time and Phase Info
+   *
+   * @param x
+   * @param y
+   */
+  private void drawTime(int x, int y) {
+    
+    // Cast EpiModel() to SimpleEpiModel() to access SimpleEpiModel() methods
+    SimpleEpiModel model = (SimpleEpiModel) this.getModel();
+    
+    String text = 
+      "Simulation Time: " + model.getTime() + "\n" +
+      "Current Phase: " + model.getPhase();
+    
+    fill(DEFAULT_TEXT_FILL);
+    text(text, x, y);
+  }
+  
 }

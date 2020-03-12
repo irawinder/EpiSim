@@ -266,12 +266,15 @@ class EpiModel implements Model, Cloneable {
   }
   
   /**
-   * Running the Object model updates it according to a time interval, returning the new model state
-   * 
-   * @param interval TimeInterval
+   * Updating the Object model moves time forward by one time step 
+   * and implements relevent agent behaviors. 
+   *
+   * !!! This is currently overridden in SimpleEpiModel.update() !!!
    */
   public void update() {
-    // Update Model
+    
+    // Update Time Value
+    this.currentTime = currentTime.add(this.timeStep);
   }
 }
 
@@ -279,6 +282,60 @@ class EpiModel implements Model, Cloneable {
  * Simple extentsion of EpiModel that allows initialization of basic configuration
  */
 public class SimpleEpiModel extends EpiModel {
+  
+  // Person Schedule
+  private Schedule phaseSequence;
+  
+  // Current Phase of Person
+  private Phase currentPhase;
+  
+  /**
+   * Set the Schedule for hosts
+   * 
+   * @param s Schedule
+   */
+  public void setSchedule(Schedule s) {
+    this.phaseSequence = s;
+  }
+  
+  /**
+   * Get the Schedule for hosts
+   */
+  public Schedule getSchedule() {
+    return this.phaseSequence;
+  }
+  
+  /**
+   * Set the Host Phase
+   * 
+   * @param p Phase
+   */
+  public void setPhase(Phase p) {
+    this.currentPhase = p;
+  }
+  
+  /**
+   * Set the Host Phase
+   * 
+   * @param t Time
+   */
+  public void setPhase() {
+    if(this.phaseSequence != null) {
+      Time currentTime = this.getTime();
+      Schedule s = this.getSchedule();
+      Phase currentPhase = s.getPhase(currentTime);
+      this.setPhase(currentPhase);
+    } else {
+      println("Must initialize host schedule before setting Phase");
+    }
+  }
+  
+  /**
+   * Get the Host Phase
+   */
+  public Phase getPhase() {
+    return this.currentPhase;
+  }
   
   /**
    * Add randomly placed Environments to Model within a specified rectangle
@@ -474,5 +531,26 @@ public class SimpleEpiModel extends EpiModel {
         p.moveToPrimary();
       }
     }
+  }
+  
+  /**
+   * Updating the Object model moves time forward by one time step 
+   * and implements relevent agent behaviors.
+   */
+  @Override
+  public void update() {
+    
+    // Update Time Value
+    Time current = this.getTime();
+    Time step = this.getTimeStep();
+    this.setTime(current.add(step));
+    Time currentTime = this.getTime();
+    
+    // Update Scheduled Phase
+    this.setPhase();
+    Phase currentPhase = this.getPhase();
+    
+    println(currentTime);
+    println(currentPhase);
   }
 }

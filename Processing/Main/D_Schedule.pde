@@ -106,9 +106,9 @@ public class Schedule {
    * Retrieve the Phase associated with the given Time, assuming that the sequence 
    * of phases repeats indefinitely.
    *
-   * @param t Time
+   * @param currentTime instant passed to schedule
    */
-  public Phase getPhase(Time t) {
+  public Phase getPhase(Time currentTime) {
     
     // If phase sequence list is empty:
     if (this.getSequence().size() == 0) {
@@ -120,22 +120,28 @@ public class Schedule {
       
       // Get modulo of specified time with regard to schedule period.
       Time period = this.getPeriod();
-      Time modulo = t.modulo(period);
+      Time modulo = currentTime.modulo(period);
       
-      // Iterate through phase sequences until it dosovers the current phase interval
-      Time cumulativeTime = new Time(this.getUnit());
+      println("Time: " + currentTime);
+      println("Period: " + period);
+      println("Modulo: " + modulo);
+      
+      // Iterate through phase sequences until it dosovers the phase at currentTime
+      Time cumulativeTime = new Time(currentTime.getUnit());
       Phase currentPhase = null;
       for(TimeInterval phaseInterval : phaseSequence) {
         
         // Set Current Phase enum
         currentPhase = this.phaseMap.get(phaseInterval);
         
-        // Check if moudlo is within current phase interal. break if so.
+        // Check if modulo is within current phase interal. break if so.
         Time phaseDuration = phaseInterval.getDuration();
         cumulativeTime = cumulativeTime.add(phaseDuration);
         if(cumulativeTime.getAmount() > modulo.getAmount()) {
           break;
         }
+      }
+      if(currentPhase == null) {
         println("Error: Phase not found");
       }
       return currentPhase;
