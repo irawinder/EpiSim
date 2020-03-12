@@ -4,60 +4,55 @@
   * Ira Winder, jiw@mit.edu
   *
   * Legend:
-  * - Class()
-  *     * Dependency or Parent
+  * - Class() or Enum dependency
+  * @ Interface
   * 
   * Object Map:
   *
+  * @ Model
+  * @ Simulation
+  *    - depends on Time()
+  *    - depends on Model()
+  * @ ViewModel
+  *    - depends on Model()
   * - Processing Main()
-  *    * depends on SimpleEpiModel()
-  *    * depends on SimpleViewModel()
-  
-  * - SimpleViewModel()
-  *     * extends ViewModel()
-  * - ViewModel()
-  *     * depends on SimpleEpiModel()
-  *
-  * - SimpleEpiModel()
-  *     * extends EpiModel()
-  *     * depends on Person()
-  *     * depends on Place()
-  * - EpiModel()
-  *     * depends on Agent()
-  *     * depends on Host()
-  *     * depends on Environment()
-  *
-  * - Person()
-  *     * extends Host()
-  *     * depends on Place()
-  *     * enum Demographic
-  * - Host()
-  *     * extends Element()
-  *     * depends on Environment()
-  *     * enum Compartment  
-  *
-  * - Place()
-  *     * extends Environment()
-  *     * enum LandUse
-  * - Environment()
-  *     * extends Element()
-  *
-  * - Agent()
-  *     * extends Element()
-  *     * depends on Pathogen()
-  *
-  * - Pathogen()
-  *     * enum PathogenType
+  *    - depends on SimpleEpiModel()
+  *    - depends on SimpleEpiView()
+  *    - depends on EpiSim()
+  * - EpiModel() implements @Model
+  *     - Pathogen()
+  *         - enum PathogenType
+  *     - Agent() extends Element()
+  *         - depends on Pathogen()
+  *     - Environment() extends Element()
+  *     - Host() extends Element()
+  *         - depends on Environment()
+  *         - enum Compartment 
+  * - SimpleEpiModel() extends EpiModel()
+  *     - Person() extends Host()
+  *         - depends on Place()
+  *         - enum Demographic
+  *     - Place() extends Environment()
+  *         - enum LandUse
+  * - EpiSim() implements @Simulation
+  *    - depends on Time()
+  *    - depends on Model()
+  * - EpiView() implements @ViewModel
+  *     - depends on EpiModel()
+  * - SimpleEpiView() extends EpiView()
+  *     - depends on SimpleEpiModel()
   * - Element()
   *     * depends on Coordinate()
   * - Coordinate()
+  * - Time()
+  * - TimeInterval()
   */
 
 // Object Model of Epidemic
 private SimpleEpiModel epidemic;
 
 // Visualization Model for Object Model
-private SimpleViewModel viz;
+private SimpleEpiView viz;
 
 // Global Demographic Thresholds
 private static int ADULT_AGE;
@@ -76,7 +71,7 @@ public void setup() {
   configureSimpleEpiModel();
   
   // Initialize "Front-End" View Model
-  viz = new SimpleViewModel();
+  viz = new SimpleEpiView();
   viz.setModel(epidemic);
   
   // Draw Visualization

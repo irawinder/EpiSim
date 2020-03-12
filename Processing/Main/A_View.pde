@@ -1,7 +1,7 @@
 /**
  * Visualization Model for Epidemiological Object Model
  */
-public class ViewModel {
+public class EpiView implements ViewModel {
   
   // Object Model in need of visual representation
   private EpiModel model;
@@ -74,7 +74,7 @@ public class ViewModel {
   private HashMap<Enum, Integer> viewColor;
   private HashMap<Enum, String> viewName;
   
-  public ViewModel() {
+  public EpiView() {
     
     // Make color map
     viewColor = new HashMap<Enum, Integer>();
@@ -120,8 +120,8 @@ public class ViewModel {
    *
    * @param model
    */
-  public void setModel(EpiModel model) {
-    this.model = model;
+  public void setModel(Model model) {
+    this.model = (EpiModel) model;
   }
   
   /**
@@ -332,7 +332,7 @@ public class ViewModel {
 /**
  * Simple extension for Visualization Model for Epidemiological Object Model
  */
-public class SimpleViewModel extends ViewModel {
+public class SimpleEpiView extends EpiView {
   
   // View Mode Settings
   public boolean showPersons = true;

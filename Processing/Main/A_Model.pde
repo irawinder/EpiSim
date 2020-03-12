@@ -27,7 +27,7 @@
  *   Refer to Model of the Epidemiological Triangle:
  *   https://www.rivier.edu/academics/blog-posts/what-is-the-epidemiologic-triangle/
  */
-class EpiModel {
+class EpiModel implements Model, Cloneable {
 
   private int uidCounter;
   
@@ -45,6 +45,13 @@ class EpiModel {
     environmentList = new ArrayList<Environment>();
     hostList = new ArrayList<Host>();
     agentList = new ArrayList<Agent>();
+  }
+  
+  /**
+   * copies the object to a new in-memory object
+   */
+  public Object clone() throws CloneNotSupportedException {
+    return this.clone();
   }
   
   /**
@@ -211,6 +218,15 @@ class EpiModel {
     if(h.getCompartment(pType) == Compartment.SUSCEPTIBLE) {
       h.setCompartment(pType, Compartment.INFECTIOUS);
     }
+  }
+  
+  /**
+   * Running the Object model updates it according to a time interval, returning the new model state
+   * 
+   * @param interval TimeInterval
+   */
+  public void update() {
+    // Update Model
   }
 }
 
