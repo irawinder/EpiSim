@@ -287,14 +287,13 @@ public class Time {
   }
   
   /** 
-   * Return new time that is reconciled to have same units as specified time
+   * Return copy of time that is reconciled to have same units as specified dominant time
    *
    * @param dominant Time value whose existing units you would like to respect in reconciliation
    */
   public Time reconcile(Time dominant) {
     TimeUnit dominantUnit = dominant.getUnit();
     if(dominantUnit != this.getUnit()) {
-      println("Unit mismatch found. Converting " + this.getUnit() + " to " + dominantUnit + ".");
       return convert(dominantUnit);
     } else {
       return this;

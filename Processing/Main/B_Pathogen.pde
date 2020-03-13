@@ -13,10 +13,10 @@ public class Pathogen {
   private Rate attackRate;
   
   // Duration of Incubation (days)
-  private GaussianDistribution incubationDuration;
+  private TimeDistribution incubationDuration;
   
   // Duration of Infectiousness (days)
-  private GaussianDistribution infectiousDuration;
+  private TimeDistribution infectiousDuration;
   
   // Mortality Rate with Treatment
   private HashMap<Demographic, Rate> mortalityTreated;
@@ -39,8 +39,8 @@ public class Pathogen {
    */
   public void init() {
     this.attackRate = new Rate();
-    this.incubationDuration = new GaussianDistribution();
-    this.infectiousDuration = new GaussianDistribution();
+    this.incubationDuration = new TimeDistribution();
+    this.infectiousDuration = new TimeDistribution();
     
     this.mortalityTreated = new HashMap<Demographic, Rate>();
     this.mortalityUntreated = new HashMap<Demographic, Rate>();
@@ -111,22 +111,24 @@ public class Pathogen {
    * @param mean days
    * @param standardDeviation days
    */
-  public void setIncubationDistribution(double mean, double standardDeviation) {
-    this.incubationDuration = new GaussianDistribution(mean, standardDeviation);
+  public void setIncubationDistribution(Time mean, Time standardDeviation) {
+    this.incubationDuration = new TimeDistribution(mean, standardDeviation);
   }
   
   /** 
    * Get the probablity distribution for incubation duration
    */
-  public GaussianDistribution getIncubationDistribution() {
+  public TimeDistribution getIncubationDistribution() {
     return this.incubationDuration;
   }
   
   /** 
    * Get a value for incubation duration [days]
    */
-  public double getIncubationDuration() {
-    return Math.max(0, this.incubationDuration.getValue());
+  public Time getIncubationDuration() {
+    Time value = this.incubationDuration.getValue();
+    value.setAmount(Math.max(0, value.getAmount())); // no negative values allowed
+    return value;
   }
   
   /** 
@@ -135,22 +137,24 @@ public class Pathogen {
    * @param mean days
    * @param standardDeviation days
    */
-  public void setInfectiousDistribution(double mean, double standardDeviation) {
-    this.infectiousDuration = new GaussianDistribution(mean, standardDeviation);
+  public void setInfectiousDistribution(Time mean, Time standardDeviation) {
+    this.infectiousDuration = new TimeDistribution(mean, standardDeviation);
   }
   
   /** 
    * Get the probablity distribution for infectious duration
    */
-  public GaussianDistribution getInfectiousDistribution() {
+  public TimeDistribution getInfectiousDistribution() {
     return this.infectiousDuration;
   }
   
   /** 
    * Get a value for infectious duration [days]
    */
-  public double getInfectiousDuration() {
-    return Math.max(0, this.infectiousDuration.getValue());
+  public Time getInfectiousDuration() {
+    Time value = this.infectiousDuration.getValue();
+    value.setAmount(Math.max(0, value.getAmount())); // no negative values allowed
+    return value;
   }
   
   /** 

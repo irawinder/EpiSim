@@ -234,9 +234,9 @@ public void configureNineToFive(Schedule nineToFive) {
   }
   
   // Saturday
-  nineToFive.addPhase(Phase.SLEEP,              new Time( 9, TimeUnit.HOUR)); // 00:00 - 09:00
-  nineToFive.addPhase(Phase.LEISURE,            new Time(12, TimeUnit.HOUR)); // 09:00 - 21:00
-  nineToFive.addPhase(Phase.SLEEP,              new Time( 3, TimeUnit.HOUR)); // 21:00 - 24:00
+  nineToFive.addPhase(Phase.SLEEP,              new Time( 6, TimeUnit.HOUR)); // 00:00 - 06:00
+  nineToFive.addPhase(Phase.LEISURE,            new Time(16, TimeUnit.HOUR)); // 06:00 - 22:00
+  nineToFive.addPhase(Phase.SLEEP,              new Time( 2, TimeUnit.HOUR)); // 22:00 - 24:00
 }
 
 /**
@@ -249,8 +249,13 @@ void configureCovid(Pathogen covid) {
   covid.setName("COVID-19");
   covid.setType(PathogenType.COVID_19);
   covid.setAttackRate(new Rate(0.3));
-  covid.setIncubationDistribution( 7.0, 3.0);
-  covid.setInfectiousDistribution(14.0, 2.0);
+  
+  Time incubationMean              = new Time( 7, TimeUnit.DAY);
+  Time incubationStandardDeviation = new Time( 3, TimeUnit.DAY);
+  Time infectiousMean              = new Time(14, TimeUnit.DAY);
+  Time infectiousStandardDeviation = new Time( 2, TimeUnit.DAY);
+  covid.setIncubationDistribution(incubationMean, incubationStandardDeviation);
+  covid.setInfectiousDistribution(infectiousMean, infectiousStandardDeviation);
   
   covid.setMortalityTreated(Demographic.CHILD,  new Rate(0.001));
   covid.setMortalityTreated(Demographic.ADULT,  new Rate(0.01));
@@ -292,8 +297,13 @@ public void configureCold(Pathogen cold) {
   cold.setName("Common Cold");
   cold.setType(PathogenType.COMMON_COLD);
   cold.setAttackRate(new Rate(0.3));
-  cold.setIncubationDistribution( 2.0, 0.5);
-  cold.setInfectiousDistribution(7.0, 2.0);
+  
+  Time incubationMean              = new Time(  2, TimeUnit.DAY);
+  Time incubationStandardDeviation = new Time(0.5, TimeUnit.DAY);
+  Time infectiousMean              = new Time(  7, TimeUnit.DAY);
+  Time infectiousStandardDeviation = new Time(  2, TimeUnit.DAY);
+  cold.setIncubationDistribution(incubationMean, incubationStandardDeviation);
+  cold.setInfectiousDistribution(infectiousMean, infectiousStandardDeviation);
   
   cold.setMortalityTreated(Demographic.CHILD,  new Rate(0.0));
   cold.setMortalityTreated(Demographic.ADULT,  new Rate(0.0));
