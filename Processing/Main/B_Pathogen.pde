@@ -6,14 +6,14 @@ public class Pathogen {
   // Name of Pathogen
   private String name;
   
-  // Agent life span (i.e. how long it can live outside of host)
-  private Time agentLife;
-  
   // The specific variety of this pathogen (e.g. COMMON_COLD)
   private PathogenType type;
   
   // Transmission Rate (probabily of transmission per contact between infected and susceptible)
   private Rate attackRate;
+  
+  // Agent life span (i.e. how long it can live outside of host)
+  private Time agentLife;
   
   // Duration of Incubation (days)
   private TimeDistribution incubationDuration;
@@ -80,22 +80,6 @@ public class Pathogen {
   }
   
   /**
-   * Set the agentLife of the Pathogen
-   *
-   * @param agentLife Time
-   */
-  void setAgentLife(Time agentLife) {
-    this.agentLife = agentLife;
-  }
-  
-  /**
-   * Get the agentLife of the Pathogen
-   */
-  public Time getAgentLife() {
-    return this.agentLife;
-  }
-  
-  /**
    * Set Pathogen Type
    *
    * @param type Pathogen
@@ -125,6 +109,22 @@ public class Pathogen {
    */
   public Rate getAttackRate() {
     return this.attackRate;
+  }
+  
+  /**
+   * Set the agentLife of the Pathogen
+   *
+   * @param agentLife Time
+   */
+  void setAgentLife(Time agentLife) {
+    this.agentLife = agentLife;
+  }
+  
+  /**
+   * Get the agentLife of the Pathogen
+   */
+  public Time getAgentLife() {
+    return this.agentLife;
   }
   
   /** 

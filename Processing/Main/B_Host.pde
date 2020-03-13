@@ -115,12 +115,11 @@ public class Host extends Element {
    * @param destination Environment
    */
   public void move(Environment destination) {
-    Environment origin = environment;
+    Environment origin = this.environment;
     if(origin != destination) {
       origin.removeHost(this);
+      destination.addHost(this);
       this.setEnvironment(destination);
-    } else {
-      println(this.getName() + " is already at this Environment");
     }
   }
   

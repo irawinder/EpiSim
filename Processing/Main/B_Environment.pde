@@ -52,20 +52,20 @@ public class Environment extends Element {
   /**
    * Add host to host
    *
-   * @param a host
+   * @param h host
    */
   public void addHost(Host h) {
     if (this.hostList.contains(h)) {
-      println("Host already exists as a child of this element");
+      println("Host already exists");
     } else {
       this.hostList.add(h);
     }
   }
   
   /**
-   * Remove an agent
+   * Remove a host
    *
-   * @param a Agent
+   * @param h Host
    */
   public void removeHost(Host h) {
     if (this.hostList.contains(h)) {

@@ -340,12 +340,17 @@ class EpiModel implements Model, Cloneable {
    */
   public Agent infect(Host h, Pathogen p) {
     
+    // Check If Agent Already Present
+    for(Agent a : h.getAgents()) {
+      if(a.getPathogen() == p) return null;
+    }
+    
     // Update Host's Compartment Status
     PathogenType pType = p.getType();
     if(h.getCompartment(pType) == Compartment.SUSCEPTIBLE) {
-      h.setCompartment(pType, Compartment.INFECTIOUS);
+      h.setCompartment(pType, Compartment.INCUBATING);
     }
-    return infect((Element)h, p);
+    return infect((Element) h, p);
   }
   
   /**
@@ -353,13 +358,17 @@ class EpiModel implements Model, Cloneable {
    *
    * @param e Environment
    * @param p Pathogen
+   * @return new infectious Agent or null if infection fails
    */
   public Agent infect(Environment e, Pathogen p) {
+    for(Agent a : e.getAgents()) {
+      if(a.getPathogen() == p) return null;
+    }
     return infect((Element) e, p);
   }
   
   /**
-   * Infect an Element with an pathogen
+   * Infect an Element with a pathogen
    *
    * @param e Element
    * @param p Pathogen
@@ -507,7 +516,6 @@ public class SimpleEpiModel extends EpiModel {
             
             // Add Person to List
             this.add(person);
-            //l.addElement(person);
           }
         }
       }
@@ -644,34 +652,46 @@ public class SimpleEpiModel extends EpiModel {
   @Override
   public void update() {
     
-    // Update Time Value
+    // Set Time
     Time current = this.getTime();
     Time step = this.getTimeStep();
     this.setTime(current.add(step));
     Time currentTime = this.getTime();
     
-    // Update Scheduled Phase
+    // Set Phase
     this.setPhase();
     Phase currentPhase = this.getPhase();
     
-    // Update Host Movement
+    // Move Hosts
     
-    // Update Agent Proliferation
-    for(Agent a : this.getAgents()) {
+    // Add New Agents
+    int numAgents = this.getAgents().size();
+    for(int i=0; i<numAgents; i++) {
+      Agent a = this.getAgents().get(i);
       a.update(step);
       if(a.alive()) {
         Pathogen p = a.getPathogen();
         Element location = a.getLocation();
         
-        // Transmit pathogen from Host to Environment
+        // Agent Originates from Host
         if(location instanceof Host) {
           Host h = (Host) location;
-          this.infect(h, p);
+          
+          // Transmit pathogen from Host to Environment
+          Environment e = h.getEnvironment();
+          if(Math.random() < 0.25) this.infect(e, p);
+          
+          // Transmit pathogen from Host to Host
+          for(Host h2 : e.getHosts()) {
+            if(Math.random() < 0.025) this.infect(h2, p);
+          }
           
         // Transmit from Environment to Host
         } else if (location instanceof Environment) {
           Environment e = (Environment) location;
-          this.infect(e, p);
+          for(Host h : e.getHosts()) {
+            if(Math.random() < 0.025) this.infect(h, p);
+          }
         }
       }
     }
@@ -681,7 +701,7 @@ public class SimpleEpiModel extends EpiModel {
     // Clean "dead" agents
     for(int i=this.getAgents().size()-1; i>=0; i--) {
       Agent a = this.getAgents().get(i);
-      if(!a.alive()) this.getAgents().remove(a);
+      if(!a.alive()) this.remove(a);
     }
   }
 }

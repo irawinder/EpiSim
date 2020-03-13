@@ -57,7 +57,7 @@ public class EpiView implements ViewModel {
   
   // Compartment Colors
   public final color SUSCEPTIBLE_COLOR        = color(255, 255, 255, 255); // White
-  public final color INCUBATING_COLOR         = color(255, 255,   0, 255); // Yellow
+  public final color INCUBATING_COLOR         = color(255, 150,   0, 255); // Orange
   public final color INFECTIOUS_COLOR         = color(255,   0,   0, 255); // Dark Red
   public final color RECOVERED_COLOR          = color(  0,   0,   0, 255); // Black
   public final color DEAD_COLOR               = color(255,   0, 255, 255); // Magenta
@@ -339,7 +339,7 @@ public class SimpleEpiView extends EpiView {
   public boolean showCommutes = true;
   public boolean showPlaces = true;
   public boolean showAgents = true;
-  public PersonViewMode personViewMode = PersonViewMode.DEMOGRAPHIC;
+  public PersonViewMode personViewMode = PersonViewMode.COMPARTMENT;
   public PathogenType pathogenType = PathogenType.COVID_19;
   
   /**
@@ -465,9 +465,9 @@ public class SimpleEpiView extends EpiView {
     
     int alpha;
     if(pathogenType == a.getPathogen().getType()) {
-      alpha = 255;
+      alpha = 125;
     } else {
-      alpha = 75;
+      alpha = 25;
     }
     stroke(viewColor, alpha);
     noFill();

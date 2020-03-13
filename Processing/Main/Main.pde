@@ -117,9 +117,11 @@ public void keyPressed() {
       break;
     case 'h':
       epidemic.allToPrimary();
+      epidemic.update();
       break;
     case 'w':
       epidemic.allToSecondary();
+      epidemic.update();
       break;
     case '1':
       viz.showPlaces = !viz.showPlaces;
@@ -167,12 +169,13 @@ private void configureSimpleEpiModel() {
    * Parameters (amount, name_prefix, type, x1, y1, x2, y2, minSize, maxSize)
    */
   int MARGIN = 100; // Window Border Margin
-  epidemic.randomPlaces(25,       "Open Space",      LandUse.OPENSPACE, 2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 500,       2000);
-  epidemic.randomPlaces(250,      "Dwelling Unit",   LandUse.DWELLING,  2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 50,        200);
-  epidemic.randomPlaces(10,       "Office Space",    LandUse.OFFICE,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500,       2000);
-  epidemic.randomPlaces(2,        "Daycare Center",  LandUse.SCHOOL,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500,       2000);
-  epidemic.randomPlaces(25,       "Retail Shopping", LandUse.RETAIL,    2*MARGIN + 2*MARGIN, 2*MARGIN, width - 2*MARGIN, height - 2*MARGIN, 50,        1000);
-  epidemic.randomPlaces(1,        "Hospital",        LandUse.HOSPITAL,  2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 2000,      2000);
+  int N = 2;
+  epidemic.randomPlaces(N*25,       "Open Space",      LandUse.OPENSPACE, 2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 500,       2000);
+  epidemic.randomPlaces(N*250,      "Dwelling Unit",   LandUse.DWELLING,  2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 50,        200);
+  epidemic.randomPlaces(N*10,       "Office Space",    LandUse.OFFICE,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500,       2000);
+  epidemic.randomPlaces(N*2,        "Daycare Center",  LandUse.SCHOOL,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500,       2000);
+  epidemic.randomPlaces(N*25,       "Retail Shopping", LandUse.RETAIL,    2*MARGIN + 2*MARGIN, 2*MARGIN, width - 2*MARGIN, height - 2*MARGIN, 50,        1000);
+  epidemic.randomPlaces(N*1,        "Hospital",        LandUse.HOSPITAL,  2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 2000,      2000);
   
   /**
    * Global Demographic Thresholds
@@ -210,7 +213,7 @@ private void configureSimpleEpiModel() {
    * Parameters: pathogen, initial host count
    */
   epidemic.patientZero(cold, 10);
-  epidemic.patientZero(covid, 1);
+  epidemic.patientZero(covid, 2);
 }
 
 /**
@@ -254,6 +257,9 @@ void configureCovid(Pathogen covid) {
   covid.setName("COVID-19");
   covid.setType(PathogenType.COVID_19);
   covid.setAttackRate(new Rate(0.3));
+  
+  Time agentLife = new Time(4, TimeUnit.HOUR);
+  covid.setAgentLife(agentLife);
   
   Time incubationMean              = new Time( 7, TimeUnit.DAY);
   Time incubationStandardDeviation = new Time( 3, TimeUnit.DAY);
@@ -302,6 +308,9 @@ public void configureCold(Pathogen cold) {
   cold.setName("Common Cold");
   cold.setType(PathogenType.COMMON_COLD);
   cold.setAttackRate(new Rate(0.3));
+  
+  Time agentLife = new Time( 4, TimeUnit.HOUR);
+  cold.setAgentLife(agentLife);
   
   Time incubationMean              = new Time(  2, TimeUnit.DAY);
   Time incubationStandardDeviation = new Time(0.5, TimeUnit.DAY);
