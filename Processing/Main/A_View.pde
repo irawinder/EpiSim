@@ -10,7 +10,7 @@ public class EpiView implements ViewModel {
   // color(red, green, blue, alpha) where values are between 0 and 255
   
   // Graphics Color Constants
-  public final color EDGE_STROKE              = color(  0,   0,   0,  10); // Light Gray
+  public final color EDGE_STROKE              = color(  0,   0,   0,  20); // Light Gray
   public final color POLYGON_STROKE           = color(255, 255, 255, 255); // White
   public final color NODE_STROKE              = color(  0,   0,   0, 100); // Gray
   public final color DEFAULT_FILL             = color(255, 255, 255, 255); // White
