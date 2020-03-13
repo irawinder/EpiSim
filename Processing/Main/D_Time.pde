@@ -32,12 +32,8 @@ public class TimeInterval {
    * @param f final time
    */
   public void setInterval(Time i, Time f) {
-    
-    // Check and convert mismatched units
-    f.reconcile(i);
-    
     this.timeInitial = i;
-    this.timeFinal = f;
+    this.timeFinal = f.reconcile(i);;
   }
   
   /**

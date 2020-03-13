@@ -83,7 +83,7 @@ public void testTime() {
   println(f);
   println(step);
   
-  println("Expect: '168.0 HOUR'; Returns: '" + f.getAmount() + " " + f.getUnit() + "'");
+  println("Expect: '7.0 DAY'; Returns: '" + f.getAmount() + " " + f.getUnit() + "'");
   println("Expect: '96.0 HOUR'; Returns: '" + duration.getAmount() + " " + duration.getUnit() + "'");
   
 }
