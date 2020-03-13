@@ -89,6 +89,18 @@
   }
   
   /**
+   * Return the distance between this and a specified coordinate
+   *
+   * @param other
+   */
+  public double distance(Coordinate other) {
+    double dX2 = Math.pow(this.x - other.x, 2);
+    double dY2 = Math.pow(this.y - other.y, 2);
+    double dZ2 = Math.pow(this.z - other.z, 2);
+    return Math.sqrt(dX2 + dY2 + dZ2);
+  }
+  
+  /**
    * Return a new Coordinate that is slightly jittered from the Parent
    *
    * @param jitter amount of jitter

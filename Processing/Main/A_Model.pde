@@ -546,6 +546,8 @@ public class SimpleEpiModel extends EpiModel {
    */
   public Place getRandomSecondaryPlace(Person p) {
     
+    double MAX_DISTANCE = 150;
+    
     // Set secondary environment to be same as primary environment by default
     Place secondaryPlace = p.getPrimaryPlace();
     
@@ -553,7 +555,13 @@ public class SimpleEpiModel extends EpiModel {
     int counter = 0;
     while(counter < 1000) { // Give up after 1000 tries
       Environment thisEnvironment = this.getRandomEnvironment();
-      if(thisEnvironment instanceof Place) {
+      
+      // Calculate whether this environement is close enough to home
+      Coordinate pCoord = p.getPrimaryPlace().getCoordinate();
+      Coordinate tCoord = thisEnvironment.getCoordinate();
+      boolean proximate = pCoord.distance(tCoord) < MAX_DISTANCE;
+      
+      if(thisEnvironment instanceof Place && proximate) {
         Place thisPlace = (Place) thisEnvironment;
         if(isSecondary(p, thisPlace)) {
           secondaryPlace = thisPlace;

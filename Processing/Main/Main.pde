@@ -213,7 +213,7 @@ private void configureSimpleEpiModel() {
    * Parameters: pathogen, initial host count
    */
   epidemic.patientZero(cold, 10);
-  epidemic.patientZero(covid, 2);
+  epidemic.patientZero(covid, 1);
 }
 
 /**
