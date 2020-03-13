@@ -13,18 +13,54 @@
  */
 public class Host extends Element {
   
-  // Infectious Agent Status
-  private HashMap<PathogenType, Compartment> statusMap;
-  
-  // Host's current Environment
+  // Host's current environment
   private Environment environment;
   
+  // Agents Carried by Host
+  private ArrayList<Agent> agentList;
+  
+  // Host's current compartment status
+  private HashMap<PathogenType, Compartment> statusMap;
+  
+  //// Whether host has already been exposed to Pathogen
+  //private HashMap<PathogenType, Boolean> exposed;
+  
   public Host() {
-    statusMap = new HashMap<PathogenType, Compartment>();
+    this.agentList = new ArrayList<Agent>();
+    this.statusMap = new HashMap<PathogenType, Compartment>();
   }
   
   /**
-   * Set the Host's Agent Status for a Particular Agent Type
+   * Add agent to host
+   *
+   * @param a Agent
+   */
+  public void addAgent(Agent a) {
+    this.agentList.add(a);
+  }
+  
+  /**
+   * Remove an agent
+   *
+   * @param a Agent
+   */
+  public void removeAgent(Agent a) {
+    if (this.agentList.contains(a)) {
+      this.agentList.remove(a);
+    } else {
+      println("No such agent exists");
+    }
+  }
+  
+  /**
+   * Return a list of Agents
+   */
+  public ArrayList<Agent> getAgents() {
+    return this.agentList;
+  }
+  
+  /**
+   * Set the Host's compartment status for a Particular Agent Type
    */
   public void setCompartment(PathogenType pType, Compartment status) {
     statusMap.put(pType, status);
@@ -61,10 +97,8 @@ public class Host extends Element {
     this.setCoordinate(environment.getCoordinate().jitter(jitter));
     
     // Move all associated agents along with host
-    for(Element el : this.getElements()) {
-      if(el instanceof Agent) {
-        el.setCoordinate(this.getCoordinate());
-      }
+    for(Agent a : this.getAgents()) {
+      a.setCoordinate(this.getCoordinate());
     }
   }
   
@@ -83,8 +117,7 @@ public class Host extends Element {
   public void move(Environment destination) {
     Environment origin = environment;
     if(origin != destination) {
-      origin.removeElement(this);
-      destination.addElement(this);
+      origin.removeHost(this);
       this.setEnvironment(destination);
     } else {
       println(this.getName() + " is already at this Environment");

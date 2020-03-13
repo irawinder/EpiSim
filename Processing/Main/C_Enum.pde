@@ -7,7 +7,7 @@ public enum Demographic {
 }
 
 public enum Compartment {
-  SUSCEPTIBLE, EXPOSED, INFECTIOUS, RECOVERED, DEAD
+  SUSCEPTIBLE, INCUBATING, INFECTIOUS, RECOVERED, DEAD
 }
 
 public enum Symptom {

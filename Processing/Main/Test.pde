@@ -37,37 +37,37 @@ void test() {
   println(corona);
   println("---");
   
-  home.addElement(adult);
+  home.addHost(adult);
   
   println(home);
-  for(Element e : home.getElements()) {
+  for(Element e : home.getHosts()) {
     println("- " + e);
   }
   println("---");
     
-  home.addElement(adult); // test redundancy
+  home.addHost(adult); // test redundancy
   println("---");
   
-  home.removeElement(adult);
+  home.removeHost(adult);
   
   println(home);
-  for(Element e : home.getElements()) {
+  for(Element e : home.getHosts()) {
     println("- " + e);
   }
   println("---");
   
-  adult.addElement(corona);
-  work.addElement(adult);
-  work.addElement(corona);
+  adult.addAgent(corona);
+  work.addHost(adult);
+  work.addAgent(corona);
   
   println(work);
-  for(Element e : work.getElements()) {
+  for(Element e : work.getHosts()) {
     println("- " + e);
   }
   println("---");
   
     println(adult);
-  for(Element e : adult.getElements()) {
+  for(Element e : adult.getAgents()) {
     println("- " + e);
   }
   println("---");

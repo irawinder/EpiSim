@@ -6,6 +6,9 @@ public class Pathogen {
   // Name of Pathogen
   private String name;
   
+  // Agent life span (i.e. how long it can live outside of host)
+  private Time agentLife;
+  
   // The specific variety of this pathogen (e.g. COMMON_COLD)
   private PathogenType type;
   
@@ -38,6 +41,9 @@ public class Pathogen {
    * Initialize Values to Zero
    */
   public void init() {
+    
+    this.name = "";
+    this.agentLife = new Time();
     this.attackRate = new Rate();
     this.incubationDuration = new TimeDistribution();
     this.infectiousDuration = new TimeDistribution();
@@ -71,6 +77,22 @@ public class Pathogen {
    */
   String getName() {
     return this.name;
+  }
+  
+  /**
+   * Set the agentLife of the Pathogen
+   *
+   * @param agentLife Time
+   */
+  void setAgentLife(Time agentLife) {
+    this.agentLife = agentLife;
+  }
+  
+  /**
+   * Get the agentLife of the Pathogen
+   */
+  public Time getAgentLife() {
+    return this.agentLife;
   }
   
   /**

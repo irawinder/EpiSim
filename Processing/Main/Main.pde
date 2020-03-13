@@ -26,9 +26,14 @@
   *         * PathogenType
   *     - Agent() extends Element()
   *         - Pathogen()
+  *         - Time()
+  *         - Element()
   *         * Compartment
   *     - Environment() extends Element()
+  *         - Agent()
+  *         - Host()
   *     - Host() extends Element()
+  *         - Agent()
   *         - Environment()
   *         * Compartment 
   * - SimpleEpiModel() extends EpiModel()

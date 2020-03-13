@@ -12,16 +12,16 @@ public class Element {
   // Coordinate Location of Element
   private Coordinate location;
   
-  // Child Elements (stored as both list and map for ease of reference)
-  private ArrayList<Element> list;
-  private HashMap<Integer, Element> map;
+  //// Child Elements (stored as both list and map for ease of reference)
+  //private ArrayList<Element> list;
+  //private HashMap<Integer, Element> map;
   
   /**
    * Construct new Element
    */
   public Element() {
-    list = new ArrayList<Element>();
-    map = new HashMap<Integer, Element>();
+    //list = new ArrayList<Element>();
+    //map = new HashMap<Integer, Element>();
   }
   
   /**
@@ -72,62 +72,62 @@ public class Element {
     return this.location;
   }
   
-  /**
-   * Add a child Element
-   *
-   * @param e Element
-   */
-  public void addElement(Element e) {
-    if (containsElement(e)) {
-      println("Element already exists as a child of this element");
-    } else {
-      list.add(e);
-      map.put(e.getUID(), e);
-    }
-  }
+  ///**
+  // * Add a child Element
+  // *
+  // * @param e Element
+  // */
+  //public void addElement(Element e) {
+  //  if (containsElement(e)) {
+  //    println("Element already exists as a child of this element");
+  //  } else {
+  //    list.add(e);
+  //    map.put(e.getUID(), e);
+  //  }
+  //}
   
-  /**
-   * Remove a child Element
-   *
-   * @param e Element
-   */
-  public void removeElement(Element e) {
-    if (containsElement(e)) {
-      map.remove(e.getUID());
-      list.remove(e);
-    } else {
-      println("No such element exists as a child of this element");
-    }
-  }
+  ///**
+  // * Remove a child Element
+  // *
+  // * @param e Element
+  // */
+  //public void removeElement(Element e) {
+  //  if (containsElement(e)) {
+  //    map.remove(e.getUID());
+  //    list.remove(e);
+  //  } else {
+  //    println("No such element exists as a child of this element");
+  //  }
+  //}
   
-  /**
-   * Return a list of Child Elements
-   */
-  public ArrayList<Element> getElements() {
-    return list;
-  }
+  ///**
+  // * Return a list of Child Elements
+  // */
+  //public ArrayList<Element> getElements() {
+  //  return list;
+  //}
   
-  /**
-   * Return a Child Element
-   *
-   * @param uid Unique ID
-   */
-  public Element getElement(int uid) {
-    if (map.containsKey(uid)) {
-      return map.get(uid);
-    } else {
-      println("No such UID is associated with a child of this element");
-      return null;
-    }
-  }
+  ///**
+  // * Return a Child Element
+  // *
+  // * @param uid Unique ID
+  // */
+  //public Element getElement(int uid) {
+  //  if (map.containsKey(uid)) {
+  //    return map.get(uid);
+  //  } else {
+  //    println("No such UID is associated with a child of this element");
+  //    return null;
+  //  }
+  //}
   
-  /**
-   * Check if a child Element exists
-   *
-   * @param e Element
-   */
-  public boolean containsElement(Element e) {
-    // returns true if Element e is already in map
-    return map.get(e.getUID()) != null;
-  }
+  ///**
+  // * Check if a child Element exists
+  // *
+  // * @param e Element
+  // */
+  //public boolean containsElement(Element e) {
+  //  // returns true if Element e is already in map
+  //  return map.get(e.getUID()) != null;
+  //}
 }

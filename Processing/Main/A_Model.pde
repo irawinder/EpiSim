@@ -113,7 +113,18 @@ class EpiModel implements Model, Cloneable {
    * @param h Host
    */
   public void add(Host h) {
-    hostList.add(h);
+    
+    // Master Model Dictionary
+    this.hostList.add(h);
+    
+    // Initialize Host Compartments with Pathogens
+    for(Pathogen p : this.pathogenList) {
+      h.setCompartment(p.getType(), Compartment.SUSCEPTIBLE);
+    }
+    
+    // Location Sub-dictionary
+    Environment e = h.getEnvironment();
+    e.addHost(h);
   }
   
   /** 
@@ -122,7 +133,18 @@ class EpiModel implements Model, Cloneable {
    * @param a Agent
    */
   public void add(Agent a) {
-    agentList.add(a);
+    
+    // Master Model Dictionary
+    this.agentList.add(a);
+    
+    // Location Sub-dictionary
+    if(a.getLocation() instanceof Host) {
+      Host h = (Host) a.getLocation();
+      h.addAgent(a);
+    } else if(a.getLocation() instanceof Environment) {
+      Environment e = (Environment) a.getLocation();
+      e.addAgent(a);
+    }
   }
   
   /** 
@@ -131,7 +153,9 @@ class EpiModel implements Model, Cloneable {
    * @param e Environment
    */
   public void add(Environment e) {
-    environmentList.add(e);
+    
+    // Master Model Dictionary
+    this.environmentList.add(e);
   }
   
   /** 
@@ -140,9 +164,9 @@ class EpiModel implements Model, Cloneable {
    * @param p Pathogen
    */
   public void add(Pathogen p) {
-    pathogenList.add(p);
+    this.pathogenList.add(p);
     
-    // Initialize Host Compartment with New Pathogen
+    // Initialize Host Compartments with New Pathogen
     for(Host h : hostList) {
       h.setCompartment(p.getType(), Compartment.SUSCEPTIBLE);
     }
@@ -154,7 +178,13 @@ class EpiModel implements Model, Cloneable {
    * @param h Host
    */
   public void remove(Host h) {
+    
+    // Master Model Dictionary
     hostList.remove(h);
+    
+    // Location Sub-dictionary
+    Environment e = h.getEnvironment();
+    e.getHosts().remove(h);
   }
   
   /** 
@@ -163,7 +193,18 @@ class EpiModel implements Model, Cloneable {
    * @param a Agent
    */
   public void remove(Agent a) {
+    
+    // Master Model Dictionary
     agentList.remove(a);
+    
+    // Location Sub-dictionary
+    if(a.getLocation() instanceof Host) {
+      Host h = (Host) a.getLocation();
+      h.getAgents().remove(a);
+    } else if(a.getLocation() instanceof Environment) {
+      Environment e = (Environment) a.getLocation();
+      e.getAgents().remove(a);
+    }
   }
   
   /** 
@@ -172,6 +213,8 @@ class EpiModel implements Model, Cloneable {
    * @param e Environment
    */
   public void remove(Environment e) {
+    
+    // Master Model Dictionary
     environmentList.remove(e);
   }
   
@@ -181,7 +224,22 @@ class EpiModel implements Model, Cloneable {
    * @param p Pathogen
    */
   public void remove(Pathogen p) {
+    
+    // Master Model Dictionary
     pathogenList.remove(p);
+    
+    // Remove Host Compartments containing Pathogen
+    for(Host h : hostList) {
+      h.getCompartment().remove(p);
+    }
+    
+    // Remove Agents containing this Pathogen
+    for(int i=this.agentList.size()-1; i>=0; i--) {
+      Agent a = this.agentList.get(i);
+      if(a.getPathogen() == p) {
+        this.remove(a);
+      }
+    }
   }
   
   /** 
@@ -245,25 +303,75 @@ class EpiModel implements Model, Cloneable {
   }
   
   /**
-   * Infect a Host with an infectious agent
+   * Make a duplicate of the specified Agent with new unique ID
    *
-   * @param h Host
    * @param a Agent
    */
-  public void infect(Host h, Agent a) {
-    
-    //Update Agent Location to Host and Add to Model Dictionaries
-    a.setCoordinate(h.getCoordinate());
-    h.addElement(a);
-    this.add(a);
+  public Agent copyAgent(Agent a) {
+    Pathogen p = a.getPathogen();
+    Time lifeSpan = p.getAgentLife();
+    Agent copy = new Agent(p, lifeSpan);
+    int new_uid = this.nextUID();
+    copy.setUID(new_uid);
+    copy.setCoordinate(a.getCoordinate());
+    copy.setLocation(a.getLocation());
+    return copy;
+  }
+  
+  /**
+   * Make a new default agent with unique ID and Pathogen
+   *
+   * @param p Pathogen
+   */
+  private Agent newAgent(Pathogen p) {
+    Agent newAgent = new Agent();
+    int new_uid = this.nextUID();
+    newAgent.setUID(new_uid);
+    newAgent.setPathogen(p);
+    newAgent.setLifeSpan(p.getAgentLife());
+    return newAgent;
+  }
+  
+  /**
+   * Infect a Host  with an pathogen
+   *
+   * @param h Host
+   * @param p Pathogen
+   */
+  public Agent infect(Host h, Pathogen p) {
     
     // Update Host's Compartment Status
-    Pathogen p = a.getPathogen();
     PathogenType pType = p.getType();
     if(h.getCompartment(pType) == Compartment.SUSCEPTIBLE) {
       h.setCompartment(pType, Compartment.INFECTIOUS);
     }
+    return infect((Element)h, p);
   }
+  
+  /**
+   * Infect an Environment with an pathogen
+   *
+   * @param e Environment
+   * @param p Pathogen
+   */
+  public Agent infect(Environment e, Pathogen p) {
+    return infect((Element) e, p);
+  }
+  
+  /**
+   * Infect an Element with an pathogen
+   *
+   * @param e Element
+   * @param p Pathogen
+   */
+  private Agent infect(Element e, Pathogen p) {
+    Agent a = newAgent(p);
+    a.setCoordinate(e.getCoordinate());
+    a.setLocation(e);
+    this.add(a);
+    return a;
+  }
+  
   
   /**
    * Updating the Object model moves time forward by one time step 
@@ -272,8 +380,6 @@ class EpiModel implements Model, Cloneable {
    * !!! This is currently overridden in SimpleEpiModel.update() !!!
    */
   public void update() {
-    
-    // Update Time Value
     this.currentTime = currentTime.add(this.timeStep);
   }
 }
@@ -332,6 +438,8 @@ public class SimpleEpiModel extends EpiModel {
   
   /**
    * Get the Host Phase
+   *
+   * @return current phase
    */
   public Phase getPhase() {
     return this.currentPhase;
@@ -399,7 +507,7 @@ public class SimpleEpiModel extends EpiModel {
             
             // Add Person to List
             this.add(person);
-            l.addElement(person);
+            //l.addElement(person);
           }
         }
       }
@@ -407,7 +515,7 @@ public class SimpleEpiModel extends EpiModel {
   }
   
   /**
-   * Add Infectious Agents to Model at one or more patients "zero"
+   * Add Infectious Agents to Model at one or more random patients "zero"
    *
    * @param pathogen
    * @param numHosts
@@ -415,14 +523,10 @@ public class SimpleEpiModel extends EpiModel {
   public void patientZero(Pathogen pathogen, int numHosts) {
     this.add(pathogen);
     for(int i=0; i<numHosts; i++) {
-      Agent initial = new Agent();
-      int new_uid = this.nextUID();
-      initial.setUID(new_uid);
-      initial.setPathogen(pathogen);
       Host host = this.getRandomHost();
       if(host instanceof Person) {
-        Person person = (Person) host;
-        this.infect(person, initial);
+        Person patientZero = (Person) host;
+        this.infect(patientZero, pathogen);
       }
     }
   }
@@ -553,7 +657,31 @@ public class SimpleEpiModel extends EpiModel {
     // Update Host Movement
     
     // Update Agent Proliferation
+    for(Agent a : this.getAgents()) {
+      a.update(step);
+      if(a.alive()) {
+        Pathogen p = a.getPathogen();
+        Element location = a.getLocation();
+        
+        // Transmit pathogen from Host to Environment
+        if(location instanceof Host) {
+          Host h = (Host) location;
+          this.infect(h, p);
+          
+        // Transmit from Environment to Host
+        } else if (location instanceof Environment) {
+          Environment e = (Environment) location;
+          this.infect(e, p);
+        }
+      }
+    }
     
     // Update Compartment status
+    
+    // Clean "dead" agents
+    for(int i=this.getAgents().size()-1; i>=0; i--) {
+      Agent a = this.getAgents().get(i);
+      if(!a.alive()) this.getAgents().remove(a);
+    }
   }
 }

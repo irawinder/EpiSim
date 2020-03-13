@@ -10,9 +10,9 @@ public class EpiView implements ViewModel {
   // color(red, green, blue, alpha) where values are between 0 and 255
   
   // Graphics Color Constants
-  public final color EDGE_STROKE              = color(  0,   0,   0,   10); // Light Gray
+  public final color EDGE_STROKE              = color(  0,   0,   0,  10); // Light Gray
   public final color POLYGON_STROKE           = color(255, 255, 255, 255); // White
-  public final color NODE_STROKE              = color(  0,   0,   0, 255); // Black
+  public final color NODE_STROKE              = color(  0,   0,   0, 100); // Gray
   public final color DEFAULT_FILL             = color(255, 255, 255, 255); // White
   public final color DEFAULT_TEXT_FILL        = color(  0,   0,   0, 200); // Dark Gray
   
@@ -50,14 +50,14 @@ public class EpiView implements ViewModel {
   
   // Compartment Names
   public final String SUSCEPTIBLE_NAME        = "Susceptible";
-  public final String EXPOSED_NAME            = "Exposed";
+  public final String INCUBATING_NAME         = "Incubating";
   public final String INFECTIOUS_NAME         = "Infectious";
   public final String RECOVERED_NAME          = "Recovered";
   public final String DEAD_NAME               = "Dead";
   
   // Compartment Colors
   public final color SUSCEPTIBLE_COLOR        = color(255, 255, 255, 255); // White
-  public final color EXPOSED_COLOR            = color(255, 255,   0, 255); // Yellow
+  public final color INCUBATING_COLOR         = color(255, 255,   0, 255); // Yellow
   public final color INFECTIOUS_COLOR         = color(255,   0,   0, 255); // Dark Red
   public final color RECOVERED_COLOR          = color(  0,   0,   0, 255); // Black
   public final color DEAD_COLOR               = color(255,   0, 255, 255); // Magenta
@@ -88,7 +88,7 @@ public class EpiView implements ViewModel {
     viewColor.put(LandUse.OPENSPACE, OPENSPACE_COLOR);
     viewColor.put(LandUse.HOSPITAL, HOSPITAL_COLOR);
     viewColor.put(Compartment.SUSCEPTIBLE, SUSCEPTIBLE_COLOR);
-    viewColor.put(Compartment.EXPOSED, EXPOSED_COLOR);
+    viewColor.put(Compartment.INCUBATING, INCUBATING_COLOR);
     viewColor.put(Compartment.INFECTIOUS, INFECTIOUS_COLOR);
     viewColor.put(Compartment.RECOVERED, RECOVERED_COLOR);
     viewColor.put(Compartment.DEAD, DEAD_COLOR);
@@ -107,7 +107,7 @@ public class EpiView implements ViewModel {
     viewName.put(LandUse.OPENSPACE, OPENSPACE_NAME);
     viewName.put(LandUse.HOSPITAL, HOSPITAL_NAME);
     viewName.put(Compartment.SUSCEPTIBLE, SUSCEPTIBLE_NAME);
-    viewName.put(Compartment.EXPOSED, EXPOSED_NAME);
+    viewName.put(Compartment.INCUBATING, INCUBATING_NAME);
     viewName.put(Compartment.INFECTIOUS, INFECTIOUS_NAME);
     viewName.put(Compartment.RECOVERED, RECOVERED_NAME);
     viewName.put(Compartment.DEAD, DEAD_NAME);
@@ -434,7 +434,7 @@ public class SimpleEpiView extends EpiView {
     }
     
     stroke(NODE_STROKE);
-    fill(viewColor);
+    fill(viewColor, 150);
     ellipseMode(CENTER);
     ellipse(x, y, HOST_DIAMETER, HOST_DIAMETER);
   }

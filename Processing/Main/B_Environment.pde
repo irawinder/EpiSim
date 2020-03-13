@@ -6,10 +6,80 @@ public class Environment extends Element {
   // The 2D Size size of the environment
   private double size;
   
+  // Agents Present in Environment
+  private ArrayList<Agent> agentList;
+  
+  // Hosts Present in Environment
+  private ArrayList<Host> hostList;
+  
   /**
    * Construct new Environment
    */
   public Environment() {
+    this.agentList = new ArrayList<Agent>();
+    this.hostList = new ArrayList<Host>();
+  }
+  
+  /**
+   * Add agent to host
+   *
+   * @param a Agent
+   */
+  public void addAgent(Agent a) {
+    this.agentList.add(a);
+  }
+  
+  /**
+   * Remove an agent
+   *
+   * @param a Agent
+   */
+  public void removeAgent(Agent a) {
+    if (this.agentList.contains(a)) {
+      this.agentList.remove(a);
+    } else {
+      println("No such agent exists");
+    }
+  }
+  
+  /**
+   * Return a list of Agents
+   */
+  public ArrayList<Agent> getAgents() {
+    return this.agentList;
+  }
+  
+  /**
+   * Add host to host
+   *
+   * @param a host
+   */
+  public void addHost(Host h) {
+    if (this.hostList.contains(h)) {
+      println("Host already exists as a child of this element");
+    } else {
+      this.hostList.add(h);
+    }
+  }
+  
+  /**
+   * Remove an agent
+   *
+   * @param a Agent
+   */
+  public void removeHost(Host h) {
+    if (this.hostList.contains(h)) {
+      this.hostList.remove(h);
+    } else {
+      println("No such host exists");
+    }
+  }
+  
+  /**
+   * Return a list of Hosts
+   */
+  public ArrayList<Host> getHosts() {
+    return this.hostList;
   }
   
   /**
