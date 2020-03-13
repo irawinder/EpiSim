@@ -161,8 +161,8 @@ public void keyPressed() {
  */
 private void configureSimpleEpiModel() {
   
-  epidemic.setTime(new Time(0, TimeUnit.MINUTE));
-  epidemic.setTimeStep(new Time(15, TimeUnit.MINUTE));
+  epidemic.setTime(new Time(0, TimeUnit.HOUR));
+  epidemic.setTimeStep(new Time(1, TimeUnit.HOUR));
   
   /**
    * Add randomly placed Places to Model within a specified rectangle (x1, y1, x2, y2)
@@ -258,7 +258,7 @@ void configureCovid(Pathogen covid) {
   covid.setType(PathogenType.COVID_19);
   covid.setAttackRate(new Rate(0.3));
   
-  Time agentLife = new Time(4, TimeUnit.HOUR);
+  Time agentLife = new Time(24, TimeUnit.HOUR);
   covid.setAgentLife(agentLife);
   
   Time incubationMean              = new Time( 7, TimeUnit.DAY);

@@ -45,6 +45,9 @@ class EpiModel implements Model, Cloneable {
   // Amount of time to pass during each iteration of the model
   private Time timeStep;
   
+  /**
+   * Construct Epidemiological Model
+   */
   public EpiModel() {
     
     // Time Dimension (Initialize to t = 0 seconds)
@@ -411,6 +414,7 @@ public class SimpleEpiModel extends EpiModel {
    */
   public void setSchedule(Schedule s) {
     this.phaseSequence = s;
+    this.setPhase();
   }
   
   /**
