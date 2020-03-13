@@ -122,10 +122,6 @@ public class Schedule {
       Time period = this.getPeriod();
       Time modulo = currentTime.modulo(period);
       
-      println("Time: " + currentTime);
-      println("Period: " + period);
-      println("Modulo: " + modulo);
-      
       // Iterate through phase sequences until it dosovers the phase at currentTime
       Time cumulativeTime = new Time(currentTime.getUnit());
       Phase currentPhase = null;

@@ -550,7 +550,10 @@ public class SimpleEpiModel extends EpiModel {
     this.setPhase();
     Phase currentPhase = this.getPhase();
     
-    println(currentTime);
-    println(currentPhase);
+    // Update Host Movement
+    
+    // Update Agent Proliferation
+    
+    // Update Compartment status
   }
 }

@@ -2,14 +2,12 @@
  * A Host is a human element that may carry and/or transmit an Agent
  *
  *   Compartment:  
- *     The Host's status with respect to a Pathogen (e.g. Suceptible, Exposed, Infectious, Recovered, or Dead)
+ *     The Host's status with respect to a Pathogen (e.g. Suceptible, Incubating, Infectious, Recovered, or Dead)
  *
  *     Compartmental models in epidemiology (Susceptible, Infectious, Carrier, Recovered):
  *       https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology
- * 
  *     Clade X Model (Susceptible, Incubating, Infectious (Mild or sever), Convalescent, Hospitalized, Recovered, Dead):
  *       http://www.centerforhealthsecurity.org/our-work/events/2018_clade_x_exercise/pdfs/Clade-X-model.pdf
- * 
  *     GLEAMviz Models:
  *       http://www.gleamviz.org/simulator/models/
  */
