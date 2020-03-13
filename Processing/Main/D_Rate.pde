@@ -18,14 +18,16 @@ public class Rate {
   }
   
   /**
-   * Set the Rate as a decimal numeric value (0-1)
+   * Set the Rate as a decimal numeric value where value of 1.0 is 100%
+   *
+   * @param rate double
    */
   public void set(double rate) {
     this.rate = rate;
   }
   
   /**
-   * Get the Rate as a decimal numeric value (0-1)
+   * Get the Rate as a decimal numeric value where value of 1.0 is 100%
    */
   public double get() {
     return rate;

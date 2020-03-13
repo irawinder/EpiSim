@@ -101,9 +101,10 @@ public class GaussianDistribution {
  *                   Average (mean)
  */
 public class TimeDistribution{
+  
   private Time mean;
   private Time standardDeviation;
-  Random random;
+  private Random random;
   
   /**
    * Default Normal Time Distribution with Mean = 0 seconds and Standard Deviation = 1 second
