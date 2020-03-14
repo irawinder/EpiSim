@@ -393,23 +393,20 @@ public class CityModel extends EpiModel {
   }
   
   /**
-   * Update Person Movements according to current phase, phase duration, and timestep
-   *
-   * @param phase
-   * @param phaseDuration
-   * @param timeStep
+   * Update Person Movements
    */
-  public void movePersons(Phase phase, Time phaseDuration, Time timeStep) {
+  public void movePersons() {
+    Phase currentPhase = this.getPhase();
+    Time timeStep = this.getTimeStep();
+    PlaceCategory phaseDomain = this.phaseDomain.get(currentPhase);
     
     // Anomoly Rates
     Time oneHour = new Time(1, TimeUnit.HOUR);
     Time hourPerStep = timeStep.divide(oneHour);
-    Rate anomolyPerHour = this.phaseAnomoly.get(phase);
+    Rate anomolyPerHour = this.phaseAnomoly.get(currentPhase);
     Rate anomolyPerStep = new Rate(hourPerStep.getAmount() * anomolyPerHour.get());
     Rate recoverPerHour = this.recoverAnomoly;
     Rate recoverPerStep = new Rate(hourPerStep.getAmount() * recoverPerHour.get());
-    
-    PlaceCategory phaseDomain = this.phaseDomain.get(phase);
     
     for(Demographic d : Demographic.values()) {
       for(Person p : this.person.get(d)) {
@@ -440,7 +437,7 @@ public class CityModel extends EpiModel {
         // Return to domain from tertiary activity
         } else {
           if(roll(recoverPerStep)) {
-              p.moveTo(dominantPlace);
+            p.moveTo(dominantPlace);
           }
         }
       }
@@ -461,11 +458,9 @@ public class CityModel extends EpiModel {
     
     // Set Phase
     this.setPhase();
-    Phase currentPhase = this.getPhase();
-    Time phaseDuration = this.getPhaseDuration();
     
     // Move Hosts
-    this.movePersons(currentPhase, phaseDuration, step);
+    this.movePersons();
     
     // Add New Agents
     int numAgents = this.getAgents().size();

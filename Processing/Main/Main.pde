@@ -96,7 +96,7 @@ public void setup() {
   
   // Windowed Application Size (pixels)
   size(1200, 1000);
-  //frameRate(10);
+  frameRate(10);
   
   // Initialize "Back-End" Object Model
   epidemic = new CityModel();
@@ -183,22 +183,23 @@ private void configureCityModel() {
   /**
    * Behaviors (Demographic, Travel Category, Land Use, Max Distance Willing to Travel)
    */
+  double BASE_DIST = 100;
   BehaviorMap behavior = new BehaviorMap();
-  behavior.setMap(Demographic.CHILD, PlaceCategory.PRIMARY,   LandUse.DWELLING,   10000);
-  behavior.setMap(Demographic.CHILD, PlaceCategory.SECONDARY, LandUse.SCHOOL,     250);
-  behavior.setMap(Demographic.CHILD, PlaceCategory.TERTIARY,  LandUse.OPENSPACE,  100);
-  behavior.setMap(Demographic.CHILD, PlaceCategory.TERTIARY,  LandUse.RETAIL,     100);
-  behavior.setMap(Demographic.ADULT, PlaceCategory.PRIMARY,   LandUse.DWELLING,   10000);
-  behavior.setMap(Demographic.ADULT, PlaceCategory.SECONDARY, LandUse.OFFICE,     150);
-  behavior.setMap(Demographic.ADULT, PlaceCategory.SECONDARY, LandUse.SCHOOL,     150);
-  behavior.setMap(Demographic.ADULT, PlaceCategory.SECONDARY, LandUse.HOSPITAL,   150);
-  behavior.setMap(Demographic.ADULT, PlaceCategory.SECONDARY, LandUse.RETAIL,     150);
-  behavior.setMap(Demographic.ADULT, PlaceCategory.TERTIARY,  LandUse.OPENSPACE,  350);
-  behavior.setMap(Demographic.ADULT, PlaceCategory.TERTIARY,  LandUse.RETAIL,     350);
-  behavior.setMap(Demographic.SENIOR, PlaceCategory.PRIMARY,   LandUse.DWELLING,  10000);
-  behavior.setMap(Demographic.SENIOR, PlaceCategory.SECONDARY, LandUse.DWELLING,  150);
-  behavior.setMap(Demographic.SENIOR, PlaceCategory.TERTIARY,  LandUse.OPENSPACE, 350);
-  behavior.setMap(Demographic.SENIOR, PlaceCategory.TERTIARY,  LandUse.RETAIL,    350);
+  behavior.setMap(Demographic.CHILD,  PlaceCategory.PRIMARY,   LandUse.DWELLING,   BASE_DIST*100);
+  behavior.setMap(Demographic.CHILD,  PlaceCategory.SECONDARY, LandUse.SCHOOL,     BASE_DIST*2.0);
+  behavior.setMap(Demographic.CHILD,  PlaceCategory.TERTIARY,  LandUse.PUBLIC,     BASE_DIST*1.0);
+  behavior.setMap(Demographic.CHILD,  PlaceCategory.TERTIARY,  LandUse.RETAIL,     BASE_DIST*1.0);
+  behavior.setMap(Demographic.ADULT,  PlaceCategory.PRIMARY,   LandUse.DWELLING,   BASE_DIST*100);
+  behavior.setMap(Demographic.ADULT,  PlaceCategory.SECONDARY, LandUse.OFFICE,     BASE_DIST*1.0);
+  behavior.setMap(Demographic.ADULT,  PlaceCategory.SECONDARY, LandUse.SCHOOL,     BASE_DIST*1.0);
+  behavior.setMap(Demographic.ADULT,  PlaceCategory.SECONDARY, LandUse.HOSPITAL,   BASE_DIST*1.0);
+  behavior.setMap(Demographic.ADULT,  PlaceCategory.SECONDARY, LandUse.RETAIL,     BASE_DIST*1.0);
+  behavior.setMap(Demographic.ADULT,  PlaceCategory.TERTIARY,  LandUse.PUBLIC,     BASE_DIST*1.0);
+  behavior.setMap(Demographic.ADULT,  PlaceCategory.TERTIARY,  LandUse.RETAIL,     BASE_DIST*1.0);
+  behavior.setMap(Demographic.SENIOR, PlaceCategory.PRIMARY,   LandUse.DWELLING,   BASE_DIST*100);
+  behavior.setMap(Demographic.SENIOR, PlaceCategory.SECONDARY, LandUse.DWELLING,   BASE_DIST*1.0);
+  behavior.setMap(Demographic.SENIOR, PlaceCategory.TERTIARY,  LandUse.PUBLIC,     BASE_DIST*1.0);
+  behavior.setMap(Demographic.SENIOR, PlaceCategory.TERTIARY,  LandUse.RETAIL,     BASE_DIST*1.0);
   epidemic.setBehavior(behavior);
   
   /**
@@ -207,7 +208,7 @@ private void configureCityModel() {
    */
   int MARGIN = 100; // Window Border Margin
   int N = 2;
-  epidemic.randomPlaces(N*25,       "Open Space",      LandUse.OPENSPACE, 2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 500,       2000);
+  epidemic.randomPlaces(N*25,       "Public Space",    LandUse.PUBLIC,    2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 500,       2000);
   epidemic.randomPlaces(N*250,      "Dwelling Unit",   LandUse.DWELLING,  2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 50,        200);
   epidemic.randomPlaces(N*10,       "Office Space",    LandUse.OFFICE,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500,       2000);
   epidemic.randomPlaces(N*4,        "School",          LandUse.SCHOOL,    2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 500,       2000);

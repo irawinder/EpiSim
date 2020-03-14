@@ -37,7 +37,7 @@ public class EpiView implements ViewModel {
   public final String OFFICE_NAME             = "Office Space";
   public final String RETAIL_NAME             = "Retail Space";
   public final String SCHOOL_NAME             = "School or Daycare";
-  public final String OPENSPACE_NAME          = "Open Space";
+  public final String PUBLIC_NAME             = "Public Space";
   public final String HOSPITAL_NAME           = "Hospital";
   
   // Place Colors
@@ -45,7 +45,7 @@ public class EpiView implements ViewModel {
   public final color OFFICE_COLOR             = color( 50,  50, 200, 100); // Blue
   public final color RETAIL_COLOR             = color(200,  50, 200, 100); // Magenta
   public final color SCHOOL_COLOR             = color(200, 100,  50, 100); // Brown
-  public final color OPENSPACE_COLOR          = color( 50, 200,  50,  50); // Green
+  public final color PUBLIC_COLOR             = color( 50, 200,  50,  50); // Green
   public final color HOSPITAL_COLOR           = color(  0, 255, 255, 100); // Teal
   
   // Compartment Names
@@ -85,7 +85,7 @@ public class EpiView implements ViewModel {
     viewColor.put(LandUse.OFFICE, OFFICE_COLOR);
     viewColor.put(LandUse.RETAIL, RETAIL_COLOR);
     viewColor.put(LandUse.SCHOOL, SCHOOL_COLOR);
-    viewColor.put(LandUse.OPENSPACE, OPENSPACE_COLOR);
+    viewColor.put(LandUse.PUBLIC, PUBLIC_COLOR);
     viewColor.put(LandUse.HOSPITAL, HOSPITAL_COLOR);
     viewColor.put(Compartment.SUSCEPTIBLE, SUSCEPTIBLE_COLOR);
     viewColor.put(Compartment.INCUBATING, INCUBATING_COLOR);
@@ -104,7 +104,7 @@ public class EpiView implements ViewModel {
     viewName.put(LandUse.OFFICE, OFFICE_NAME);
     viewName.put(LandUse.RETAIL, RETAIL_NAME);
     viewName.put(LandUse.SCHOOL, SCHOOL_NAME);
-    viewName.put(LandUse.OPENSPACE, OPENSPACE_NAME);
+    viewName.put(LandUse.PUBLIC, PUBLIC_NAME);
     viewName.put(LandUse.HOSPITAL, HOSPITAL_NAME);
     viewName.put(Compartment.SUSCEPTIBLE, SUSCEPTIBLE_NAME);
     viewName.put(Compartment.INCUBATING, INCUBATING_NAME);

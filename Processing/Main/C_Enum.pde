@@ -1,5 +1,5 @@
 public enum LandUse {
-  DWELLING, OFFICE, RETAIL, SCHOOL, OPENSPACE, HOSPITAL
+  DWELLING, OFFICE, RETAIL, SCHOOL, PUBLIC, HOSPITAL
 }
 
 public enum PlaceCategory {
