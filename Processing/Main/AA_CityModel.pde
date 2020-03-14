@@ -110,6 +110,26 @@ public class CityModel extends EpiModel {
   }
   
   /**
+   * Make a new default person with unique ID
+   */
+  public Person makePerson() {
+    Person p = new Person();
+    int new_uid = this.nextUID();
+    p.setUID(new_uid);
+    return p;
+  }
+  
+  /**
+   * Make a new default environment with unique ID
+   */
+  public Place makePlace() {
+    Place p = new Place();
+    int new_uid = this.nextUID();
+    p.setUID(new_uid);
+    return p;
+  }
+  
+  /**
    * Add Place to City Model
    *
    * @param place
@@ -158,14 +178,13 @@ public class CityModel extends EpiModel {
    */
   public void randomPlaces(int amount, String name_prefix, LandUse type, int x1, int y1, int x2, int y2, int minSize, int maxSize) {
     for(int i=0; i<amount; i++) {
-      Place l = new Place();
-      int new_uid = this.nextUID();
-      l.setUID(new_uid);
-      l.setCoordinate(new Coordinate(random(x1, x2), random(y1, y2)));
+      Place l = this.makePlace();
       l.setName(name_prefix + " " + l.getUID());
+      l.setCoordinate(new Coordinate(random(x1, x2), random(y1, y2)));
       l.setUse(type);
       l.setSize(random(minSize, maxSize));
       
+      // Add Place to EpiModel extension
       this.addPlace(l);
     }
   }
@@ -185,11 +204,9 @@ public class CityModel extends EpiModel {
         if(l.getUse() == LandUse.DWELLING) {
           int numTenants = (int) random(minDwellingSize, maxDwellingSize+1);
           for (int i=0; i<numTenants; i++) {
-            Person person = new Person();
             
-            // Set Unique ID
-            int new_uid = this.nextUID();
-            person.setUID(new_uid);
+            // Set New Person cast from EpiModel (ensures proper UID instantiation)
+            Person person = this.makePerson();
             person.setName("House of " + l.getUID() + ", " + person.getUID());
             
             // Set Age and Demographic
@@ -203,7 +220,7 @@ public class CityModel extends EpiModel {
             Place secondaryPlace = this.getRandomSecondaryPlace(person);
             person.setSecondaryPlace(secondaryPlace);
             
-            // Set Current Environment and Location to Primary
+            // Set Current Environment to Primary
             person.setEnvironment(person.getPrimaryPlace());
             
             // Add Person to EpiModel extension
@@ -413,11 +430,11 @@ public class CityModel extends EpiModel {
       a.update(step);
       if(a.alive()) {
         Pathogen p = a.getPathogen();
-        Element location = a.getLocation();
+        Element vessel = a.getVessel();
         
         // Agent Originates from Host
-        if(location instanceof Host) {
-          Host h = (Host) location;
+        if(vessel instanceof Host) {
+          Host h = (Host) vessel;
           
           // Transmit pathogen from Host to Environment
           Environment e = h.getEnvironment();
@@ -429,8 +446,8 @@ public class CityModel extends EpiModel {
           }
           
         // Transmit from Environment to Host
-        } else if (location instanceof Environment) {
-          Environment e = (Environment) location;
+        } else if (vessel instanceof Environment) {
+          Environment e = (Environment) vessel;
           for(Host h : e.getHosts()) {
             if(Math.random() < 0.025) this.infect(h, p);
           }

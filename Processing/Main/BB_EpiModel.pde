@@ -149,12 +149,12 @@ class EpiModel implements Model, Cloneable {
       this.agentList.add(a);
     }
     
-    // Location Sub-dictionary
-    if(a.getLocation() instanceof Host) {
-      Host h = (Host) a.getLocation();
+    // Vessel Sub-dictionary
+    if(a.getVessel() instanceof Host) {
+      Host h = (Host) a.getVessel();
       h.addAgent(a);
-    } else if(a.getLocation() instanceof Environment) {
-      Environment e = (Environment) a.getLocation();
+    } else if(a.getVessel() instanceof Environment) {
+      Environment e = (Environment) a.getVessel();
       e.addAgent(a);
     }
   }
@@ -227,12 +227,12 @@ class EpiModel implements Model, Cloneable {
       println("No such Agent exists");
     }
     
-    // Location Sub-dictionary
-    if(a.getLocation() instanceof Host) {
-      Host h = (Host) a.getLocation();
+    // Vessel Sub-dictionary
+    if(a.getVessel() instanceof Host) {
+      Host h = (Host) a.getVessel();
       h.removeAgent(a);
-    } else if(a.getLocation() instanceof Environment) {
-      Environment e = (Environment) a.getLocation();
+    } else if(a.getVessel() instanceof Environment) {
+      Environment e = (Environment) a.getVessel();
       e.removeAgent(a);
     }
   }
@@ -347,55 +347,41 @@ class EpiModel implements Model, Cloneable {
    */
   public Agent copyAgent(Agent a) {
     Pathogen p = a.getPathogen();
-    Time lifeSpan = p.getAgentLife();
-    Agent copy = new Agent(p, lifeSpan);
-    int new_uid = this.nextUID();
-    copy.setUID(new_uid);
+    Agent copy = makeAgent();
+    copy.setPathogen(p);
     copy.setCoordinate(a.getCoordinate());
-    copy.setLocation(a.getLocation());
+    copy.setVessel(a.getVessel());
     return copy;
-  }
-  
-  /**
-   * Make a new default agent with unique ID and Pathogen
-   *
-   * @param p Pathogen
-   */
-  private Agent newAgent(Pathogen p) {
-    Agent newAgent = newAgent();
-    newAgent.setPathogen(p);
-    newAgent.setLifeSpan(p.getAgentLife());
-    return newAgent;
   }
   
   /**
    * Make a new default agent with unique ID
    */
-  private Agent newAgent() {
-    Agent newAgent = new Agent();
+  public Agent makeAgent() {
+    Agent a = new Agent();
     int new_uid = this.nextUID();
-    newAgent.setUID(new_uid);
-    return newAgent;
+    a.setUID(new_uid);
+    return a;
   }
   
   /**
    * Make a new default host with unique ID
    */
-  private Host newHost() {
-    Host newHost = new Host();
+  public Host makeHost() {
+    Host h = new Host();
     int new_uid = this.nextUID();
-    newHost.setUID(new_uid);
-    return newHost;
+    h.setUID(new_uid);
+    return h;
   }
   
   /**
    * Make a new default environment with unique ID
    */
-  private Environment newEnvironment() {
-    Environment newEnvironment = new Environment();
+  public Environment makeEnvironment() {
+    Environment e = new Environment();
     int new_uid = this.nextUID();
-    newEnvironment.setUID(new_uid);
-    return newEnvironment;
+    e.setUID(new_uid);
+    return e;
   }
   
   /**
@@ -443,9 +429,10 @@ class EpiModel implements Model, Cloneable {
    * @param p Pathogen
    */
   private Agent infect(Element e, Pathogen p) {
-    Agent a = newAgent(p);
+    Agent a = makeAgent();
+    a.setPathogen(p);
     a.setCoordinate(e.getCoordinate());
-    a.setLocation(e);
+    a.setVessel(e);
     this.addAgent(a);
     return a;
   }

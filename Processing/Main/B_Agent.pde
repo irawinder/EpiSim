@@ -10,7 +10,7 @@ public class Agent extends Element {
   private Time life;
   
   // Environment or Host that this Agent is within
-  private Element location;
+  private Element vessel;
   
   /**
    * Construct new agent
@@ -18,40 +18,16 @@ public class Agent extends Element {
   public Agent() {
     super();
     this.setPathogen(new Pathogen());
-    this.setLifeSpan(new Time());
   }
   
   /**
    * Construct new agent with lifespan
-   *
-   * @param lifeSpan remaining life span of agent
-   */
-  public Agent(Time lifeSpan) {
-    super();
-    this.setPathogen(new Pathogen());
-    this.setLifeSpan(lifeSpan);
-  }
-  
-  /**
-   * Construct new agent with pathogen
    *
    * @param p Pathogen
    */
   public Agent(Pathogen p) {
     super();
     this.setPathogen(p);
-    this.setLifeSpan(new Time());
-  }
-  
-  /**
-   * Construct new agent with lifespan
-   *
-   * @param lifeSpan remaining life span of agent
-   */
-  public Agent(Pathogen p, Time lifeSpan) {
-    super();
-    this.setPathogen(p);
-    this.setLifeSpan(lifeSpan);
   }
   
   /**
@@ -61,6 +37,7 @@ public class Agent extends Element {
    */
   public void setPathogen(Pathogen p) {
     this.pathogen = p;
+    this.setLifeSpan(p.getAgentLife());
   }
   
   /**
@@ -87,19 +64,19 @@ public class Agent extends Element {
   }
   
   /**
-   * Set Agent location (Environment or Host)
+   * Set Agent vessel (Environment or Host)
    *
-   * @param location Element
+   * @param vessel Element
    */
-  public void setLocation(Element loc) {
-    this.location = loc;;
+  public void setVessel(Element v) {
+    this.vessel = v;
   }
   
   /**
-   * Get Agent location (Environment or Host)
+   * Get Agent vessel (Environment or Host)
    */
-  public Element getLocation() {
-    return this.location;
+  public Element getVessel() {
+    return this.vessel;
   }
   
   /**
