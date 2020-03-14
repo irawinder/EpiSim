@@ -39,6 +39,7 @@
   * - CityModel() extends EpiModel()
   *     - Time()
   *     - Schedule()
+  *     - BehaviorMap()
   *     - Person() extends Host()
   *         - Place()
   *         * Demographic
@@ -56,17 +57,23 @@
   *     - CityModel()
   * - Element()
   *     - Coordinate()
+  * - Schedule()
+  *     - Time()
+  *     - TimeInterval()
+  *     * TimeUnit
+  *     * Phase
+  * - BehaviorMap()
+  *     - Person()
+  *     - Place()
+  *     * PlaceCategory
+  *     * Demographic
+  *     * LandUse
   * - Coordinate()
   * - Time()
   *     * TimeUnit
   * - TimeInterval()
   *     - Time()
   *     * TimeUnit
-  * - Schedule()
-  *     - Time()
-  *     - TimeInterval()
-  *     * TimeUnit
-  *     * Phase
   */
 
 // Object Model of Epidemic

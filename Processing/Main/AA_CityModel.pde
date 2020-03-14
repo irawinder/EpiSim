@@ -165,6 +165,8 @@ public class CityModel extends EpiModel {
    * @param p person
    */
   public void addPerson(Person p) {
+    
+    // Add To Person Dictionary sorted by Demographic
     Demographic d = p.getDemographic();
     ArrayList<Person> list = this.person.get(d);
     if(list.contains(p)) {
@@ -183,6 +185,8 @@ public class CityModel extends EpiModel {
    * @param p person
    */
   public void removePerson(Person p) {
+    
+    // Remove from Person Dictionary sorted by Demographic
     Demographic d = p.getDemographic();
     ArrayList<Person> list = this.person.get(d);
     if(list.contains(p)) {
@@ -201,6 +205,8 @@ public class CityModel extends EpiModel {
    * @param l place
    */
   public void addPlace(Place l) {
+    
+    // Add to Place Dictionary sorted by Land Use
     LandUse use = l.getUse();
     ArrayList<Place> list = this.place.get(use);
     if(list.contains(l)) {
@@ -208,6 +214,9 @@ public class CityModel extends EpiModel {
     } else {
       list.add(l);
     }
+    
+    // Add to BehaviorMap
+    this.behavior.addPlace(l);
     
     // Add place element to EpiModel extension
     this.addEnvironment(l);
@@ -219,6 +228,8 @@ public class CityModel extends EpiModel {
    * @param l place
    */
   public void removePlace(Place l) {
+    
+    // Remove from Place Dictionary sorted by Land Use
     LandUse use = l.getUse();
     ArrayList<Place> list = this.place.get(use);
     if(list.contains(l)) {
@@ -230,8 +241,6 @@ public class CityModel extends EpiModel {
     // Remove place element from EpiModel extension
     this.removeEnvironment(l);
   }
-  
-  
   
   /**
    * Add randomly placed Environments to Model within a specified rectangle
@@ -266,35 +275,30 @@ public class CityModel extends EpiModel {
    * @param maxDwellingSize largest household size of a dwelling unit
    */
   public void populate(int minAge, int maxAge, int minDwellingSize, int maxDwellingSize) {
-    for(Environment e : this.getEnvironments()) {
-      if(e instanceof Place) {
-        Place l = (Place) e;
-        if(l.getUse() == LandUse.DWELLING) {
-          int numTenants = (int) random(minDwellingSize, maxDwellingSize+1);
-          for (int i=0; i<numTenants; i++) {
-            
-            // Set New Person cast from EpiModel (ensures proper UID instantiation)
-            Person person = this.makePerson();
-            person.setName("House of " + l.getUID() + ", " + person.getUID());
-            
-            // Set Age and Demographic
-            int age = (int) random(minAge, maxAge);
-            person.setAge(age);
-            
-            // Set Primary Place
-            person.setPrimaryPlace(l);
-            
-            // Set Secondary Place
-            Place secondaryPlace = this.getRandomSecondaryPlace(person);
-            person.setSecondaryPlace(secondaryPlace);
-            
-            // Set Current Environment to Primary
-            person.setEnvironment(person.getPrimaryPlace());
-            
-            // Add Person to EpiModel extension
-            this.addPerson(person);
-          }
-        }
+    for(Place l : this.place.get(LandUse.DWELLING)) {
+      int numTenants = (int) random(minDwellingSize, maxDwellingSize+1);
+      for (int i=0; i<numTenants; i++) {
+        
+        // Create New Person using makePerson() (ensures proper UID instantiation)
+        Person person = this.makePerson();
+        person.setName("House of " + l.getUID() + ", " + person.getUID());
+        
+        // Set Age and Demographic
+        int age = (int) random(minAge, maxAge);
+        person.setAge(age);
+        
+        // Set Current Environment
+        person.setEnvironment(l);
+        
+        // Set Primary Place
+        person.setPrimaryPlace(l);
+        
+        // Set Secondary Place
+        Place secondaryPlace = this.behavior.getRandomPlace(person, PlaceCategory.SECONDARY, 150);
+        person.setSecondaryPlace(secondaryPlace);
+        
+        // Add Person to EpiModel extension
+        this.addPerson(person);
       }
     }
   }
@@ -313,49 +317,11 @@ public class CityModel extends EpiModel {
     }
     
     for(int i=0; i<numHosts; i++) {
-      Host host = this.getRandomHost();
-      if(host instanceof Person) {
-        Person patientZero = (Person) host;
-        this.infect(patientZero, pathogen);
-      }
+      ArrayList<Person> options = this.person.get(Demographic.ADULT);
+      int randomIndex = (int) (Math.random() * (options.size() - 1));
+      Person patientZero = options.get(randomIndex);
+      this.infect(patientZero, pathogen);
     }
-  }
-  
-  /**
-   * Get a random secondary Environment from within list of existing Environments
-   *
-   * @param p Person
-   */
-  public Place getRandomSecondaryPlace(Person p) {
-    
-    double MAX_DISTANCE = 150;
-    
-    // Set secondary environment to be same as primary environment by default
-    Place secondaryPlace = p.getPrimaryPlace();
-    
-    // Grab a random environment and check if it's a Secondary Typology
-    int counter = 0;
-    while(counter < 1000) { // Give up after 1000 tries
-      Environment thisEnvironment = this.getRandomEnvironment();
-      
-      // Calculate whether this environement is close enough to home
-      Coordinate pCoord = p.getPrimaryPlace().getCoordinate();
-      Coordinate tCoord = thisEnvironment.getCoordinate();
-      boolean proximate = pCoord.distance(tCoord) < MAX_DISTANCE;
-      
-      if(thisEnvironment instanceof Place && proximate) {
-        Demographic d = p.getDemographic();
-        Place thisPlace = (Place) thisEnvironment;
-        LandUse use = thisPlace.getUse();
-        boolean isSecondary = this.behavior.isActivity(d, PlaceCategory.SECONDARY, use);
-        if(isSecondary) {
-          secondaryPlace = thisPlace;
-          break;
-        }
-      }
-      counter++;
-    }
-    return secondaryPlace;
   }
   
   /**
@@ -398,6 +364,7 @@ public class CityModel extends EpiModel {
         Time phaseTimePerStepTime = timeStep.divide(phaseDuration); // Uses Time.divide() for Unit Checking
         Rate flowRate = new Rate(phaseTimePerStepTime.getAmount()); // [unitless phase time per step time]
         
+        // TO DO
         switch(phase) {
           case SLEEP:
             break;
