@@ -295,7 +295,7 @@ void configureCovid(Pathogen covid) {
   covid.setType(PathogenType.COVID_19);
   covid.setAttackRate(new Rate(0.3));
   
-  Time agentLife = new Time(24, TimeUnit.HOUR);
+  Time agentLife = new Time(36, TimeUnit.HOUR);
   covid.setAgentLife(agentLife);
   
   Time incubationMean              = new Time( 7, TimeUnit.DAY);
