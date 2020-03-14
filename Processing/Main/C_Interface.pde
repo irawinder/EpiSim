@@ -34,15 +34,9 @@ public interface Simulation {
 }
 
 public interface ViewModel {
-  /**
-   * Set the Object Model to be viewed
-   *
-   * @param model
-   */
-  public void setModel(Model model);
   
   /**
    * Render ViewModel to GUI
    */
-  public void draw();
+  public void draw(Model model);
 }

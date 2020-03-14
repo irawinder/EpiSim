@@ -40,6 +40,10 @@ public class CityModel extends EpiModel {
   // Place Dictionary sorted by Land Use
   private HashMap<LandUse, ArrayList<Place>> place;
   
+  // Demographic Thresholds
+  private int adultAge;
+  private int seniorAge;
+  
   /**
    * Construct Simple Epidemiological Model
    */
@@ -66,6 +70,9 @@ public class CityModel extends EpiModel {
     for(LandUse use : LandUse.values()) {
       this.place.put(use, new ArrayList<Place>());
     }
+    
+    this.adultAge = 0;
+    this.seniorAge = 0;
   }
   
   /**
@@ -317,10 +324,15 @@ public class CityModel extends EpiModel {
    *
    * @param minAge
    * @param maxAge
+   * @param adultAge
+   * @param seniorAge
    * @param minDwellingSize smallest household size of a dwelling unit
    * @param maxDwellingSize largest household size of a dwelling unit
    */
-  public void populate(int minAge, int maxAge, int minDwellingSize, int maxDwellingSize) {
+  public void populate(int minAge, int maxAge, int adultAge, int seniorAge, int minDwellingSize, int maxDwellingSize) {
+    this.adultAge = adultAge;
+    this.seniorAge = seniorAge;
+    
     for(Place l : this.place.get(LandUse.DWELLING)) {
       int numTenants = (int) random(minDwellingSize, maxDwellingSize+1);
       for (int i=0; i<numTenants; i++) {
@@ -331,7 +343,7 @@ public class CityModel extends EpiModel {
         
         // Set Age and Demographic
         int age = (int) random(minAge, maxAge);
-        person.setAge(age);
+        person.setAge(age, this.adultAge, this.seniorAge);
         
         // Set Current Environment
         person.setEnvironment(l);

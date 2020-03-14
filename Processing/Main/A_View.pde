@@ -1,338 +1,112 @@
 /**
- * Visualization Model for Epidemiological Object Model
+ * Visualization Model
  */
-public class EpiView implements ViewModel {
-  
-  // Object Model in need of visual representation
-  private EpiModel model;
-  
-  // Color Definition:
-  // color(red, green, blue, alpha) where values are between 0 and 255
-  
-  // Graphics Color Constants
-  public final color EDGE_STROKE              = color(  0,   0,   0,  20); // Light Gray
-  public final color POLYGON_STROKE           = color(255, 255, 255, 255); // White
-  public final color NODE_STROKE              = color(  0,   0,   0, 100); // Gray
-  public final color DEFAULT_FILL             = color(255, 255, 255, 255); // White
-  public final color DEFAULT_TEXT_FILL        = color(  0,   0,   0, 200); // Dark Gray
-  
-  // Graphics Numerical Constants
-  public final int HOST_DIAMETER              = 5;   // pixels
-  public final int AGENT_DIAMETER             = 10;  // pixels
-  public final int AGENT_STROKE_WEIGHT        = 4;   // pixels
-  public final int TEXT_HEIGHT                = 15;  // pixels
-  
-  // Host Demographic Names
-  public final String CHILD_NAME              = "Child";
-  public final String ADULT_NAME              = "Adult";
-  public final String SENIOR_NAME             = "Senior";
-  
-  // Host Demographic Colors
-  public final color CHILD_COLOR              = color(255, 255, 255, 230); // Light Gray
-  public final color ADULT_COLOR              = color(100, 100, 100, 230); // Dark Gray
-  public final color SENIOR_COLOR             = color(  0,   0,   0, 230); // Black
-  
-  // Place Names
-  public final String DWELLING_NAME           = "Dwelling Unit";
-  public final String OFFICE_NAME             = "Office Space";
-  public final String RETAIL_NAME             = "Retail Space";
-  public final String SCHOOL_NAME             = "School or Daycare";
-  public final String PUBLIC_NAME             = "Public Space";
-  public final String HOSPITAL_NAME           = "Hospital";
-  
-  // Place Colors
-  public final color DWELLING_COLOR           = color(150, 150,   0, 100); // Yellow
-  public final color OFFICE_COLOR             = color( 50,  50, 200, 100); // Blue
-  public final color RETAIL_COLOR             = color(200,  50, 200, 100); // Magenta
-  public final color SCHOOL_COLOR             = color(200, 100,  50, 100); // Brown
-  public final color PUBLIC_COLOR             = color( 50, 200,  50,  50); // Green
-  public final color HOSPITAL_COLOR           = color(  0, 255, 255, 100); // Teal
-  
-  // Compartment Names
-  public final String SUSCEPTIBLE_NAME        = "Susceptible";
-  public final String INCUBATING_NAME         = "Incubating";
-  public final String INFECTIOUS_NAME         = "Infectious";
-  public final String RECOVERED_NAME          = "Recovered";
-  public final String DEAD_NAME               = "Dead";
-  
-  // Compartment Colors
-  public final color SUSCEPTIBLE_COLOR        = color(255, 255, 255, 255); // White
-  public final color INCUBATING_COLOR         = color(255, 150,   0, 255); // Orange
-  public final color INFECTIOUS_COLOR         = color(255,   0,   0, 255); // Dark Red
-  public final color RECOVERED_COLOR          = color(  0,   0,   0, 255); // Black
-  public final color DEAD_COLOR               = color(255,   0, 255, 255); // Magenta
-  
-  // Pathogen Names
-  public final String COVID_19_NAME           = "Covid-2019";
-  public final String COMMON_COLD_NAME        = "Common Cold";
-  
-  // Pathogen Colors
-  public final color COVID_19_COLOR           = color(255,   0,   0, 230); // Red
-  public final color COMMON_COLD_COLOR        = color(  0,   0, 255, 230); // Blue
+public class View implements ViewModel {
   
   // Dictionaries for View Attributes
   private HashMap<Enum, Integer> viewColor;
   private HashMap<Enum, String> viewName;
   
-  public EpiView() {
-    
-    // Make color map
-    viewColor = new HashMap<Enum, Integer>();
-    viewColor.put(Demographic.CHILD, CHILD_COLOR);
-    viewColor.put(Demographic.ADULT, ADULT_COLOR);
-    viewColor.put(Demographic.SENIOR, SENIOR_COLOR);
-    viewColor.put(LandUse.DWELLING, DWELLING_COLOR);
-    viewColor.put(LandUse.OFFICE, OFFICE_COLOR);
-    viewColor.put(LandUse.RETAIL, RETAIL_COLOR);
-    viewColor.put(LandUse.SCHOOL, SCHOOL_COLOR);
-    viewColor.put(LandUse.PUBLIC, PUBLIC_COLOR);
-    viewColor.put(LandUse.HOSPITAL, HOSPITAL_COLOR);
-    viewColor.put(Compartment.SUSCEPTIBLE, SUSCEPTIBLE_COLOR);
-    viewColor.put(Compartment.INCUBATING, INCUBATING_COLOR);
-    viewColor.put(Compartment.INFECTIOUS, INFECTIOUS_COLOR);
-    viewColor.put(Compartment.RECOVERED, RECOVERED_COLOR);
-    viewColor.put(Compartment.DEAD, DEAD_COLOR);
-    viewColor.put(PathogenType.COVID_19, COVID_19_COLOR);
-    viewColor.put(PathogenType.COMMON_COLD, COMMON_COLD_COLOR);
-
-    // Make name map
-    viewName = new HashMap<Enum, String>();
-    viewName.put(Demographic.CHILD, CHILD_NAME);
-    viewName.put(Demographic.ADULT, ADULT_NAME);
-    viewName.put(Demographic.SENIOR, SENIOR_NAME);
-    viewName.put(LandUse.DWELLING, DWELLING_NAME);
-    viewName.put(LandUse.OFFICE, OFFICE_NAME);
-    viewName.put(LandUse.RETAIL, RETAIL_NAME);
-    viewName.put(LandUse.SCHOOL, SCHOOL_NAME);
-    viewName.put(LandUse.PUBLIC, PUBLIC_NAME);
-    viewName.put(LandUse.HOSPITAL, HOSPITAL_NAME);
-    viewName.put(Compartment.SUSCEPTIBLE, SUSCEPTIBLE_NAME);
-    viewName.put(Compartment.INCUBATING, INCUBATING_NAME);
-    viewName.put(Compartment.INFECTIOUS, INFECTIOUS_NAME);
-    viewName.put(Compartment.RECOVERED, RECOVERED_NAME);
-    viewName.put(Compartment.DEAD, DEAD_NAME);
-    viewName.put(PathogenType.COVID_19, COVID_19_NAME);
-    viewName.put(PathogenType.COMMON_COLD, COMMON_COLD_NAME);
+  /**
+   * Construct View Model
+   */
+  public View() {
+    this.viewColor = new HashMap<Enum, Integer>();
+    this.viewName = new HashMap<Enum, String>();
   }
   
   /**
-   * Set the Object Model to be viewed
+   * Add a color and string association to a specified Enum
    *
-   * @param model
+   * @param e Enum
+   * @param col color
+   * @param name String
    */
-  public void setModel(Model model) {
-    this.model = (EpiModel) model;
+  public void setViewMap(Enum e, Integer col, String name) {
+    this.viewColor.put(e, col);
+    this.viewName.put(e, name);
   }
   
   /**
-   * Get the Object Model to be viewed
-   */
-  public EpiModel getModel() {
-    return model;
-  }
-  
-  /**
-   * Get color associated with Place
+   * Get Color Associated with Enum
    *
-   * @param l place
+   * @param e Enum
+   * @return color
    */
-  public color getColor(Place l) {
-    color col; 
-    LandUse type = l.getUse();
-    if(viewColor.containsKey(type)) {
-      col = viewColor.get(type);
+  public Integer getColor(Enum e) {
+    if(this.viewColor.containsKey(e)) {
+      return this.viewColor.get(e);
     } else {
-      col = color(0); // default black
+      return color(0); // default black
     }
-    return col;
   }
   
   /**
-   * Get name associated with Place
+   * Get Name Associated with Enum
    *
-   * @param l place
+   * @param e Enum
+   * @return name
    */
-  public String getName(Place l) {
-    String name; 
-    LandUse type = l.getUse();
-    if(viewColor.containsKey(type)) {
-      name = viewName.get(type);
+  public String getName(Enum e) {
+    if(this.viewName.containsKey(e)) {
+      return this.viewName.get(e);
     } else {
-      name = ""; // default blank
+      return ""; // default blank
     }
-    return name;
-  }
-  
-  /**
-   * Get color associated with LandUse Type
-   *
-   * @param type LandUse
-   */
-  public color getColor(LandUse type) {
-    color col;
-    if(viewColor.containsKey(type)) {
-      col = viewColor.get(type);
-    } else {
-      col = color(0); // default black
-    }
-    return col;
-  }
-  
-  /**
-   * Get name associated with LandUse Type
-   *
-   * @param type LandUse
-   */
-  public String getName(LandUse type) {
-    String name;
-    if(viewName.containsKey(type)) {
-      name = viewName.get(type);
-    } else {
-      name = ""; // default blank
-    }
-    return name;
-  }
-  
-  /**
-   * Get color associated with Compartment type
-   *
-   * @param status Compartment
-   */
-  public color getColor(Compartment status) {
-    color col; 
-    if(viewColor.containsKey(status)) {
-      col = viewColor.get(status);
-    } else {
-      col = color(0); // default black
-    }
-    return col;
-  }
-  
-  /**
-   * Get name associated with Compartment type
-   *
-   * @param status Compartment
-   */
-  public String getName(Compartment status) {
-    String name; 
-    if(viewName.containsKey(status)) {
-      name = viewName.get(status);
-    } else {
-      name = ""; // default blank
-    }
-    return name;
-  }
-  
-  /**
-   * Get color associated with Host Demographic
-   *
-   * @param p Person
-   */
-  public color getColor(Person p) {
-    Demographic d = p.getDemographic();
-    color col; 
-    if(viewColor.containsKey(d)) {
-      col = viewColor.get(d);
-    } else {
-      col = color(0); // default black
-    }
-    return col;
-  }
-  
-  /**
-   * Get name associated with Host Demographic
-   *
-   * @param p Person
-   */
-  public String getName(Person p) {
-    Demographic d = p.getDemographic();
-    String name; 
-    if(viewName.containsKey(d)) {
-      name = viewName.get(d);
-    } else {
-      name = ""; // default blank
-    }
-    return name;
-  }
-  
-  /**
-   * Get color associated with Host Compartment for specified Pathogen
-   *
-   * @param h Host
-   * @param type Pathogen
-   */
-  public color getColor(Host h, PathogenType type) {
-    Compartment status = h.getCompartment(type);
-    color col; 
-    if(viewColor.containsKey(status)) {
-      col = viewColor.get(status);
-    } else {
-      col = color(0); // default black
-    }
-    return col;
-  }
-  
-  /**
-   * Get name associated with Host Compartment for specified Pathogen
-   *
-   * @param h Host
-   * @param type Pathogen
-   */
-  public String getName(Host h, PathogenType type) {
-    Compartment status = h.getCompartment(type);
-    String name; 
-    if(viewName.containsKey(status)) {
-      name = viewName.get(status);
-    } else {
-      name = ""; // default blank
-    }
-    return name;
-  }
-  
-  /**
-   * Get color associated with Agent Pathogen
-   *
-   * @param a Agent
-   */
-  public color getColor(Agent a) {
-    Pathogen p = a.getPathogen();
-    color col; 
-    if(viewColor.containsKey(p.getType())) {
-      col = viewColor.get(p.getType());
-    } else {
-      col = color(0); // default black
-    }
-    return col;
-  }
-  
-  /**
-   * Get name associated with Agent Pathogen
-   *
-   * @param a Agent
-   */
-  public String getName(Agent a) {
-    Pathogen p = a.getPathogen();
-    String name; 
-    if(viewName.containsKey(p.getType())) {
-      name = viewName.get(p.getType());
-    } else {
-      name = ""; // default blank
-    }
-    return name;
   }
   
   /**
    * Expect this to be Overridden by Child Class
    */
-  public void draw() {
+  public void draw(Model model) {
     
   }
 }
 
 /**
- * Simple extension for Visualization Model for Epidemiological Object Model
+ * Visualization Model for Epidemiological Object Model
+ */
+public class EpiView extends View {
+  
+  /**
+   * Construct EpiView Model
+   */
+  public EpiView() {
+    super();
+    
+    // Preload Compartment ViewModel
+    for(Compartment c : Compartment.values()) {
+      this.setViewMap(c, color(0), "");
+    }
+    
+    // Preload Pathogen ViewModel
+    for(PathogenType p : PathogenType.values()) {
+      this.setViewMap(p, color(0), "");
+    }
+  }
+}
+
+/**
+ * City Visualization Model extending Epidemiological Object Model
  */
 public class CityView extends EpiView {
+  
+  private int TEXT_HEIGHT                = 15;  // pixels
+  private color TEXT_FILL                = color(  0,   0,   0, 200); // Dark Gray
+  
+  // Generic Place Parameters
+  private color PLACE_STROKE             = color(255, 255, 255, 255); // White
+  
+  // Generic Agent Parameters
+  private int AGENT_DIAMETER             = 10;  // pixels
+  private int AGENT_STROKE_WEIGHT        = 3;   // pixels
+  
+  // Generic Person Parameters
+  private int PERSON_DIAMETER            = 5;   // pixels
+  private color PERSON_STROKE            = color(  0,   0,   0, 100); // Gray
+  
+  // Generic Commute Paramters
+  private color COMMUTE_STROKE           = color(  0,   0,   0,  20); // Light Gray
   
   // View Mode Settings
   public boolean showPersons = true;
@@ -342,19 +116,73 @@ public class CityView extends EpiView {
   public PersonViewMode personViewMode = PersonViewMode.COMPARTMENT;
   public PathogenType pathogenType = PathogenType.COVID_19;
   
-  // Commute Graphic (Pre-rendered)
-  PGraphics commuteLayer;
+  // Information text
+  private String info;
   
-  public CityView(CityModel model) {
+  // Graphics (Pre-rendered)
+  private PGraphics placeLayer;
+  private PGraphics commuteLayer;
+  
+  /**
+   * Construct EpiView Model
+   */
+  public CityView() {
+    super();
     
-    this.setModel( (EpiModel) model);
-    this.renderCommutes();
+    // Preload Demographic View Model
+    for(Demographic d :Demographic.values()) {
+      this.setViewMap(d, color(0), "");
+    }
+    
+    // Preload Land Use View Model
+    for(LandUse use: LandUse.values()) {
+      this.setViewMap(use, color(0), "");
+    }
   }
   
-  private void renderCommutes() {
+  /**
+   * Set Text in Info Pane
+   *
+   * @param info String
+   */
+  public void setInfo(String info) {
+    this.info = info;
+  }
+  
+  /**
+   * Pre Draw Static Graphics Objects
+   */
+  public void preDraw(CityModel model) {
+    this.renderPlaces(model);
+    this.renderCommutes(model);
+  }
+  
+  /**
+   * Render static image of places to PGraphics object
+   *
+   * @param model CityModel
+   */
+  private void renderPlaces(CityModel model) {
+    placeLayer = createGraphics(width, height);
+    placeLayer.beginDraw();
+    for(Environment e : model.getEnvironments()) {
+      if(e instanceof Place) {
+        Place p = (Place) e;
+        this.drawPlace(placeLayer, p);
+      }
+    }
+    placeLayer.endDraw();
+  }
+  
+  /**
+   * Render static image of commutes to PGraphics object
+   *
+   * @param model CityModel
+   */
+  private void renderCommutes(CityModel model) {
     commuteLayer = createGraphics(width, height);
     commuteLayer.beginDraw();
-    for(Host h : this.getModel().getHosts()) {
+    for(Host h : model.getHosts()) {
       if(h instanceof Person) {
         Person p = (Person) h;
         this.drawCommute(commuteLayer, p);
@@ -365,9 +193,10 @@ public class CityView extends EpiView {
   
   /**
    * Render ViewModel to Processing Canvas
+   *
+   * @param mode CityModel
    */
-  @Override
-  public void draw() {
+  public void draw(CityModel model) {
     background(255);
     
     // Draw Commutes
@@ -377,17 +206,12 @@ public class CityView extends EpiView {
     
     // Draw Places
     if(showPlaces) {
-      for(Environment e : this.getModel().getEnvironments()) {
-        if(e instanceof Place) {
-          Place l = (Place) e;
-          this.drawPlace(l);
-        }
-      }
+      image(placeLayer, 0, 0);
     }
     
     // Draw Persons
     if(showPersons) {
-      for(Host h : this.getModel().getHosts()) {
+      for(Host h : model.getHosts()) {
         if(h instanceof Person) {
           Person p = (Person) h;
           this.drawPerson(p);
@@ -397,7 +221,7 @@ public class CityView extends EpiView {
     
     // Draw Agents
     if(showAgents) {
-      for(Agent a : this.getModel().getAgents()) {
+      for(Agent a : model.getAgents()) {
         this.drawAgent(a);
       }
     }
@@ -406,12 +230,30 @@ public class CityView extends EpiView {
     
     // Draw Information
     drawInfo(X_INDENT, 100);
-    drawTime(X_INDENT, height - 75);
+    drawTime(model, X_INDENT, height - 125);
     
     // Draw Legends
-    drawAgentLegend(X_INDENT, 350);
-    drawPlaceLegend(X_INDENT, 450);
-    drawPersonLegend(X_INDENT, 600);
+    drawAgentLegend(X_INDENT, 400);
+    drawPlaceLegend(X_INDENT, 500);
+    drawPersonLegend(X_INDENT, 650);
+  }
+  
+  /**
+   * Render a Single Place
+   *
+   * @param g PGraphics
+   * @param l place
+   */
+  private void drawPlace(PGraphics g, Place l) {
+    int x = (int) l.getCoordinate().getX();
+    int y = (int) l.getCoordinate().getY();
+    int w = (int) Math.sqrt(l.getSize());
+    color viewColor = this.getColor(l.getUse());
+    
+    g.stroke(PLACE_STROKE);
+    g.fill(viewColor);
+    g.rectMode(CENTER);
+    g.rect(x, y, w, w);
   }
   
   /**
@@ -423,9 +265,9 @@ public class CityView extends EpiView {
     int x = (int) l.getCoordinate().getX();
     int y = (int) l.getCoordinate().getY();
     int w = (int) Math.sqrt(l.getSize());
-    color viewColor = this.getColor(l);
+    color viewColor = this.getColor(l.getUse());
     
-    stroke(POLYGON_STROKE);
+    stroke(PLACE_STROKE);
     fill(viewColor);
     rectMode(CENTER);
     rect(x, y, w, w);
@@ -442,31 +284,19 @@ public class CityView extends EpiView {
     color viewColor = color(0); // DEFAULT BLACK
     switch(personViewMode) {
       case DEMOGRAPHIC:
-        viewColor = this.getColor(p);
+        Demographic d = p.getDemographic();
+        viewColor = this.getColor(d);
         break;
       case COMPARTMENT:
-        viewColor = this.getColor((Host) p, pathogenType);
+        Compartment c = p.getCompartment(pathogenType);
+        viewColor = this.getColor(c);
         break;
     }
     
-    stroke(NODE_STROKE);
+    stroke(PERSON_STROKE);
     fill(viewColor, 150);
     ellipseMode(CENTER);
-    ellipse(x, y, HOST_DIAMETER, HOST_DIAMETER);
-  }
-  
-  /**
-   * Render a Single Person's Commute
-   *
-   * @param p person
-   */
-  private void drawCommute(Person p) {
-    int x1 = (int) p.getPrimaryPlace().getCoordinate().getX();
-    int y1 = (int) p.getPrimaryPlace().getCoordinate().getY();
-    int x2 = (int) p.getSecondaryPlace().getCoordinate().getX();
-    int y2 = (int) p.getSecondaryPlace().getCoordinate().getY();
-    stroke(EDGE_STROKE);
-    line(x1, y1, x2, y2);
+    ellipse(x, y, PERSON_DIAMETER, PERSON_DIAMETER);
   }
   
   /**
@@ -480,7 +310,7 @@ public class CityView extends EpiView {
     int y1 = (int) p.getPrimaryPlace().getCoordinate().getY();
     int x2 = (int) p.getSecondaryPlace().getCoordinate().getX();
     int y2 = (int) p.getSecondaryPlace().getCoordinate().getY();
-    g.stroke(EDGE_STROKE);
+    g.stroke(COMMUTE_STROKE);
     g.line(x1, y1, x2, y2);
   }
   
@@ -492,7 +322,8 @@ public class CityView extends EpiView {
   private void drawAgent(Agent a) {
     int x = (int) a.getCoordinate().getX();
     int y = (int) a.getCoordinate().getY();
-    color viewColor = this.getColor(a);
+    PathogenType type = a.getPathogen().getType();
+    color viewColor = this.getColor(type);
     
     int alpha;
     if(pathogenType == a.getPathogen().getType()) {
@@ -515,25 +346,9 @@ public class CityView extends EpiView {
    * @param y
    */
   private void drawInfo(int x, int y) {
-    String info = 
-      "Epidemic Simulation" + "\n" +
-      "EDGEof Planetary Insight Center" + "\n\n" +
-      "Layer Controls:" + "\n" +
-      "Press '1' to hide/show Places" + "\n" +
-      "Press '2' to hide/show Persons" + "\n" +
-      "Press '3' to hide/show Commutes" + "\n" +
-      "Press '4' to hide/show Pathogens" + "\n" +
-      "Press 'p' to toggle Pathogen" + "\n" +
-      "Press 's' to toggle Person Status" + "\n\n" +
-      
-      "Simulation Controls:" + "\n" +
-      "Press 'r' to regenerate random city" + "\n" +
-      "Press 't' to iterate one time step" + "\n" +
-      "Press 'a' to autoplay simulation" + "\n" +
-      "Press 'w' to send everyone to work" + "\n" +
-      "Press 'h' to send everyone home" + "\n";
-    fill(DEFAULT_TEXT_FILL);
-    text(info, x, y);
+    fill(TEXT_FILL);
+    rectMode(CORNER);
+    text(info, x, y, 200, 800);
   }
   
   /**
@@ -543,46 +358,43 @@ public class CityView extends EpiView {
    * @param y
    */
   private void drawPersonLegend(int x, int y) {
-    fill(DEFAULT_TEXT_FILL);
+    fill(TEXT_FILL);
     int yOffset = TEXT_HEIGHT/2;
     
     switch(personViewMode) {
       case DEMOGRAPHIC:
+        text("Demographic:", x, y);
         for (Demographic d : Demographic.values()) {
           yOffset += TEXT_HEIGHT;
           
           // Create and Draw a Straw-man Host for Lengend Item
           Person p = new Person();
           p.setDemographic(d);
-          p.setCoordinate(new Coordinate(x + HOST_DIAMETER, y + yOffset - 0.25*TEXT_HEIGHT));
+          p.setCoordinate(new Coordinate(x + PERSON_DIAMETER, y + yOffset - 0.25*TEXT_HEIGHT));
           drawPerson(p);
           
           // Draw Symbol Label
-          fill(DEFAULT_TEXT_FILL);
-          text(this.getName(p), x + 4*HOST_DIAMETER, y + yOffset);
+          fill(TEXT_FILL);
+          text(this.getName(d), x + 4*PERSON_DIAMETER, y + yOffset);
         }
         break;
       case COMPARTMENT:
+        text("Pathogen Status:", x, y);
         for (Compartment c : Compartment.values()) {
           yOffset += TEXT_HEIGHT;
           
           // Create and Draw a Straw-man Host for Lengend Item
           Person p = new Person();
           p.setCompartment(pathogenType, c);
-          p.setCoordinate(new Coordinate(x + HOST_DIAMETER, y + yOffset - 0.25*TEXT_HEIGHT));
+          p.setCoordinate(new Coordinate(x + PERSON_DIAMETER, y + yOffset - 0.25*TEXT_HEIGHT));
           drawPerson(p);
           
           // Draw Symbol Label
-          fill(DEFAULT_TEXT_FILL);
-          text(this.getName((Host) p, pathogenType), x + 4*HOST_DIAMETER, y + yOffset);
+          fill(TEXT_FILL);
+          text(this.getName(c), x + 4*PERSON_DIAMETER, y + yOffset);
         }
         break;
     }
-    text("Demographics:", x, y);
-    
-    // Iterate through all possible host types
-    
-    
   }
   
   /**
@@ -592,7 +404,7 @@ public class CityView extends EpiView {
    * @param y
    */
   private void drawPlaceLegend(int x, int y) {
-    fill(DEFAULT_TEXT_FILL);
+    fill(TEXT_FILL);
     text("Land Uses:", x, y);
     
     // Iterate through all possible host types
@@ -603,13 +415,13 @@ public class CityView extends EpiView {
       // Create and Draw a Straw-man Host for Lengend Item
       Place l = new Place();
       l.setUse(type);
-      l.setSize(Math.pow(2*HOST_DIAMETER, 2));
-      l.setCoordinate(new Coordinate(x + HOST_DIAMETER, y + yOffset - 0.25*TEXT_HEIGHT));
+      l.setSize(Math.pow(2*PERSON_DIAMETER, 2));
+      l.setCoordinate(new Coordinate(x + PERSON_DIAMETER, y + yOffset - 0.25*TEXT_HEIGHT));
       drawPlace(l);
       
       // Draw Symbol Label
-      fill(DEFAULT_TEXT_FILL);
-      text(this.getName(l), x + 4*HOST_DIAMETER, y + yOffset);
+      fill(TEXT_FILL);
+      text(this.getName(l.getUse()), x + 4*PERSON_DIAMETER, y + yOffset);
     }
   }
   
@@ -620,7 +432,7 @@ public class CityView extends EpiView {
    * @param y
    */
   private void drawAgentLegend(int x, int y) {
-    fill(DEFAULT_TEXT_FILL);
+    fill(TEXT_FILL);
     text("Pathogens:", x, y);
     
     // Iterate through all possible Pathogen
@@ -633,12 +445,13 @@ public class CityView extends EpiView {
       Pathogen p = new Pathogen();
       p.setType(pT);
       a.setPathogen(p);
-      a.setCoordinate(new Coordinate(x + HOST_DIAMETER, y + yOffset - 0.25*TEXT_HEIGHT));
+      a.setCoordinate(new Coordinate(x + PERSON_DIAMETER, y + yOffset - 0.25*TEXT_HEIGHT));
       drawAgent(a);
       
       // Draw Symbol Label
-      fill(DEFAULT_TEXT_FILL);
-      text(this.getName(a), x + 4*HOST_DIAMETER, y + yOffset);
+      fill(TEXT_FILL);
+      PathogenType type = a.getPathogen().getType();
+      text(this.getName(type), x + 4*PERSON_DIAMETER, y + yOffset);
     }
   }
   
@@ -648,16 +461,44 @@ public class CityView extends EpiView {
    * @param x
    * @param y
    */
-  private void drawTime(int x, int y) {
+  private void drawTime(CityModel model, int x, int y) {
     
-    // Cast EpiModel() to CityModel() to access CityModel() methods
-    CityModel model = (CityModel) this.getModel();
+    int day = (int) model.getTime().convert(TimeUnit.DAY).getAmount();
+    int hour = (int) model.getTime().convert(TimeUnit.HOUR).getAmount() % 24;
+    int minute = (int) model.getTime().convert(TimeUnit.MINUTE).getAmount() % 60;
+    
+    String hourString = "";
+    if(hour < 10) hourString += "0";
+    hourString += hour;
+    
+    String minString = "";
+    if(minute < 10) minString += "0";
+    minString += minute;
+    
+    String dayOfWeek = "";
+    if(day % 7 == 0) {
+      dayOfWeek = "Sunday";
+    } else if(day % 7 == 1) {
+      dayOfWeek = "Monday";
+    } else if(day % 7 == 2) {
+      dayOfWeek = "Tuesday";
+    } else if(day % 7 == 3) {
+      dayOfWeek = "Wednesay";
+    } else if(day % 7 == 4) {
+      dayOfWeek = "Thursday";
+    } else if(day % 7 == 5) {
+      dayOfWeek = "Friday";
+    } else if(day % 7 == 6) {
+      dayOfWeek = "Saturday";
+    }
     
     String text = 
-      "Simulation Time: " + model.getTime() + "\n" +
-      "Current Phase: " + model.getPhase();
+      "Simulation Day: " + (day+1) + "\n" +
+      "Day of Week: " + dayOfWeek + "\n" +
+      "Simulation Time: " + hourString + ":" + minString + "\n" +
+      "Current City Phase: " + model.getPhase();
     
-    fill(DEFAULT_TEXT_FILL);
+    fill(TEXT_FILL);
     text(text, x, y);
   }
   

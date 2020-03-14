@@ -229,7 +229,6 @@ public class Time {
     
     // Return current time if new units already equal current units
     if(this.getUnit() == newUnit) {
-      println("Time is already in " + this.getUnit() + " unit");
       converted.setAmount(this.getAmount());
       return this;
     
@@ -298,6 +297,10 @@ public class Time {
   
   @Override
   public String toString() {
-    return this.getAmount() + " " + this.getUnit();
+    int decimalPlaces = 2;
+    double multiplier = this.amount * (int) Math.pow(10, decimalPlaces);
+    int truncate = (int) multiplier;
+    double time = truncate / Math.pow(10, decimalPlaces);
+    return time + " " + this.getUnit();
   }
 }

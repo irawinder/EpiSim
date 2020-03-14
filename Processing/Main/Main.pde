@@ -82,10 +82,6 @@ private CityModel epidemic;
 // Visualization Model for Object Model
 private CityView viz;
 
-// Global Demographic Thresholds
-private static int ADULT_AGE;
-private static int SENIOR_AGE;
-
 // Simulation Parameters
 private boolean autoPlay;
 
@@ -103,10 +99,12 @@ public void setup() {
   configureCityModel();
   
   // Initialize "Front-End" View Model
-  viz = new CityView(epidemic);
+  viz = new CityView();
+  configureViewModel(viz);
   
   // Draw Visualization
-  viz.draw();
+  viz.preDraw(epidemic);
+  viz.draw(epidemic);
 }
 
 /**
@@ -115,7 +113,7 @@ public void setup() {
 public void draw() {
   if(autoPlay) {
     epidemic.update();
-    viz.draw();
+    viz.draw(epidemic);
     text("Framerate: " + frameRate, width - 225, height - 75);
   }
 }
@@ -128,7 +126,7 @@ public void keyPressed() {
     case 'r':
       epidemic = new CityModel();
       configureCityModel();
-      viz = new CityView(epidemic);
+      viz.preDraw(epidemic);
       break;
     case 'h':
       epidemic.allToPrimary();
@@ -169,16 +167,16 @@ public void keyPressed() {
       autoPlay = !autoPlay;
       break;
   }
-  viz.draw();
+  viz.draw(epidemic);
 }
 
 /**
- * Configure a simple Epidemiological Model
+ * Configure a Epidemiological Model in a City
  */
 private void configureCityModel() {
   
-  epidemic.setTime(new Time(0, TimeUnit.HOUR));
-  epidemic.setTimeStep(new Time(1, TimeUnit.HOUR));
+  epidemic.setTime(new Time(0, TimeUnit.DAY));
+  epidemic.setTimeStep(new Time(15, TimeUnit.MINUTE));
   
   /**
    * Behaviors (Demographic, Travel Category, Land Use, Max Distance Willing to Travel)
@@ -216,16 +214,10 @@ private void configureCityModel() {
   epidemic.randomPlaces(N*1,        "Hospital",        LandUse.HOSPITAL,  2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 2000,      2000);
   
   /**
-   * Global Demographic Thresholds
-   */
-  ADULT_AGE = 18;
-  SENIOR_AGE = 65;
-  
-  /**
    * Add people to Model, initially located at their respective dwellings
-   * Parameters (minAge, maxAge, minDwellingSize, maxDwellingSize)
+   * Parameters (minAge, maxAge, adultAge, seniorAge, minDwellingSize, maxDwellingSize)
    */
-  epidemic.populate(5, 85, 1, 5);
+  epidemic.populate(5, 85, 18, 65, 1, 5);
   
   //Configure City Schedule
   Schedule nineToFive = new Schedule();
@@ -314,12 +306,12 @@ void configureCovid(Pathogen covid) {
   covid.setInfectiousDistribution(infectiousMean, infectiousStandardDeviation);
   
   covid.setMortalityTreated(Demographic.CHILD,  new Rate(0.001));
-  covid.setMortalityTreated(Demographic.ADULT,  new Rate(0.01));
-  covid.setMortalityTreated(Demographic.SENIOR, new Rate(0.02));
+  covid.setMortalityTreated(Demographic.ADULT,  new Rate(0.010));
+  covid.setMortalityTreated(Demographic.SENIOR, new Rate(0.020));
   
   covid.setMortalityUntreated(Demographic.CHILD,  new Rate(0.002));
-  covid.setMortalityUntreated(Demographic.ADULT,  new Rate(0.02));
-  covid.setMortalityUntreated(Demographic.SENIOR, new Rate(0.08));
+  covid.setMortalityUntreated(Demographic.ADULT,  new Rate(0.020));
+  covid.setMortalityUntreated(Demographic.SENIOR, new Rate(0.080));
   
   covid.setSymptomExpression(Demographic.CHILD, Symptom.FEVER,               new Rate(0.5*0.50));
   covid.setSymptomExpression(Demographic.CHILD, Symptom.COUGH,               new Rate(0.5*0.50));
@@ -380,4 +372,97 @@ public void configureCold(Pathogen cold) {
   
   cold.setSymptomExpression(Demographic.SENIOR, Symptom.FEVER,              new Rate(1.5*0.50));
   cold.setSymptomExpression(Demographic.SENIOR, Symptom.COUGH,              new Rate(1.5*0.50));
+}
+
+/**
+ * Configure City View Model
+ */
+public void configureViewModel(CityView viz) {
+  
+  String info = 
+    "Epidemic Simulation" + "\n" +
+    "EDGEof Planetary Insight Center" + "\n\n" +
+    "Layer Controls:" + "\n" +
+    "Press '1' to hide/show Places" + "\n" +
+    "Press '2' to hide/show Persons" + "\n" +
+    "Press '3' to hide/show Commutes" + "\n" +
+    "Press '4' to hide/show Pathogens" + "\n" +
+    "Press 'p' to toggle Pathogen" + "\n" +
+    "Press 's' to toggle Person Status" + "\n\n" +
+    
+    "Simulation Controls:" + "\n" +
+    "Press 'r' to regenerate random city" + "\n" +
+    "Press 't' to iterate one time step" + "\n" +
+    "Press 'a' to autoplay simulation" + "\n" +
+    "Press 'w' to send everyone to work" + "\n" +
+    "Press 'h' to send everyone home" + "\n";
+  viz.setInfo(info);
+
+  // Compartment Names
+  String SUSCEPTIBLE_NAME        = "Susceptible";
+  String INCUBATING_NAME         = "Incubating";
+  String INFECTIOUS_NAME         = "Infectious";
+  String RECOVERED_NAME          = "Recovered";
+  String DEAD_NAME               = "Dead";
+  
+  // Compartment Colors
+  color SUSCEPTIBLE_COLOR        = color(255, 255, 255, 255); // White
+  color INCUBATING_COLOR         = color(255, 150,   0, 255); // Orange
+  color INFECTIOUS_COLOR         = color(255,   0,   0, 255); // Dark Red
+  color RECOVERED_COLOR          = color(  0,   0,   0, 255); // Black
+  color DEAD_COLOR               = color(255,   0, 255, 255); // Magenta
+  
+  viz.setViewMap(Compartment.SUSCEPTIBLE,  SUSCEPTIBLE_COLOR, SUSCEPTIBLE_NAME);
+  viz.setViewMap(Compartment.INCUBATING,   INCUBATING_COLOR,  INCUBATING_NAME);
+  viz.setViewMap(Compartment.INFECTIOUS,   INFECTIOUS_COLOR,  INFECTIOUS_NAME);
+  viz.setViewMap(Compartment.RECOVERED,    RECOVERED_COLOR,   RECOVERED_NAME);
+  viz.setViewMap(Compartment.DEAD,         DEAD_COLOR,        DEAD_NAME);
+  
+  // Pathogen Names
+  String COVID_19_NAME           = "Covid-2019";
+  String COMMON_COLD_NAME        = "Common Cold";
+  
+  // Pathogen Colors
+  color COVID_19_COLOR           = color(255,   0,   0, 230); // Red
+  color COMMON_COLD_COLOR        = color(  0,   0, 255, 230); // Blue
+  
+  viz.setViewMap(PathogenType.COVID_19,    COVID_19_COLOR,    COVID_19_NAME);
+  viz.setViewMap(PathogenType.COMMON_COLD, COMMON_COLD_COLOR, COMMON_COLD_NAME);
+  
+  // Host Demographic Names
+  String CHILD_NAME              = "Child";
+  String ADULT_NAME              = "Adult";
+  String SENIOR_NAME             = "Senior";
+  
+  // Host Demographic Colors
+  color CHILD_COLOR              = color(255, 255, 255, 230); // Light Gray
+  color ADULT_COLOR              = color(100, 100, 100, 230); // Dark Gray
+  color SENIOR_COLOR             = color(  0,   0,   0, 230); // Black
+  
+  viz.setViewMap(Demographic.CHILD,        CHILD_COLOR,       CHILD_NAME);
+  viz.setViewMap(Demographic.ADULT,        ADULT_COLOR,       ADULT_NAME);
+  viz.setViewMap(Demographic.SENIOR,       SENIOR_COLOR,      SENIOR_NAME);
+  
+  // Place Names
+  String DWELLING_NAME           = "Dwelling Unit";
+  String OFFICE_NAME             = "Office Space";
+  String RETAIL_NAME             = "Retail Space";
+  String SCHOOL_NAME             = "School or Daycare";
+  String PUBLIC_NAME             = "Public Space";
+  String HOSPITAL_NAME           = "Hospital";
+  
+  // Place Colors
+  color DWELLING_COLOR           = color(150, 150,   0, 100); // Yellow
+  color OFFICE_COLOR             = color( 50,  50, 200, 100); // Blue
+  color RETAIL_COLOR             = color(200,  50, 200, 100); // Magenta
+  color SCHOOL_COLOR             = color(200, 100,  50, 100); // Brown
+  color PUBLIC_COLOR             = color( 50, 200,  50,  50); // Green
+  color HOSPITAL_COLOR           = color(  0, 255, 255, 100); // Teal
+  
+  viz.setViewMap(LandUse.DWELLING,         DWELLING_COLOR,    DWELLING_NAME);
+  viz.setViewMap(LandUse.OFFICE,           OFFICE_COLOR,      OFFICE_NAME);
+  viz.setViewMap(LandUse.RETAIL,           RETAIL_COLOR,      RETAIL_NAME);
+  viz.setViewMap(LandUse.SCHOOL,           SCHOOL_COLOR,      SCHOOL_NAME);
+  viz.setViewMap(LandUse.PUBLIC,           PUBLIC_COLOR,      PUBLIC_NAME);
+  viz.setViewMap(LandUse.HOSPITAL,         HOSPITAL_COLOR,    HOSPITAL_NAME);
 }

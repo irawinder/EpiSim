@@ -35,8 +35,8 @@ public class Person extends Host {
    */
   public Person() {
     super();
-    this.age = ADULT_AGE;
-    this.setDemographic();
+    this.age = 18;
+    this.setDemographic(18, 65);
     this.primaryPlace = new Place();
     this.secondaryPlace = new Place();
   }
@@ -46,12 +46,12 @@ public class Person extends Host {
    *
    * @param age
    */
-  public void setAge(int age) {
+  public void setAge(int age, int adultAge, int seniorAge) {
     if (age < 0) {
       println("Age out of Range");
     } else {
       this.age = age;
-      setDemographic();
+      setDemographic(adultAge, seniorAge);
     }
   }
   
@@ -74,10 +74,10 @@ public class Person extends Host {
   /**
    * Set the Person's Demographic using Age Value
    */
-  private void setDemographic() {
-    if (age < ADULT_AGE) {
+  private void setDemographic(int adultAge, int seniorAge) {
+    if (age < adultAge) {
       this.demographic = Demographic.CHILD;
-    } else if (age < SENIOR_AGE) {
+    } else if (age < seniorAge) {
       this.demographic = Demographic.ADULT;
     } else {
       this.demographic = Demographic.SENIOR;
