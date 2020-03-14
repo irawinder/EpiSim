@@ -13,7 +13,7 @@
  */
 public class CityModel extends EpiModel {
   
-  // Person Schedule
+  // City Schedule
   private Schedule phaseSequence;
   
   // Current Phase of Person
@@ -21,6 +21,12 @@ public class CityModel extends EpiModel {
   
   // Current Phase duration
   private Time phaseDuration;
+  
+  // Person-Place Category Association Map
+  private BehaviorMap behavior;
+  
+  // Person Dictionary sorted by Demographic
+  private HashMap<Demographic, ArrayList<Person>> person;
   
   // Place Dictionary sorted by Land Use
   private HashMap<LandUse, ArrayList<Place>> place;
@@ -33,6 +39,12 @@ public class CityModel extends EpiModel {
     this.phaseSequence = new Schedule();
     this.currentPhase = Phase.SLEEP;
     this.phaseDuration = new Time();
+    this.behavior = new BehaviorMap();
+    
+    person = new HashMap<Demographic, ArrayList<Person>>();
+    for(Demographic d : Demographic.values()) {
+      person.put(d, new ArrayList<Person>());
+    }
     
     place = new HashMap<LandUse, ArrayList<Place>>();
     for(LandUse use : LandUse.values()) {
@@ -76,6 +88,33 @@ public class CityModel extends EpiModel {
   }
   
   /**
+   * Set the behavior of population
+   *
+   * @param behavior BehaviorMap
+   */
+  public void setBehavior(BehaviorMap behavior) {
+    this.behavior = behavior;
+  }
+  
+  /**
+   * Get the BehaviorMap
+   *
+   * @return behavior map
+   */
+  public BehaviorMap getBehavior() {
+    return this.behavior;
+  }
+  
+  /**
+   * Get the Phase Duration
+   *
+   * @return current phase duration
+   */
+  public Time getPhaseDuration() {
+    return this.phaseDuration;
+  }
+  
+  /**
    * Set the Phase via existing schedule and current time
    */
   public void setPhase() {
@@ -101,15 +140,6 @@ public class CityModel extends EpiModel {
   }
   
   /**
-   * Get the Phase Duration
-   *
-   * @return current phase duration
-   */
-  public Time getPhaseDuration() {
-    return this.phaseDuration;
-  }
-  
-  /**
    * Make a new default person with unique ID
    */
   public Person makePerson() {
@@ -130,9 +160,45 @@ public class CityModel extends EpiModel {
   }
   
   /**
+   * Add Person to City Model
+   *
+   * @param p person
+   */
+  public void addPerson(Person p) {
+    Demographic d = p.getDemographic();
+    ArrayList<Person> list = this.person.get(d);
+    if(list.contains(p)) {
+      println(p + " already exists.");
+    } else {
+      list.add(p);
+    }
+    
+    // Add place element to EpiModel extension
+    this.addHost(p);
+  }
+  
+  /**
+   * Remove Person from City Model
+   *
+   * @param p person
+   */
+  public void removePerson(Person p) {
+    Demographic d = p.getDemographic();
+    ArrayList<Person> list = this.person.get(d);
+    if(list.contains(p)) {
+      list.remove(p);
+    } else {
+      println("No such Person exists.");
+    }
+    
+    // Remove person element from EpiModel extension
+    this.removeHost(p);
+  }
+  
+  /**
    * Add Place to City Model
    *
-   * @param place
+   * @param l place
    */
   public void addPlace(Place l) {
     LandUse use = l.getUse();
@@ -150,7 +216,7 @@ public class CityModel extends EpiModel {
   /**
    * Remove Place from City Model
    *
-   * @param place
+   * @param l place
    */
   public void removePlace(Place l) {
     LandUse use = l.getUse();
@@ -161,9 +227,11 @@ public class CityModel extends EpiModel {
       println("No such Place exists.");
     }
     
-    // Remove place element to EpiModel extension
+    // Remove place element from EpiModel extension
     this.removeEnvironment(l);
   }
+  
+  
   
   /**
    * Add randomly placed Environments to Model within a specified rectangle
@@ -224,7 +292,7 @@ public class CityModel extends EpiModel {
             person.setEnvironment(person.getPrimaryPlace());
             
             // Add Person to EpiModel extension
-            this.addHost(person);
+            this.addPerson(person);
           }
         }
       }
@@ -276,8 +344,11 @@ public class CityModel extends EpiModel {
       boolean proximate = pCoord.distance(tCoord) < MAX_DISTANCE;
       
       if(thisEnvironment instanceof Place && proximate) {
+        Demographic d = p.getDemographic();
         Place thisPlace = (Place) thisEnvironment;
-        if(thisPlace.isSecondary(p)) {
+        LandUse use = thisPlace.getUse();
+        boolean isSecondary = this.behavior.isActivity(d, PlaceCategory.SECONDARY, use);
+        if(isSecondary) {
           secondaryPlace = thisPlace;
           break;
         }

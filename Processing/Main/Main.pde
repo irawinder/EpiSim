@@ -166,6 +166,34 @@ private void configureCityModel() {
   epidemic.setTimeStep(new Time(1, TimeUnit.HOUR));
   
   /**
+   * Configure Activity Map (Valid Primary, Secondary, and Tertiary Activities)
+   */
+  BehaviorMap behavior = new BehaviorMap();
+  
+  // Child Activities
+  behavior.setMap(Demographic.CHILD, PlaceCategory.PRIMARY,   LandUse.DWELLING);
+  behavior.setMap(Demographic.CHILD, PlaceCategory.SECONDARY, LandUse.SCHOOL);
+  behavior.setMap(Demographic.CHILD, PlaceCategory.TERTIARY,  LandUse.OPENSPACE);
+  behavior.setMap(Demographic.CHILD, PlaceCategory.TERTIARY,  LandUse.RETAIL);
+  
+  // Adult Activities
+  behavior.setMap(Demographic.ADULT, PlaceCategory.PRIMARY,   LandUse.DWELLING);
+  behavior.setMap(Demographic.ADULT, PlaceCategory.SECONDARY, LandUse.OFFICE);
+  behavior.setMap(Demographic.ADULT, PlaceCategory.SECONDARY, LandUse.SCHOOL);
+  behavior.setMap(Demographic.ADULT, PlaceCategory.SECONDARY, LandUse.HOSPITAL);
+  behavior.setMap(Demographic.ADULT, PlaceCategory.SECONDARY, LandUse.RETAIL);
+  behavior.setMap(Demographic.ADULT, PlaceCategory.TERTIARY,  LandUse.OPENSPACE);
+  behavior.setMap(Demographic.ADULT, PlaceCategory.TERTIARY,  LandUse.RETAIL);
+  
+  // Senior Activities
+  behavior.setMap(Demographic.SENIOR, PlaceCategory.PRIMARY,   LandUse.DWELLING);
+  behavior.setMap(Demographic.SENIOR, PlaceCategory.SECONDARY, LandUse.DWELLING);
+  behavior.setMap(Demographic.SENIOR, PlaceCategory.TERTIARY,  LandUse.OPENSPACE);
+  behavior.setMap(Demographic.SENIOR, PlaceCategory.TERTIARY,  LandUse.RETAIL);
+  
+  epidemic.setBehavior(behavior);
+  
+  /**
    * Add randomly placed Places to Model within a specified rectangle (x1, y1, x2, y2)
    * Parameters (amount, name_prefix, type, x1, y1, x2, y2, minSize, maxSize)
    */
@@ -190,7 +218,9 @@ private void configureCityModel() {
    */
   epidemic.populate(5, 85, 1, 5);
   
-  
+  /** 
+   * Configure City Schedule
+   */
   Schedule nineToFive = new Schedule();
   configureNineToFive(nineToFive);
   epidemic.setSchedule(nineToFive);

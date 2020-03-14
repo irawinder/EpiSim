@@ -2,6 +2,10 @@ public enum LandUse {
   DWELLING, OFFICE, RETAIL, SCHOOL, OPENSPACE, HOSPITAL
 }
 
+public enum PlaceCategory {
+  PRIMARY, SECONDARY, TERTIARY
+}
+
 public enum Demographic {
   CHILD, ADULT, SENIOR
 }

@@ -42,7 +42,7 @@ public class Person extends Host {
   }
   
   /**
-   * Set the Host's age
+   * Set the Person's age
    *
    * @param age
    */
@@ -56,14 +56,14 @@ public class Person extends Host {
   }
   
   /**
-   * Get the Host's age
+   * Get the Person's age
    */
   public int getAge() {
     return this.age;
   }
   
   /**
-   * Set the Host's Demographic
+   * Set the Person's Demographic
    *
    * @param d Demographic
    */
@@ -72,7 +72,7 @@ public class Person extends Host {
   }
   
   /**
-   * Set the Host's Demographic using Age Value
+   * Set the Person's Demographic using Age Value
    */
   private void setDemographic() {
     if (age < ADULT_AGE) {
@@ -85,14 +85,14 @@ public class Person extends Host {
   }
   
   /**
-   * Get the Host's Demographic
+   * Get the Person's Demographic
    */
   public Demographic getDemographic() {
     return this.demographic;
   }
   
   /**
-   * Set the Host's primary Place (e.g. home, dwelling, etc)
+   * Set the Person's primary Place (e.g. home, dwelling, etc)
    *
    * @param primaryPlace Place
    */
@@ -101,14 +101,14 @@ public class Person extends Host {
   }
   
   /**
-   * Get the Host's primary Place (e.g. home, dwelling, etc)
+   * Get the Person's primary Place (e.g. home, dwelling, etc)
    */
   public Place getPrimaryPlace() {
     return primaryPlace;
   }
   
   /**
-   * Set the Host's secondary Place (e.g. work, school, daycare)
+   * Set the Person's secondary Place (e.g. work, school, daycare)
    *
    * @param secondaryPlace Place
    */
@@ -117,14 +117,14 @@ public class Person extends Host {
   }
   
   /**
-   * Get the Host's secondary Place (e.g. work, school, daycare)
+   * Get the Person's secondary Place (e.g. work, school, daycare)
    */
   public Place getSecondaryPlace() {
     return secondaryPlace;
   }
   
   /**
-   * Move Host to Primary Place
+   * Move Person to Primary Place
    */
   public void moveToPrimary() {
     Place destination = this.getPrimaryPlace();
@@ -132,25 +132,12 @@ public class Person extends Host {
   }
   
   /**
-   * Move Host to Secondary Place
+   * Move Person to Secondary Place
    */
   public void moveToSecondary() {
     Place destination = this.getSecondaryPlace();
     this.move(destination);
   }
-  
-  ///**
-  // * Update the Compartment value for the Host
-  // */
-  //public void updateCompartment() {
-  //  for(switch(Compartment) {
-  //    case SUCEPTIBLE:
-  //      // check for exposure
-  //      break;
-  //    case SUCEPTIBLE:
-  //      // check for exposure
-  //      break;
-  //}
   
   @Override
   public String toString() {
