@@ -277,7 +277,7 @@ public class CityModel extends EpiModel {
       
       if(thisEnvironment instanceof Place && proximate) {
         Place thisPlace = (Place) thisEnvironment;
-        if(isSecondary(p, thisPlace)) {
+        if(thisPlace.isSecondary(p)) {
           secondaryPlace = thisPlace;
           break;
         }
@@ -285,62 +285,6 @@ public class CityModel extends EpiModel {
       counter++;
     }
     return secondaryPlace;
-  }
-  
-  /**
-   * Determine if this environment qualifies as a Primary Environment for this Person
-   *
-   * @param p Person
-   * @param l Place
-   */
-  public boolean isPrimary(Person p, Place l) {
-    LandUse type = l.getUse();
-    if(type == LandUse.DWELLING) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-  
-  /**
-   * Determine if this environment qualifies as a Secondary Environment for this Host (i.e. the host spends the day at this Environment for work or school)
-   *
-   * @param p Person
-   * @param l Place
-   */
-  public boolean isSecondary(Person p, Place l) {
-    LandUse type = l.getUse();
-    Demographic d = p.getDemographic();
-    if(d == Demographic.CHILD) {
-      if(type == LandUse.SCHOOL) {
-        return true;
-      } else {
-        return false;
-      }
-    } else if (d == Demographic.ADULT) {
-      if(type == LandUse.OFFICE || type == LandUse.RETAIL || type == LandUse.SCHOOL || type == LandUse.HOSPITAL) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-  
-  /**
-   * Determine if this environment qualifies as a Tertiary Environment for this Person
-   *
-   * @param p Person
-   * @param l Place
-   */
-  public boolean isTertiary(Person p, Place l) {
-    LandUse type = l.getUse();
-    if(type != LandUse.DWELLING && type != LandUse.OFFICE) {
-      return true;
-    } else {
-      return false;
-    }
   }
   
   /**
