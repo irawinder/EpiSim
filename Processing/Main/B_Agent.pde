@@ -16,6 +16,7 @@ public class Agent extends Element {
    * Construct new agent
    */
   public Agent() {
+    super();
     this.setPathogen(new Pathogen());
     this.setLifeSpan(new Time());
   }
@@ -26,6 +27,7 @@ public class Agent extends Element {
    * @param lifeSpan remaining life span of agent
    */
   public Agent(Time lifeSpan) {
+    super();
     this.setPathogen(new Pathogen());
     this.setLifeSpan(lifeSpan);
   }
@@ -36,6 +38,7 @@ public class Agent extends Element {
    * @param p Pathogen
    */
   public Agent(Pathogen p) {
+    super();
     this.setPathogen(p);
     this.setLifeSpan(new Time());
   }
@@ -46,6 +49,7 @@ public class Agent extends Element {
    * @param lifeSpan remaining life span of agent
    */
   public Agent(Pathogen p, Time lifeSpan) {
+    super();
     this.setPathogen(p);
     this.setLifeSpan(lifeSpan);
   }

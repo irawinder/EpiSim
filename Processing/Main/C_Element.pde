@@ -12,16 +12,13 @@ public class Element {
   // Coordinate Location of Element
   private Coordinate location;
   
-  //// Child Elements (stored as both list and map for ease of reference)
-  //private ArrayList<Element> list;
-  //private HashMap<Integer, Element> map;
-  
   /**
    * Construct new Element
    */
   public Element() {
-    //list = new ArrayList<Element>();
-    //map = new HashMap<Integer, Element>();
+    this.UID = -1;
+    this.name = "";
+    this.location = new Coordinate();
   }
   
   /**

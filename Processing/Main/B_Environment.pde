@@ -16,6 +16,7 @@ public class Environment extends Element {
    * Construct new Environment
    */
   public Environment() {
+    super();
     this.agentList = new ArrayList<Agent>();
     this.hostList = new ArrayList<Host>();
   }
@@ -102,48 +103,6 @@ public class Environment extends Element {
   public String toString() {
     String info = 
       "Environment UID: " + getUID()
-      + "; Size: " + getSize()
-      ;
-    return info;
-  }
-}
-
-/** 
- * Place is a special Environment that a Host and/or Agent can Occupy
- *
- */
-public class Place extends Environment {
-  
-  // The type of use or activity in this Place
-  private LandUse type;
-  
-  /**
-   * Construct new Place
-   */
-  public Place() {
-  }
-  
-  /**
-   * Set Land Use
-   *
-   * @param size
-   */
-  public void setUse(LandUse type) {
-    this.type = type;
-  }
-  
-  /**
-   * Get Land Use
-   */
-  public LandUse getUse() {
-    return this.type;
-  }
-  
-  @Override
-  public String toString() {
-    String info = 
-      "Place UID: " + getUID()
-      + "; Type: " + getUse() 
       + "; Size: " + getSize()
       ;
     return info;

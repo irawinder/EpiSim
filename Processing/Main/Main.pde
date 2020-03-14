@@ -200,14 +200,12 @@ private void configureCityModel() {
    */
   Pathogen covid = new Pathogen();
   configureCovid(covid);
-  epidemic.addPathogen(covid);
   
   /**
    * Configure Cold Pathogen
    */
   Pathogen cold = new Pathogen();
   configureCold(cold);
-  epidemic.addPathogen(cold);
   
   /**
    * Deploy Pathogens as Agents into the Host (Person) Population

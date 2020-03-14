@@ -29,6 +29,7 @@ public class CityModel extends EpiModel {
    * Construct Simple Epidemiological Model
    */
   public CityModel() {
+    super();
     this.phaseSequence = new Schedule();
     this.currentPhase = Phase.SLEEP;
     this.phaseDuration = new Time();
@@ -220,7 +221,12 @@ public class CityModel extends EpiModel {
    * @param numHosts
    */
   public void patientZero(Pathogen pathogen, int numHosts) {
-    this.addPathogen(pathogen);
+    
+    //Adds new pathogen to model if first instance
+    if(!this.getPathogens().contains(pathogen)) {
+      this.addPathogen(pathogen);
+    }
+    
     for(int i=0; i<numHosts; i++) {
       Host host = this.getRandomHost();
       if(host instanceof Person) {

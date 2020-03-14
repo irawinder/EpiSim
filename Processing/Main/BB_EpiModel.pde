@@ -29,6 +29,13 @@
  */
 class EpiModel implements Model, Cloneable {
 
+  // The current time of the model (begins at t=0)
+  private Time currentTime;
+  
+  // Amount of time to pass during each iteration of the model
+  private Time timeStep;
+  
+  // Counter that preserves next Unique ID value
   private int uidCounter;
   
   // Generic Pathogen Types
@@ -38,12 +45,6 @@ class EpiModel implements Model, Cloneable {
   private ArrayList<Environment> environmentList;
   private ArrayList<Host> hostList;
   private ArrayList<Agent> agentList;
-  
-  // The current time of the model (begins at t=0)
-  private Time currentTime;
-  
-  // Amount of time to pass during each iteration of the model
-  private Time timeStep;
   
   /**
    * Construct Epidemiological Model
@@ -361,12 +362,40 @@ class EpiModel implements Model, Cloneable {
    * @param p Pathogen
    */
   private Agent newAgent(Pathogen p) {
-    Agent newAgent = new Agent();
-    int new_uid = this.nextUID();
-    newAgent.setUID(new_uid);
+    Agent newAgent = newAgent();
     newAgent.setPathogen(p);
     newAgent.setLifeSpan(p.getAgentLife());
     return newAgent;
+  }
+  
+  /**
+   * Make a new default agent with unique ID
+   */
+  private Agent newAgent() {
+    Agent newAgent = new Agent();
+    int new_uid = this.nextUID();
+    newAgent.setUID(new_uid);
+    return newAgent;
+  }
+  
+  /**
+   * Make a new default host with unique ID
+   */
+  private Host newHost() {
+    Host newHost = new Host();
+    int new_uid = this.nextUID();
+    newHost.setUID(new_uid);
+    return newHost;
+  }
+  
+  /**
+   * Make a new default environment with unique ID
+   */
+  private Environment newEnvironment() {
+    Environment newEnvironment = new Environment();
+    int new_uid = this.nextUID();
+    newEnvironment.setUID(new_uid);
+    return newEnvironment;
   }
   
   /**
