@@ -96,7 +96,7 @@ public void setup() {
   
   // Windowed Application Size (pixels)
   size(1200, 1000);
-  frameRate(10);
+  //frameRate(10);
   
   // Initialize "Back-End" Object Model
   epidemic = new CityModel();
@@ -181,17 +181,13 @@ private void configureCityModel() {
   epidemic.setTimeStep(new Time(1, TimeUnit.HOUR));
   
   /**
-   * Configure Activity Map (Valid Primary, Secondary, and Tertiary Activities)
+   * Behaviors (Demographic, Travel Category, Land Use, Max Distance Willing to Travel)
    */
   BehaviorMap behavior = new BehaviorMap();
-  
-  // Child Activities (Demographic, Travel Category, Land Use, Max Distance Willing to Travel)
   behavior.setMap(Demographic.CHILD, PlaceCategory.PRIMARY,   LandUse.DWELLING,   10000);
   behavior.setMap(Demographic.CHILD, PlaceCategory.SECONDARY, LandUse.SCHOOL,     250);
   behavior.setMap(Demographic.CHILD, PlaceCategory.TERTIARY,  LandUse.OPENSPACE,  100);
   behavior.setMap(Demographic.CHILD, PlaceCategory.TERTIARY,  LandUse.RETAIL,     100);
-  
-  // Adult Activities
   behavior.setMap(Demographic.ADULT, PlaceCategory.PRIMARY,   LandUse.DWELLING,   10000);
   behavior.setMap(Demographic.ADULT, PlaceCategory.SECONDARY, LandUse.OFFICE,     150);
   behavior.setMap(Demographic.ADULT, PlaceCategory.SECONDARY, LandUse.SCHOOL,     150);
@@ -199,13 +195,10 @@ private void configureCityModel() {
   behavior.setMap(Demographic.ADULT, PlaceCategory.SECONDARY, LandUse.RETAIL,     150);
   behavior.setMap(Demographic.ADULT, PlaceCategory.TERTIARY,  LandUse.OPENSPACE,  350);
   behavior.setMap(Demographic.ADULT, PlaceCategory.TERTIARY,  LandUse.RETAIL,     350);
-  
-  // Senior Activities
   behavior.setMap(Demographic.SENIOR, PlaceCategory.PRIMARY,   LandUse.DWELLING,  10000);
   behavior.setMap(Demographic.SENIOR, PlaceCategory.SECONDARY, LandUse.DWELLING,  150);
   behavior.setMap(Demographic.SENIOR, PlaceCategory.TERTIARY,  LandUse.OPENSPACE, 350);
   behavior.setMap(Demographic.SENIOR, PlaceCategory.TERTIARY,  LandUse.RETAIL,    350);
-  
   epidemic.setBehavior(behavior);
   
   /**
@@ -233,39 +226,8 @@ private void configureCityModel() {
    */
   epidemic.populate(5, 85, 1, 5);
   
-  /** 
-   * Configure City Schedule
-   */
+  //Configure City Schedule
   Schedule nineToFive = new Schedule();
-  configureNineToFive(nineToFive);
-  epidemic.setSchedule(nineToFive);
-  
-  /**
-   * Configure Covid Pathogen
-   */
-  Pathogen covid = new Pathogen();
-  configureCovid(covid);
-  
-  /**
-   * Configure Cold Pathogen
-   */
-  Pathogen cold = new Pathogen();
-  configureCold(cold);
-  
-  /**
-   * Deploy Pathogens as Agents into the Host (Person) Population
-   * Parameters: pathogen, initial host count
-   */
-  epidemic.patientZero(cold, 10);
-  epidemic.patientZero(covid, 1);
-}
-
-/**
- * Configure a 9-to-5 schedule
- *
- * @param nineToFive Schedule
- */
-public void configureNineToFive(Schedule nineToFive) {
   
   // Sunday
   nineToFive.addPhase(Phase.SLEEP,              new Time( 6, TimeUnit.HOUR)); // 00:00 - 06:00
@@ -289,6 +251,44 @@ public void configureNineToFive(Schedule nineToFive) {
   nineToFive.addPhase(Phase.SLEEP,              new Time( 6, TimeUnit.HOUR)); // 00:00 - 06:00
   nineToFive.addPhase(Phase.LEISURE,            new Time(16, TimeUnit.HOUR)); // 06:00 - 22:00
   nineToFive.addPhase(Phase.SLEEP,              new Time( 2, TimeUnit.HOUR)); // 22:00 - 24:00
+  
+  epidemic.setSchedule(nineToFive);
+  
+  //Chance that person will shift state from dominant state to tertiary state (per HOUR)
+  epidemic.setPhaseAnomoly(Phase.SLEEP,      new Rate(0.05));
+  epidemic.setPhaseAnomoly(Phase.HOME,       new Rate(0.10));
+  epidemic.setPhaseAnomoly(Phase.GO_WORK,    new Rate(0.00));
+  epidemic.setPhaseAnomoly(Phase.WORK,       new Rate(0.10));
+  epidemic.setPhaseAnomoly(Phase.WORK_LUNCH, new Rate(0.90));
+  epidemic.setPhaseAnomoly(Phase.GO_HOME,    new Rate(0.00));
+  epidemic.setPhaseAnomoly(Phase.LEISURE,    new Rate(0.20));
+  
+  // Chance that Person will recover from a tertiary anomoly and return to their primary or secondary state (per HOUR)
+  epidemic.setRecoverAnomoly(new Rate(0.40));
+  
+  // Phase Domains for each Phase (A person's dominant domain state during a specified phase)
+  epidemic.setPhaseDomain(Phase.SLEEP,      PlaceCategory.PRIMARY);   // e.g. home
+  epidemic.setPhaseDomain(Phase.HOME,       PlaceCategory.PRIMARY);   // e.g. home
+  epidemic.setPhaseDomain(Phase.GO_WORK,    PlaceCategory.SECONDARY); // e.g. work or school
+  epidemic.setPhaseDomain(Phase.WORK,       PlaceCategory.SECONDARY); // e.g. work or school
+  epidemic.setPhaseDomain(Phase.WORK_LUNCH, PlaceCategory.SECONDARY); // e.g. work or school
+  epidemic.setPhaseDomain(Phase.GO_HOME,    PlaceCategory.PRIMARY);   // e.g. home
+  epidemic.setPhaseDomain(Phase.LEISURE,    PlaceCategory.PRIMARY);   // e.g. home
+  
+  // Configure Covid Pathogen
+  Pathogen covid = new Pathogen();
+  configureCovid(covid);
+  
+  // Configure Cold Pathogen
+  Pathogen cold = new Pathogen();
+  configureCold(cold);
+  
+  /**
+   * Deploy Pathogens as Agents into the Host (Person) Population
+   * Parameters: pathogen, initial host count
+   */
+  epidemic.patientZero(cold, 10);
+  epidemic.patientZero(covid, 1);
 }
 
 /**

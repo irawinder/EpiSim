@@ -25,6 +25,15 @@ public class CityModel extends EpiModel {
   // Person-Place Category Association Map
   private BehaviorMap behavior;
   
+  // Dominant Place Category for each Phase
+  private HashMap<Phase, PlaceCategory> phaseDomain;
+  
+  // Chance that Person will waver from their primary or secondary state (per HOUR)
+  private HashMap<Phase, Rate> phaseAnomoly;
+  
+  // Chance that Person will return to primary or secondary state if pursuing a dalliance (per HOUR)
+  private Rate recoverAnomoly;
+  
   // Person Dictionary sorted by Demographic
   private HashMap<Demographic, ArrayList<Person>> person;
   
@@ -41,14 +50,21 @@ public class CityModel extends EpiModel {
     this.phaseDuration = new Time();
     this.behavior = new BehaviorMap();
     
+    this.phaseDomain = new HashMap<Phase, PlaceCategory>();
+    
+    this.phaseAnomoly = new HashMap<Phase, Rate>();
+    for(Phase phase : Phase.values()) {
+      this.phaseAnomoly.put(phase, new Rate(0));
+    }
+    
     person = new HashMap<Demographic, ArrayList<Person>>();
     for(Demographic d : Demographic.values()) {
-      person.put(d, new ArrayList<Person>());
+      this.person.put(d, new ArrayList<Person>());
     }
     
     place = new HashMap<LandUse, ArrayList<Place>>();
     for(LandUse use : LandUse.values()) {
-      place.put(use, new ArrayList<Place>());
+      this.place.put(use, new ArrayList<Place>());
     }
   }
   
@@ -137,6 +153,36 @@ public class CityModel extends EpiModel {
    */
   public Phase getPhase() {
     return this.currentPhase;
+  }
+  
+  /**
+   * Set Chance that Person will waver from their primary or secondary state (per HOUR)
+   *
+   * @param p Phase
+   * @param anomoly Rate
+   */
+  public void setPhaseAnomoly(Phase p, Rate anomoly) {
+    this.phaseAnomoly.put(p, anomoly);
+  }
+  
+  /**
+   * Set Chance that Person will return to primary or secondary state if pursuing a dalliance (per HOUR)
+   *
+   * @param p Phase
+   * @param anomoly Rate
+   */
+  public void setRecoverAnomoly(Rate anomoly) {
+    this.recoverAnomoly = anomoly;
+  }
+  
+  /**
+   * Set Domain Place Category for each Phase
+   *
+   * @param p Phase
+   * @param c PlaceCategory
+   */
+  public void setPhaseDomain(Phase p, PlaceCategory c) {
+    this.phaseDomain.put(p, c);
   }
   
   /**
@@ -354,36 +400,48 @@ public class CityModel extends EpiModel {
    * @param timeStep
    */
   public void movePersons(Phase phase, Time phaseDuration, Time timeStep) {
+    
+    // Anomoly Rates
+    Time oneHour = new Time(1, TimeUnit.HOUR);
+    Time hourPerStep = timeStep.divide(oneHour);
+    Rate anomolyPerHour = this.phaseAnomoly.get(phase);
+    Rate anomolyPerStep = new Rate(hourPerStep.getAmount() * anomolyPerHour.get());
+    Rate recoverPerHour = this.recoverAnomoly;
+    Rate recoverPerStep = new Rate(hourPerStep.getAmount() * recoverPerHour.get());
+    
+    PlaceCategory phaseDomain = this.phaseDomain.get(phase);
+    
     for(Demographic d : Demographic.values()) {
       for(Person p : this.person.get(d)) {
         
-        // Calculate probability of agent movement during transitions
-        Time phaseTimePerStepTime = timeStep.divide(phaseDuration); // Uses Time.divide() for Unit Checking
-        Rate flowRate = new Rate(phaseTimePerStepTime.getAmount()); // [unitless phase time per step time]
+        // Current Place
+        Place currentPlace = p.getPlace();
         
-        // TO DO
-        switch(phase) {
-          case SLEEP:
-            p.moveToPrimary();
+        // Dominant Place
+        Place dominantPlace = currentPlace;
+        switch(phaseDomain) {
+          case PRIMARY:
+            dominantPlace = p.getPrimaryPlace();
             break;
-          case HOME:
-            p.moveToPrimary();
+          case SECONDARY:
+            dominantPlace = p.getSecondaryPlace();
             break;
-          case GO_WORK:
-            p.moveToSecondary();
+          case TERTIARY:
+            // Do Nothing
             break;
-          case WORK:
-            p.moveToSecondary();
-            break;
-          case WORK_LUNCH:
-            p.moveToSecondary();
-            break;
-          case LEISURE:
-            p.moveToPrimary();
-            break;
-          case GO_HOME:
-            p.moveToPrimary();
-            break;
+        }
+        
+        // Wander away from domain to teriary activity
+        if(currentPlace == dominantPlace) {
+          if(roll(anomolyPerStep)) {
+            p.moveTo(behavior.getRandomPlace(p, PlaceCategory.TERTIARY));
+          }
+          
+        // Return to domain from tertiary activity
+        } else {
+          if(roll(recoverPerStep)) {
+              p.moveTo(dominantPlace);
+          }
         }
       }
     }
@@ -448,5 +506,15 @@ public class CityModel extends EpiModel {
       Agent a = this.getAgents().get(i);
       if(!a.alive()) this.removeAgent(a);
     }
+  }
+  
+  /**
+   * Return true probabilistically at the specified rate
+   *
+   * @param r Rate
+   * @return true at rate r
+   */
+  public boolean roll(Rate r) {
+    return Math.random() < r.get();
   }
 }

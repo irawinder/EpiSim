@@ -92,6 +92,20 @@ public class Person extends Host {
   }
   
   /**
+   * Get the Person's Current Place
+   */
+  public Place getPlace() {
+    return (Place) this.getEnvironment();
+  }
+  
+  /**
+   * Set the Person's Current Place
+   */
+  public void setPlace(Place p) {
+    this.setEnvironment((Environment) p);
+  }
+  
+  /**
    * Set the Person's primary Place (e.g. home, dwelling, etc)
    *
    * @param primaryPlace Place
@@ -144,7 +158,7 @@ public class Person extends Host {
    *
    * @param destination Place
    */
-  public void move(Place destination) {
+  public void moveTo(Place destination) {
     // Cast to Environment to call inhereted "public void move(Environment e)" method
     this.move((Environment)destination);
   }
