@@ -118,7 +118,11 @@ class EpiModel implements Model, Cloneable {
   public void addHost(Host h) {
     
     // Master Model Dictionary
-    this.hostList.add(h);
+    if(this.hostList.contains(h)) {
+      println(h + " already exists.");
+    } else {
+      this.hostList.add(h);
+    }
     
     // Initialize Host Compartments with Pathogens
     for(Pathogen p : this.pathogenList) {
@@ -138,7 +142,11 @@ class EpiModel implements Model, Cloneable {
   public void addAgent(Agent a) {
     
     // Master Model Dictionary
-    this.agentList.add(a);
+    if(this.agentList.contains(a)) {
+      println(a + " already exists.");
+    } else {
+      this.agentList.add(a);
+    }
     
     // Location Sub-dictionary
     if(a.getLocation() instanceof Host) {
@@ -158,7 +166,11 @@ class EpiModel implements Model, Cloneable {
   public void addEnvironment(Environment e) {
     
     // Master Model Dictionary
-    this.environmentList.add(e);
+    if(this.environmentList.contains(e)) {
+      println(e + " already exists.");
+    } else {
+      this.environmentList.add(e);
+    }
   }
   
   /** 
@@ -167,7 +179,13 @@ class EpiModel implements Model, Cloneable {
    * @param p Pathogen
    */
   public void addPathogen(Pathogen p) {
-    this.pathogenList.add(p);
+    
+    // Master Model Dictionary
+    if(this.pathogenList.contains(p)) {
+      println(p + " already exists.");
+    } else {
+      this.pathogenList.add(p);
+    }
     
     // Initialize Host Compartments with New Pathogen
     for(Host h : hostList) {
@@ -183,7 +201,11 @@ class EpiModel implements Model, Cloneable {
   public void removeHost(Host h) {
     
     // Master Model Dictionary
-    hostList.remove(h);
+    if(hostList.contains(h)) {
+      hostList.remove(h);
+    } else {
+      println("No such Host exists");
+    }
     
     // Location Sub-dictionary
     Environment e = h.getEnvironment();
@@ -198,7 +220,11 @@ class EpiModel implements Model, Cloneable {
   public void removeAgent(Agent a) {
     
     // Master Model Dictionary
-    agentList.remove(a);
+    if(agentList.contains(a)) {
+      agentList.remove(a);
+    } else {
+      println("No such Agent exists");
+    }
     
     // Location Sub-dictionary
     if(a.getLocation() instanceof Host) {
@@ -218,7 +244,11 @@ class EpiModel implements Model, Cloneable {
   public void removeEnvironment(Environment e) {
     
     // Master Model Dictionary
-    environmentList.remove(e);
+    if(environmentList.contains(e)) {
+      environmentList.remove(e);
+    } else {
+      println("No such Environment exists");
+    }
   }
   
   /** 
@@ -229,7 +259,11 @@ class EpiModel implements Model, Cloneable {
   public void removePathogen(Pathogen p) {
     
     // Master Model Dictionary
-    pathogenList.remove(p);
+    if(pathogenList.contains(p)) {
+      pathogenList.remove(p);
+    } else {
+      println("No such Pathogen exists");
+    }
     
     // Remove Host Compartments containing Pathogen
     for(Host h : hostList) {
