@@ -109,30 +109,39 @@ public class CityModel extends EpiModel {
   }
   
   /**
-   * Add Place to City
+   * Add Place to City Model
    *
    * @param place
    */
   public void addPlace(Place l) {
     LandUse use = l.getUse();
-    
-    switch(use) {
-      case DWELLING:
-        break;
-      case OFFICE:
-        break;
-      case RETAIL:
-        break;
-      case SCHOOL:
-        break;
-      case OPENSPACE:
-        break;
-      case HOSPITAL:
-        break;
+    ArrayList<Place> list = this.place.get(use);
+    if(list.contains(l)) {
+      println(l + " already exists.");
+    } else {
+      list.add(l);
     }
     
     // Add place element to EpiModel extension
     this.addEnvironment(l);
+  }
+  
+  /**
+   * Remove Place from City Model
+   *
+   * @param place
+   */
+  public void removePlace(Place l) {
+    LandUse use = l.getUse();
+    ArrayList<Place> list = this.place.get(use);
+    if(list.contains(l)) {
+      list.remove(l);
+    } else {
+      println("No such Place exists.");
+    }
+    
+    // Remove place element to EpiModel extension
+    this.removeEnvironment(l);
   }
   
   /**
