@@ -342,6 +342,27 @@ public class CityView extends EpiView {
   public PersonViewMode personViewMode = PersonViewMode.COMPARTMENT;
   public PathogenType pathogenType = PathogenType.COVID_19;
   
+  // Commute Graphic (Pre-rendered)
+  PGraphics commuteLayer;
+  
+  public CityView(CityModel model) {
+    
+    this.setModel( (EpiModel) model);
+    this.renderCommutes();
+  }
+  
+  private void renderCommutes() {
+    commuteLayer = createGraphics(width, height);
+    commuteLayer.beginDraw();
+    for(Host h : this.getModel().getHosts()) {
+      if(h instanceof Person) {
+        Person p = (Person) h;
+        this.drawCommute(commuteLayer, p);
+      }
+    }
+    commuteLayer.endDraw();
+  }
+  
   /**
    * Render ViewModel to Processing Canvas
    */
@@ -351,12 +372,7 @@ public class CityView extends EpiView {
     
     // Draw Commutes
     if(showCommutes) {
-      for(Host h : this.getModel().getHosts()) {
-        if(h instanceof Person) {
-          Person p = (Person) h;
-          this.drawCommute(p);
-        }
-      }
+      image(commuteLayer, 0, 0);
     }
     
     // Draw Places
@@ -451,6 +467,21 @@ public class CityView extends EpiView {
     int y2 = (int) p.getSecondaryPlace().getCoordinate().getY();
     stroke(EDGE_STROKE);
     line(x1, y1, x2, y2);
+  }
+  
+  /**
+   * Render a Single Person's Commute
+   *
+   * @param g PGraphics
+   * @param p person
+   */
+  private void drawCommute(PGraphics g, Person p) {
+    int x1 = (int) p.getPrimaryPlace().getCoordinate().getX();
+    int y1 = (int) p.getPrimaryPlace().getCoordinate().getY();
+    int x2 = (int) p.getSecondaryPlace().getCoordinate().getX();
+    int y2 = (int) p.getSecondaryPlace().getCoordinate().getY();
+    g.stroke(EDGE_STROKE);
+    g.line(x1, y1, x2, y2);
   }
   
   /**

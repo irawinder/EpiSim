@@ -96,15 +96,14 @@ public void setup() {
   
   // Windowed Application Size (pixels)
   size(1200, 1000);
-  frameRate(10);
+  frameRate(30);
   
   // Initialize "Back-End" Object Model
   epidemic = new CityModel();
   configureCityModel();
   
   // Initialize "Front-End" View Model
-  viz = new CityView();
-  viz.setModel(epidemic);
+  viz = new CityView(epidemic);
   
   // Draw Visualization
   viz.draw();
@@ -117,6 +116,7 @@ public void draw() {
   if(autoPlay) {
     epidemic.update();
     viz.draw();
+    text("Framerate: " + frameRate, width - 225, height - 75);
   }
 }
 
@@ -128,7 +128,7 @@ public void keyPressed() {
     case 'r':
       epidemic = new CityModel();
       configureCityModel();
-      viz.setModel(epidemic);
+      viz = new CityView(epidemic);
       break;
     case 'h':
       epidemic.allToPrimary();
