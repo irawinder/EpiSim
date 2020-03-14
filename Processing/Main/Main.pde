@@ -17,9 +17,9 @@
   * @ ViewModel
   *    @Model()
   * - Processing Main()
-  *    - SimpleEpiModel()
-  *    - SimpleEpiView()
-  *    - EpiSim()
+  *    - CityModel()
+  *    - CityView()
+  *    - Sim()
   * - EpiModel() implements @Model
   *     - Time()
   *     - Pathogen()
@@ -36,23 +36,24 @@
   *         - Agent()
   *         - Environment()
   *         * Compartment 
-  * - SimpleEpiModel() extends EpiModel()
+  * - CityModel() extends EpiModel()
+  *     - Time()
   *     - Schedule()
-  *         - Time()
   *     - Person() extends Host()
   *         - Place()
   *         * Demographic
   *     - Place() extends Environment()
   *         * LandUse
-  * - EpiSim() implements @Simulation
+  *     * Phase
+  * - Sim() implements @Simulation
   *    - Time()
   *    @ Model()
   * - EpiView() implements @ViewModel
   *     - EpiModel()
   *     * PersonViewMode
   *     * PlaceViewMode
-  * - SimpleEpiView() extends EpiView()
-  *     - SimpleEpiModel()
+  * - CityView() extends EpiView()
+  *     - CityModel()
   * - Element()
   *     - Coordinate()
   * - Coordinate()
@@ -69,10 +70,10 @@
   */
 
 // Object Model of Epidemic
-private SimpleEpiModel epidemic;
+private CityModel epidemic;
 
 // Visualization Model for Object Model
-private SimpleEpiView viz;
+private CityView viz;
 
 // Global Demographic Thresholds
 private static int ADULT_AGE;
@@ -87,11 +88,11 @@ public void setup() {
   size(1200, 1000);
   
   // Initialize "Back-End" Object Model
-  epidemic = new SimpleEpiModel();
-  configureSimpleEpiModel();
+  epidemic = new CityModel();
+  configureCityModel();
   
   // Initialize "Front-End" View Model
-  viz = new SimpleEpiView();
+  viz = new CityView();
   viz.setModel(epidemic);
   
   // Draw Visualization
@@ -111,8 +112,8 @@ public void draw() {
 public void keyPressed() {
   switch(key) {
     case 'r':
-      epidemic = new SimpleEpiModel();
-      configureSimpleEpiModel();
+      epidemic = new CityModel();
+      configureCityModel();
       viz.setModel(epidemic);
       break;
     case 'h':
@@ -159,7 +160,7 @@ public void keyPressed() {
 /**
  * Configure a simple Epidemiological Model
  */
-private void configureSimpleEpiModel() {
+private void configureCityModel() {
   
   epidemic.setTime(new Time(0, TimeUnit.HOUR));
   epidemic.setTimeStep(new Time(1, TimeUnit.HOUR));
@@ -199,14 +200,14 @@ private void configureSimpleEpiModel() {
    */
   Pathogen covid = new Pathogen();
   configureCovid(covid);
-  epidemic.add(covid);
+  epidemic.addPathogen(covid);
   
   /**
    * Configure Cold Pathogen
    */
   Pathogen cold = new Pathogen();
   configureCold(cold);
-  epidemic.add(cold);
+  epidemic.addPathogen(cold);
   
   /**
    * Deploy Pathogens as Agents into the Host (Person) Population
@@ -309,7 +310,7 @@ public void configureCold(Pathogen cold) {
   cold.setType(PathogenType.COMMON_COLD);
   cold.setAttackRate(new Rate(0.3));
   
-  Time agentLife = new Time( 4, TimeUnit.HOUR);
+  Time agentLife = new Time(8, TimeUnit.HOUR);
   cold.setAgentLife(agentLife);
   
   Time incubationMean              = new Time(  2, TimeUnit.DAY);

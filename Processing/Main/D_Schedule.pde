@@ -109,11 +109,26 @@ public class Schedule {
    * @param currentTime instant passed to schedule
    */
   public Phase getPhase(Time currentTime) {
+    TimeInterval currentInterval = this.getInterval(currentTime);
+    if(currentInterval != null) {
+      return this.phaseMap.get(currentInterval);
+    } else {
+      return null;
+    }
+  }
+  
+  /**
+   * Retrieve current phase interval, assuming that the sequence of phases repeats 
+   * indefinitely.
+   *
+   * @param Time currentTime instant passed to schedule
+   */
+  public TimeInterval getInterval(Time currentTime) {
     
     // If phase sequence list is empty:
     if (this.getSequence().size() == 0) {
       println("Error: There are no phases in the sequence");
-      return null;
+      return new TimeInterval();
     
     // If phase sequence list is NOT empty:
     } else {
@@ -124,11 +139,11 @@ public class Schedule {
       
       // Iterate through phase sequences until it dosovers the phase at currentTime
       Time cumulativeTime = new Time(currentTime.getUnit());
-      Phase currentPhase = null;
+      TimeInterval currentInterval = null;
       for(TimeInterval phaseInterval : phaseSequence) {
         
-        // Set Current Phase enum
-        currentPhase = this.phaseMap.get(phaseInterval);
+        // Set Current Time Interval
+        currentInterval = phaseInterval;
         
         // Check if modulo is within current phase interal. break if so.
         Time phaseDuration = phaseInterval.getDuration();
@@ -137,10 +152,10 @@ public class Schedule {
           break;
         }
       }
-      if(currentPhase == null) {
-        println("Error: Phase not found");
+      if(currentInterval == null) {
+        println("Error: Phase interval not found");
       }
-      return currentPhase;
+      return currentInterval;
     }
   }
 }

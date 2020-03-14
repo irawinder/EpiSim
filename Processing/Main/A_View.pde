@@ -332,7 +332,7 @@ public class EpiView implements ViewModel {
 /**
  * Simple extension for Visualization Model for Epidemiological Object Model
  */
-public class SimpleEpiView extends EpiView {
+public class CityView extends EpiView {
   
   // View Mode Settings
   public boolean showPersons = true;
@@ -489,7 +489,7 @@ public class SimpleEpiView extends EpiView {
       "EDGEof Planetary Insight Center" + "\n\n" +
       "Layer Controls:" + "\n" +
       "Press '1' to hide/show Places" + "\n" +
-      "Press '2' to hide/show Peoples" + "\n" +
+      "Press '2' to hide/show Persons" + "\n" +
       "Press '3' to hide/show Commutes" + "\n" +
       "Press '4' to hide/show Pathogens" + "\n" +
       "Press 'p' to toggle Pathogen" + "\n" +
@@ -618,8 +618,8 @@ public class SimpleEpiView extends EpiView {
    */
   private void drawTime(int x, int y) {
     
-    // Cast EpiModel() to SimpleEpiModel() to access SimpleEpiModel() methods
-    SimpleEpiModel model = (SimpleEpiModel) this.getModel();
+    // Cast EpiModel() to CityModel() to access CityModel() methods
+    CityModel model = (CityModel) this.getModel();
     
     String text = 
       "Simulation Time: " + model.getTime() + "\n" +

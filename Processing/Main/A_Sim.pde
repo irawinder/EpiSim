@@ -1,7 +1,7 @@
 /**
  * Simulation is an abstract collection of model states over time
  */
-public class EpiSim implements Simulation {
+public class Sim implements Simulation {
   
   // Sequence of Discrete Instants that make up a simulation
   private ArrayList<Time> stepList;
@@ -12,7 +12,7 @@ public class EpiSim implements Simulation {
   /**
    * Construct Simulation Dictionaries
    */
-  public EpiSim() {
+  public Sim() {
     this.stepList = new ArrayList<Time>();
     this.stateMap = new HashMap<Time, Model>();
   }
