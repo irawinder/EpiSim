@@ -498,6 +498,7 @@ public class CityView extends EpiView {
       "Simulation Controls:" + "\n" +
       "Press 'r' to regenerate random city" + "\n" +
       "Press 't' to iterate one time step" + "\n" +
+      "Press 'a' to autoplay simulation" + "\n" +
       "Press 'w' to send everyone to work" + "\n" +
       "Press 'h' to send everyone home" + "\n";
     fill(DEFAULT_TEXT_FILL);

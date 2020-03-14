@@ -139,6 +139,16 @@ public class Person extends Host {
     this.move(destination);
   }
   
+  /**
+   * Move person to a specified destination
+   *
+   * @param destination Place
+   */
+  public void move(Place destination) {
+    // Cast to Environment to call inhereted "public void move(Environment e)" method
+    this.move((Environment)destination);
+  }
+  
   @Override
   public String toString() {
     return 

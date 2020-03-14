@@ -86,6 +86,9 @@ private CityView viz;
 private static int ADULT_AGE;
 private static int SENIOR_AGE;
 
+// Simulation Parameters
+private boolean autoPlay;
+
 /**
  * setup() runs once at the very beginning
  */
@@ -93,6 +96,7 @@ public void setup() {
   
   // Windowed Application Size (pixels)
   size(1200, 1000);
+  frameRate(10);
   
   // Initialize "Back-End" Object Model
   epidemic = new CityModel();
@@ -110,7 +114,10 @@ public void setup() {
  * draw() runs on an infinite loop after setup() is finished
  */
 public void draw() {
-  
+  if(autoPlay) {
+    epidemic.update();
+    viz.draw();
+  }
 }
 
 /**
@@ -125,11 +132,9 @@ public void keyPressed() {
       break;
     case 'h':
       epidemic.allToPrimary();
-      epidemic.update();
       break;
     case 'w':
       epidemic.allToSecondary();
-      epidemic.update();
       break;
     case '1':
       viz.showPlaces = !viz.showPlaces;
@@ -160,6 +165,9 @@ public void keyPressed() {
     case 't': // step model forward by one tick
       epidemic.update();
       break;
+    case 'a': // autoplay
+      autoPlay = !autoPlay;
+      break;
   }
   viz.draw();
 }
@@ -177,26 +185,26 @@ private void configureCityModel() {
    */
   BehaviorMap behavior = new BehaviorMap();
   
-  // Child Activities
-  behavior.setMap(Demographic.CHILD, PlaceCategory.PRIMARY,   LandUse.DWELLING);
-  behavior.setMap(Demographic.CHILD, PlaceCategory.SECONDARY, LandUse.SCHOOL);
-  behavior.setMap(Demographic.CHILD, PlaceCategory.TERTIARY,  LandUse.OPENSPACE);
-  behavior.setMap(Demographic.CHILD, PlaceCategory.TERTIARY,  LandUse.RETAIL);
+  // Child Activities (Demographic, Travel Category, Land Use, Max Distance Willing to Travel)
+  behavior.setMap(Demographic.CHILD, PlaceCategory.PRIMARY,   LandUse.DWELLING,   10000);
+  behavior.setMap(Demographic.CHILD, PlaceCategory.SECONDARY, LandUse.SCHOOL,     250);
+  behavior.setMap(Demographic.CHILD, PlaceCategory.TERTIARY,  LandUse.OPENSPACE,  100);
+  behavior.setMap(Demographic.CHILD, PlaceCategory.TERTIARY,  LandUse.RETAIL,     100);
   
   // Adult Activities
-  behavior.setMap(Demographic.ADULT, PlaceCategory.PRIMARY,   LandUse.DWELLING);
-  behavior.setMap(Demographic.ADULT, PlaceCategory.SECONDARY, LandUse.OFFICE);
-  behavior.setMap(Demographic.ADULT, PlaceCategory.SECONDARY, LandUse.SCHOOL);
-  behavior.setMap(Demographic.ADULT, PlaceCategory.SECONDARY, LandUse.HOSPITAL);
-  behavior.setMap(Demographic.ADULT, PlaceCategory.SECONDARY, LandUse.RETAIL);
-  behavior.setMap(Demographic.ADULT, PlaceCategory.TERTIARY,  LandUse.OPENSPACE);
-  behavior.setMap(Demographic.ADULT, PlaceCategory.TERTIARY,  LandUse.RETAIL);
+  behavior.setMap(Demographic.ADULT, PlaceCategory.PRIMARY,   LandUse.DWELLING,   10000);
+  behavior.setMap(Demographic.ADULT, PlaceCategory.SECONDARY, LandUse.OFFICE,     150);
+  behavior.setMap(Demographic.ADULT, PlaceCategory.SECONDARY, LandUse.SCHOOL,     150);
+  behavior.setMap(Demographic.ADULT, PlaceCategory.SECONDARY, LandUse.HOSPITAL,   150);
+  behavior.setMap(Demographic.ADULT, PlaceCategory.SECONDARY, LandUse.RETAIL,     150);
+  behavior.setMap(Demographic.ADULT, PlaceCategory.TERTIARY,  LandUse.OPENSPACE,  350);
+  behavior.setMap(Demographic.ADULT, PlaceCategory.TERTIARY,  LandUse.RETAIL,     350);
   
   // Senior Activities
-  behavior.setMap(Demographic.SENIOR, PlaceCategory.PRIMARY,   LandUse.DWELLING);
-  behavior.setMap(Demographic.SENIOR, PlaceCategory.SECONDARY, LandUse.DWELLING);
-  behavior.setMap(Demographic.SENIOR, PlaceCategory.TERTIARY,  LandUse.OPENSPACE);
-  behavior.setMap(Demographic.SENIOR, PlaceCategory.TERTIARY,  LandUse.RETAIL);
+  behavior.setMap(Demographic.SENIOR, PlaceCategory.PRIMARY,   LandUse.DWELLING,  10000);
+  behavior.setMap(Demographic.SENIOR, PlaceCategory.SECONDARY, LandUse.DWELLING,  150);
+  behavior.setMap(Demographic.SENIOR, PlaceCategory.TERTIARY,  LandUse.OPENSPACE, 350);
+  behavior.setMap(Demographic.SENIOR, PlaceCategory.TERTIARY,  LandUse.RETAIL,    350);
   
   epidemic.setBehavior(behavior);
   

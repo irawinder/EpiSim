@@ -294,7 +294,7 @@ public class CityModel extends EpiModel {
         person.setPrimaryPlace(l);
         
         // Set Secondary Place
-        Place secondaryPlace = this.behavior.getRandomPlace(person, PlaceCategory.SECONDARY, 150);
+        Place secondaryPlace = this.behavior.getRandomPlace(person, PlaceCategory.SECONDARY);
         person.setSecondaryPlace(secondaryPlace);
         
         // Add Person to EpiModel extension
@@ -328,9 +328,8 @@ public class CityModel extends EpiModel {
    * Force movement of all People to their secondary Place
    */
   public void allToSecondary() {
-    for(Host h : this.getHosts()) {
-      if (h instanceof Person) {
-        Person p = (Person) h;
+    for(Demographic d : Demographic.values()) {
+      for(Person p : this.person.get(d)) {
         p.moveToSecondary();
       }
     }
@@ -340,9 +339,8 @@ public class CityModel extends EpiModel {
    * Force movement of all People to their primary Place
    */
   public void allToPrimary() {
-    for(Host h : this.getHosts()) {
-      if (h instanceof Person) {
-        Person p = (Person) h;
+    for(Demographic d : Demographic.values()) {
+      for(Person p : this.person.get(d)) {
         p.moveToPrimary();
       }
     }
@@ -356,9 +354,8 @@ public class CityModel extends EpiModel {
    * @param timeStep
    */
   public void movePersons(Phase phase, Time phaseDuration, Time timeStep) {
-    for(Host h : this.getHosts()) {
-      if (h instanceof Person) {
-        Person p = (Person) h;
+    for(Demographic d : Demographic.values()) {
+      for(Person p : this.person.get(d)) {
         
         // Calculate probability of agent movement during transitions
         Time phaseTimePerStepTime = timeStep.divide(phaseDuration); // Uses Time.divide() for Unit Checking
@@ -367,18 +364,25 @@ public class CityModel extends EpiModel {
         // TO DO
         switch(phase) {
           case SLEEP:
+            p.moveToPrimary();
             break;
           case HOME:
+            p.moveToPrimary();
             break;
           case GO_WORK:
+            p.moveToSecondary();
             break;
           case WORK:
+            p.moveToSecondary();
             break;
           case WORK_LUNCH:
+            p.moveToSecondary();
             break;
           case LEISURE:
+            p.moveToPrimary();
             break;
           case GO_HOME:
+            p.moveToPrimary();
             break;
         }
       }

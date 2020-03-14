@@ -6,41 +6,55 @@ public class BehaviorMap {
   // List of LandUse types categorized by whether a specific demographic considers it primary, secondary, or tertiary
   private HashMap<Demographic, HashMap<PlaceCategory, ArrayList<LandUse>>> useMap;
   
+  // Maximum Travel Distances categorized by whether a specific demographic considers it primary, secondary, or tertiary
+  private HashMap<Demographic, HashMap<PlaceCategory, HashMap<LandUse, Double>>> distanceMap;
+  
   // List of Place Elements categorized by whether a specific demographic considers it primary, secondary, or tertiary
   private HashMap<Demographic, HashMap<PlaceCategory, ArrayList<Place>>> placeMap;
   
   /**
-   * Construct Empty Activity Maps
+   * Construct Empty Behavior Maps
    */ 
   public BehaviorMap() {
     useMap = new HashMap<Demographic, HashMap<PlaceCategory, ArrayList<LandUse>>>();
     placeMap = new HashMap<Demographic, HashMap<PlaceCategory, ArrayList<Place>>>();
+    distanceMap = new HashMap<Demographic, HashMap<PlaceCategory, HashMap<LandUse, Double>>>();
     for(Demographic d : Demographic.values()) {
       HashMap<PlaceCategory, ArrayList<LandUse>> uMap = new HashMap<PlaceCategory, ArrayList<LandUse>>();
       HashMap<PlaceCategory, ArrayList<Place>> pMap = new HashMap<PlaceCategory, ArrayList<Place>>();
+      HashMap<PlaceCategory, HashMap<LandUse, Double>> dMap = new HashMap<PlaceCategory, HashMap<LandUse, Double>>();
       for(PlaceCategory c : PlaceCategory.values()) {
         uMap.put(c, new ArrayList<LandUse>());
         pMap.put(c, new ArrayList<Place>());
+        dMap.put(c, new HashMap<LandUse, Double>());
       }
       useMap.put(d, uMap);
       placeMap.put(d, pMap);
+      distanceMap.put(d, dMap);
     }
   }
   
  /**
-   * Set a list of uses for a specified category in a specified demographic
+   * Set a list of uses and max travel distance for a specified category in a specified demographic
    *
    * @param d Demographic
    * @param c PlaceCategory
    * @param use LandUse
+   * @param distance double
    */
-  public void setMap(Demographic d, PlaceCategory c, LandUse use) {
-    ArrayList<LandUse> placeList = this.useMap.get(d).get(c);
-    if(placeList.contains(use)) {
+  public void setMap(Demographic d, PlaceCategory c, LandUse use, double maxDistance) {
+    
+    // Set the LandUse Map
+    ArrayList<LandUse> useList = this.useMap.get(d).get(c);
+    if(useList.contains(use)) {
       println(use + " already exists in map");
     } else {
-      placeList.add(use);
+      useList.add(use);
     }
+    
+    //Set the Max Distance Map
+    HashMap<LandUse, Double> distMap = this.distanceMap.get(d).get(c);
+    distMap.put(use, maxDistance);
   }
   
   /**
@@ -83,6 +97,24 @@ public class BehaviorMap {
   }
   
  /**
+   * Check how far person will travel to specified use if valid for a specified category in a specified demographic
+   *
+   * @param d Demographic
+   * @param c PlaceCategory
+   * @param use LandUse
+   *
+   * @return maximum distance person will travel
+   */
+  public double maxTravel(Demographic d, PlaceCategory c, LandUse use) {
+    ArrayList useList = useMap.get(d).get(c);
+    if(useList.contains(use)) {
+      return this.distanceMap.get(d).get(c).get(use);
+    } else {
+      return 0;
+    }
+  }
+  
+ /**
    * Get List of Places Associated with a specific category in a specific demographic
    *
    * @param d Demographic
@@ -101,7 +133,7 @@ public class BehaviorMap {
    * @param c PlaceCategory
    * @param d Demographic
    */
-  public Place getRandomPlace(Person p, PlaceCategory c, double distance) {
+  public Place getRandomPlace(Person p, PlaceCategory c) {
     Demographic d = p.getDemographic();
     ArrayList<Place> randomOptions = this.getPlaces(d, c);
     Place current = (Place) p.getEnvironment();
@@ -117,7 +149,9 @@ public class BehaviorMap {
       // Calculate whether this environement is close enough to home
       Coordinate iCoord = current.getCoordinate();
       Coordinate fCoord = randomPlace.getCoordinate();
-      boolean proximate = iCoord.distance(fCoord) < distance;
+      LandUse use = randomPlace.getUse();
+      double maxDistance = this.distanceMap.get(d).get(c).get(use);
+      boolean proximate = iCoord.distance(fCoord) < maxDistance;
       
       // If close enough ...
       if(proximate) return randomPlace;
