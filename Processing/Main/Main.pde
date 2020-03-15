@@ -130,19 +130,8 @@ public void draw() {
  */
 public void keyPressed() {
   switch(key) {
-    case 'r':
-      epidemic = new CityModel();
-      configModel();
-      viz = new CityView(epidemic);
-      configView();
-      viz.preDraw(epidemic);
-      break;
-    case 'h':
-      epidemic.allToPrimary();
-      break;
-    case 'w':
-      epidemic.allToSecondary();
-      break;
+    
+    // View Controls
     case '1':
       viz.switchToggle(ViewParameter.SHOW_PLACES);
       break;
@@ -155,7 +144,7 @@ public void keyPressed() {
     case '4':
       viz.switchToggle(ViewParameter.SHOW_AGENTS);
       break;
-    case 'p':
+    case 'n':
       switch(viz.getPathogenMode()) {
         case PATHOGEN:
           viz.nextPathogen();
@@ -165,21 +154,36 @@ public void keyPressed() {
           break;
       }
       break;
-    case 'o':
+    case 'q':
       viz.nextAgentMode();
       break;
-    case 's':
+    case 'e':
       viz.nextPersonMode();
       break;
-    case 'l':
+    case 'w':
       viz.nextPlaceMode();
       viz.preDraw(epidemic);
       break;
-    case 't': // step model forward by one tick
-      epidemic.update();
+    
+    // Simulation Controls
+    case 'r':
+      epidemic = new CityModel();
+      configModel();
+      viz = new CityView(epidemic);
+      configView();
+      viz.preDraw(epidemic);
+      break;
+    case 'z':
+      epidemic.allToPrimary();
+      break;
+    case 'x':
+      epidemic.allToSecondary();
       break;
     case 'a': // autoplay
       autoRun = !autoRun;
+      break;
+    case 's': // step model forward by one tick
+      epidemic.update();
       break;
   }
   viz.draw(epidemic);

@@ -21,17 +21,21 @@ public void configView() {
     "Press '2' to hide/show Persons" + "\n" +
     "Press '3' to hide/show Commutes" + "\n" +
     "Press '4' to hide/show Pathogens" + "\n\n" +
-    "Press 'p' for next Infection Type" + "\n\n" +
-    "Press 'o' to toggle Agent Legend" + "\n" +
-    "Press 's' to toggle Person Legend" + "\n" +
-    "Press 'l' to toggle Place Legend" + "\n\n" +
+    "Press 'n' for next Infection Type" + "\n\n" +
+    "Press 'q' to toggle Agent Legend" + "\n" +
+    "Press 'w' to toggle Place Legend" + "\n" +
+    "Press 'e' to toggle Person Legend" + "\n\n" +
+    
     
     "Simulation Controls:" + "\n" +
     "Press 'r' to regenerate random city" + "\n" +
-    "Press 't' to iterate one time step" + "\n" +
-    "Press 'a' to autoplay simulation" + "\n" +
-    "Press 'w' to send everyone to work" + "\n" +
-    "Press 'h' to send everyone home" + "\n";
+    "Press 'z' to send everyone home" + "\n" +
+    "Press 'x' to send everyone to work" + "\n\n" +
+    
+    "Time Controls:" + "\n" +
+    "Press 's' to iterate one time step" + "\n" +
+    "Press 'a' to autoplay simulation" + "\n";
+    
   viz.setInfo(info);
 
   // Compartment Names
@@ -96,9 +100,9 @@ public void configView() {
   viz.setValue(ViewParameter.LEFT_MARGIN,        50);  // pixels
   viz.setValue(ViewParameter.GENERAL_MARGIN,     125); // pixels
   viz.setValue(ViewParameter.INFO_Y,             100); // pixels
-  viz.setValue(ViewParameter.PATHOGEN_LEGEND_Y,  450); // pixels
-  viz.setValue(ViewParameter.PERSON_LEGEND_Y,    560); // pixels
-  viz.setValue(ViewParameter.PLACE_LEGEND_Y,     710); // pixels
+  viz.setValue(ViewParameter.PATHOGEN_LEGEND_Y,  470); // pixels
+  viz.setValue(ViewParameter.PERSON_LEGEND_Y,    580); // pixels
+  viz.setValue(ViewParameter.PLACE_LEGEND_Y,     730); // pixels
   
   // Text Settings
   viz.setValue(ViewParameter.TEXT_HEIGHT,        15);                        // pixels
@@ -113,8 +117,8 @@ public void configView() {
   // Density Heatmap Paramters
   viz.setValue(ViewParameter.MIN_DENSITY,        0);               // people per area
   viz.setValue(ViewParameter.MAX_DENSITY,        1/50.0);          // people per area
-  viz.setValue(ViewParameter.MIN_DENSITY_HUE,    125.0*255/360);   // 0 - 255
-  viz.setValue(ViewParameter.MAX_DENSITY_HUE,        0*255/360);   // 0 - 255
+  viz.setValue(ViewParameter.MIN_DENSITY_HUE,    90);              // Green
+  viz.setValue(ViewParameter.MAX_DENSITY_HUE,    0);               // Red
   
   // Generic Agent Parameters
   viz.setValue(ViewParameter.AGENT_DIAMETER,     7);    // pixels
