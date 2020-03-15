@@ -17,11 +17,162 @@ public class CityView extends EpiView {
   /**
    * Construct EpiView Model
    */
-  public CityView() {
-    super();
-    
+  public CityView(CityModel model) {
+    super(model);
     personMode = PersonMode.values()[0];
     placeMode = PlaceMode.values()[0];
+  }
+  
+  /**
+   * Render ViewModel to Processing Canvas
+   *
+   * @param mode CityModel
+   */
+  public void draw(CityModel model) {
+    background(255);
+    
+    boolean showCommutes = this.getToggle(ViewParameter.SHOW_COMMUTES);
+    boolean showPlaces   = this.getToggle(ViewParameter.SHOW_PLACES);
+    boolean showPersons  = this.getToggle(ViewParameter.SHOW_PERSONS);
+    boolean showAgents   = this.getToggle(ViewParameter.SHOW_AGENTS);
+    
+    int textFill = (int) this.getValue(ViewParameter.TEXT_FILL);
+    int textHeight = (int) this.getValue(ViewParameter.TEXT_HEIGHT);
+    
+    // Draw Commutes
+    if(showCommutes) {
+      image(commuteLayer, 0, 0);
+    }
+    
+    // Draw Places
+    if(showPlaces) {
+      switch(this.placeMode) {
+        case LANDUSE:
+          image(placeLayer, 0, 0);
+          break;
+        case DENSITY:
+          for(Environment e : model.getEnvironments()) {
+            if(e instanceof Place) {
+              Place p = (Place) e;
+              this.drawDensity(p);
+            }
+          }
+          break;
+      }
+    }
+    
+    // Draw Pathogen Agents
+    if(showAgents) {
+      for(Agent a : model.getAgents()) {
+        this.drawAgent(a);
+      }
+    }
+    
+    // Draw People
+    if(showPersons) {
+      switch(this.personMode) {
+        case DEMOGRAPHIC:
+          for(Host h : model.getHosts()) {
+            if(h instanceof Person) {
+              Person p = (Person) h;
+              this.drawDemographic(p);
+            }
+          }
+          break;
+        case COMPARTMENT:
+          for(Host h : model.getHosts()) {
+            if(h instanceof Person) {
+              Person p = (Person) h;
+              Pathogen pathogen = this.getCurrentPathogen();
+              this.drawCompartment(p, pathogen);
+            }
+          }
+          break;
+      }
+    }
+    
+    int leftMargin         = (int) this.getValue(ViewParameter.LEFT_MARGIN);
+    int generalMargin      = (int) this.getValue(ViewParameter.GENERAL_MARGIN);
+    int infoY              = (int) this.getValue(ViewParameter.INFO_Y);
+    int pathogenLegendY    = (int) this.getValue(ViewParameter.PATHOGEN_LEGEND_Y);
+    int personLegendY      = (int) this.getValue(ViewParameter.PERSON_LEGEND_Y);
+    int placeLegendY       = (int) this.getValue(ViewParameter.PLACE_LEGEND_Y);
+    
+    // Draw Information
+    drawInfo(leftMargin, infoY, textFill);
+    drawTime(model, leftMargin, height - generalMargin, textFill);
+    
+    // Draw Pathogen Legend
+    switch(this.getPathogenMode()) {
+      case PATHOGEN:
+        drawPathogenLegend(leftMargin, pathogenLegendY, textFill, textHeight);
+        break;
+      case PATHOGEN_TYPE:
+        drawPathogenTypeLegend(leftMargin, pathogenLegendY, textFill, textHeight);
+        break;
+    }
+    
+    // Draw Place Legend
+    switch(this.getPlaceMode()) {
+      case LANDUSE:
+        drawLandUseLegend(leftMargin, personLegendY, textFill, textHeight);
+        break;
+      case DENSITY:
+        drawDensityLegend(leftMargin, personLegendY, textFill, textHeight);
+        break;
+    }
+    
+    // Draw Person Legend
+    switch(this.getPersonMode()) {
+      case DEMOGRAPHIC:
+        drawDemographicLegend(leftMargin, placeLegendY, textFill, textHeight);
+        break;
+      case COMPARTMENT:
+        drawCompartmentLegend(leftMargin, placeLegendY, textFill, textHeight);
+        break;
+    }
+  }
+  
+  /**
+   * Pre Draw Static Graphics Objects
+   */
+  public void preDraw(CityModel model) {
+    this.renderPlaces(model);
+    this.renderCommutes(model);
+  }
+  
+  /**
+   * Render static image of places to PGraphics object
+   *
+   * @param model CityModel
+   */
+  private void renderPlaces(CityModel model) {
+    placeLayer = createGraphics(width, height);
+    placeLayer.beginDraw();
+    for(Environment e : model.getEnvironments()) {
+      if(e instanceof Place) {
+        Place p = (Place) e;
+        this.drawLandUse(placeLayer, p);
+      }
+    }
+    placeLayer.endDraw();
+  }
+  
+  /**
+   * Render static image of commutes to PGraphics object
+   *
+   * @param model CityModel
+   */
+  private void renderCommutes(CityModel model) {
+    commuteLayer = createGraphics(width, height);
+    commuteLayer.beginDraw();
+    for(Host h : model.getHosts()) {
+      if(h instanceof Person) {
+        Person p = (Person) h;
+        this.drawCommute(commuteLayer, p);
+      }
+    }
+    commuteLayer.endDraw();
   }
   
   /**
@@ -74,7 +225,7 @@ public class CityView extends EpiView {
    */
   public void nextPlaceMode() {
     int ordinal = placeMode.ordinal();
-    int size = PathogenType.values().length;
+    int size = PlaceMode.values().length;
     if(ordinal < size - 1) {
       placeMode = PlaceMode.values()[ordinal + 1];
     } else {
@@ -89,145 +240,6 @@ public class CityView extends EpiView {
    */
   public void setInfo(String info) {
     this.info = info;
-  }
-  
-  /**
-   * Pre Draw Static Graphics Objects
-   */
-  public void preDraw(CityModel model) {
-    this.renderPlaces(model);
-    this.renderCommutes(model);
-  }
-  
-  /**
-   * Render static image of places to PGraphics object
-   *
-   * @param model CityModel
-   */
-  private void renderPlaces(CityModel model) {
-    placeLayer = createGraphics(width, height);
-    placeLayer.beginDraw();
-    for(Environment e : model.getEnvironments()) {
-      if(e instanceof Place) {
-        Place p = (Place) e;
-        this.drawLandUse(placeLayer, p);
-      }
-    }
-    placeLayer.endDraw();
-  }
-  
-  /**
-   * Render static image of commutes to PGraphics object
-   *
-   * @param model CityModel
-   */
-  private void renderCommutes(CityModel model) {
-    commuteLayer = createGraphics(width, height);
-    commuteLayer.beginDraw();
-    for(Host h : model.getHosts()) {
-      if(h instanceof Person) {
-        Person p = (Person) h;
-        this.drawCommute(commuteLayer, p);
-      }
-    }
-    commuteLayer.endDraw();
-  }
-  
-  /**
-   * Render ViewModel to Processing Canvas
-   *
-   * @param mode CityModel
-   */
-  public void draw(CityModel model) {
-    background(255);
-    
-    boolean showCommutes = this.getToggle(ViewParameter.SHOW_COMMUTES);
-    boolean showPlaces   = this.getToggle(ViewParameter.SHOW_PLACES);
-    boolean showPersons  = this.getToggle(ViewParameter.SHOW_PERSONS);
-    boolean showAgents   = this.getToggle(ViewParameter.SHOW_AGENTS);
-    
-    int textFill = (int) this.getValue(ViewParameter.TEXT_FILL);
-    int textHeight = (int) this.getValue(ViewParameter.TEXT_HEIGHT);
-    
-    // Draw Commutes
-    if(showCommutes) {
-      image(commuteLayer, 0, 0);
-    }
-    
-    // Draw Places
-    if(showPlaces) {
-      switch(this.placeMode) {
-        case LANDUSE:
-          image(placeLayer, 0, 0);
-          break;
-        case DENSITY:
-          for(Environment e : model.getEnvironments()) {
-            if(e instanceof Place) {
-              Place p = (Place) e;
-              this.drawDensity(p);
-            }
-          }
-          break;
-      }
-      
-    }
-    
-    // Draw People
-    if(showPersons) {
-      switch(this.personMode) {
-        case DEMOGRAPHIC:
-          for(Host h : model.getHosts()) {
-            if(h instanceof Person) {
-              Person p = (Person) h;
-              this.drawDemographic(p);
-            }
-          }
-          break;
-        case COMPARTMENT:
-          for(Host h : model.getHosts()) {
-            if(h instanceof Person) {
-              Person p = (Person) h;
-              Pathogen pathogen = getCurrentPathogen(model);
-              this.drawCompartment(p, pathogen);
-            }
-          }
-          break;
-      }
-    }
-    
-    // Draw Agents
-    if(showAgents) {
-      for(Agent a : model.getAgents()) {
-        this.drawAgent(a);
-      }
-    }
-    
-    int X_INDENT = 50;
-    
-    // Draw Information
-    drawInfo(X_INDENT, 100, 250, 800, textFill);
-    drawTime(model, X_INDENT, height - 125, textFill);
-    
-    // Draw Legends
-    drawPathogenLegend(model, X_INDENT, 400, textFill, textHeight);
-    
-    switch(this.placeMode) {
-      case LANDUSE:
-        drawLandUseLegend(X_INDENT, 500, textFill, textHeight);
-        break;
-      case DENSITY:
-        drawDensityLegend(X_INDENT, 500, textFill, textHeight);
-        break;
-    }
-    
-    switch(this.personMode) {
-      case DEMOGRAPHIC:
-        drawDemographicLegend(X_INDENT, 650, textFill, textHeight);
-        break;
-      case COMPARTMENT:
-        drawCompartmentLegend(X_INDENT, 650, textFill, textHeight);
-        break;
-    }
   }
   
   /**
@@ -370,9 +382,9 @@ public class CityView extends EpiView {
    * @param h
    * @param textFill color
    */
-  private void drawInfo(int x, int y, int w, int h, color textFill) {
+  private void drawInfo(int x, int y, color textFill) {
     fill(textFill);
-    text(info, x, y, w, h);
+    text(info, x, y);
   }
   
   /**
@@ -417,7 +429,7 @@ public class CityView extends EpiView {
    * @praam textHeight int
    */
   protected void drawCompartmentLegend(int x, int y, color textFill, int textHeight) {
-    String legendName = this.getName(this.getPathogenMode()) + " Status";
+    String legendName = this.getCurrentPathogen().getName() + " Status";
     int w = (int) this.getValue(ViewParameter.PERSON_DIAMETER);
     int yOffset = textHeight/2;
     
@@ -547,24 +559,5 @@ public class CityView extends EpiView {
     
     fill(textFill);
     text(text, x, y);
-  }
-  
-  /** 
-   * Map a value to a specific hue color along a gradient
-   *
-   * @param value
-   * @param min
-   * @param max
-   * @param minHue
-   * @param maxHue
-   */
-  public color mapToGradient(double value, double v1, double v2, double hue1, double hue2) {
-    double ratio = (value - v1) / (v2 - v1);
-    double hue = hue1 + ratio * (hue2 - hue1);
-    colorMode(HSB);
-    color map = color((int) hue, 255, 255, 255);
-    colorMode(RGB);
-    return map;
-    
   }
 }

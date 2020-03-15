@@ -9,7 +9,7 @@ public void configView() {
   viz.setToggle(ViewParameter.SHOW_PLACES,      true);
   viz.setToggle(ViewParameter.SHOW_AGENTS,      true);
   
-  viz.setPathogenMode(PathogenType.COVID_19);
+  viz.setPathogenMode(PathogenMode.PATHOGEN);
   viz.setPersonMode(PersonMode.DEMOGRAPHIC);
   viz.setPlaceMode(PlaceMode.LANDUSE);
   
@@ -20,10 +20,11 @@ public void configView() {
     "Press '1' to hide/show Places" + "\n" +
     "Press '2' to hide/show Persons" + "\n" +
     "Press '3' to hide/show Commutes" + "\n" +
-    "Press '4' to hide/show Pathogens" + "\n" +
-    "Press 'p' to toggle Pathogen" + "\n" +
-    "Press 's' to toggle Person Status" + "\n" +
-    "Press 'l' to toggle Place Status" + "\n\n" +
+    "Press '4' to hide/show Pathogens" + "\n\n" +
+    "Press 'p' for next Pathogen" + "\n\n" +
+    "Press 'o' to toggle Pathogen Legend" + "\n" +
+    "Press 's' to toggle Person Legend" + "\n" +
+    "Press 'l' to toggle Place Legend" + "\n\n" +
     
     "Simulation Controls:" + "\n" +
     "Press 'r' to regenerate random city" + "\n" +
@@ -48,12 +49,14 @@ public void configView() {
   viz.setColor(Compartment.DEAD,               color(255,   0, 255, 255)); // Magenta
   
   // Pathogen Names
-  viz.setName(PathogenType.COVID_19,           "Covid-2019");
-  viz.setName(PathogenType.COMMON_COLD,        "Common Cold");
+  viz.setName(PathogenType.CORONAVIRUS,       "Coronavirus");
+  viz.setName(PathogenType.RHINOVIRUS,        "Rhinovirus");
+  viz.setName(PathogenType.INFLUENZA,         "Influenza");
   
   // Pathogen Colors
-  viz.setColor(PathogenType.COVID_19,          color(255,   0,   0, 230)); // Red
-  viz.setColor(PathogenType.COMMON_COLD,       color(  0,   0, 255, 230)); // Blue
+  viz.setColor(PathogenType.CORONAVIRUS,       color(255,   0,   0, 230)); // Red
+  viz.setColor(PathogenType.RHINOVIRUS,        color(  0,   0, 255, 230)); // Blue
+  viz.setColor(PathogenType.INFLUENZA,         color(  0, 150,   0, 230)); // Green
   
   // Host Demographic Names
   viz.setName(Demographic.CHILD,               "Child");
@@ -87,15 +90,23 @@ public void configView() {
   viz.setName(PlaceMode.LANDUSE,                "Land Use");
   viz.setName(PlaceMode.DENSITY,                "Denisty");
 
+  // Graphics Location Parameters
+  viz.setValue(ViewParameter.LEFT_MARGIN,        50);  // pixels
+  viz.setValue(ViewParameter.GENERAL_MARGIN,     125); // pixels
+  viz.setValue(ViewParameter.INFO_Y,             100); // pixels
+  viz.setValue(ViewParameter.PATHOGEN_LEGEND_Y,  450); // pixels
+  viz.setValue(ViewParameter.PERSON_LEGEND_Y,    560); // pixels
+  viz.setValue(ViewParameter.PLACE_LEGEND_Y,     710); // pixels
+  
   // Text Settings
-  viz.setValue(ViewParameter.TEXT_HEIGHT,        15);  // pixels
+  viz.setValue(ViewParameter.TEXT_HEIGHT,        15);                        // pixels
   viz.setValue(ViewParameter.TEXT_FILL,          color(  0,   0,   0, 200)); // Dark Gray
   
   // Generic Place Parameters
-  viz.setValue(ViewParameter.PLACE_SCALER,       1.0);  // scaler
+  viz.setValue(ViewParameter.PLACE_SCALER,       1.0);                       // scaler
   viz.setColor(ViewParameter.PLACE_STROKE,       color(255, 255, 255, 255)); // White
-  viz.setValue(ViewParameter.PLACE_DIAMETER,     7);    // pixels
-  viz.setValue(ViewParameter.PLACE_ALPHA,        125);  // 0 - 255
+  viz.setValue(ViewParameter.PLACE_DIAMETER,     7);                         // pixels
+  viz.setValue(ViewParameter.PLACE_ALPHA,        125);                       // 0 - 255
   
   // Density Heatmap Paramters
   viz.setValue(ViewParameter.MIN_DENSITY,        0);               // people per area
@@ -104,19 +115,19 @@ public void configView() {
   viz.setValue(ViewParameter.MAX_DENSITY_HUE,        0*255/360);   // 0 - 255
   
   // Generic Agent Parameters
-  viz.setValue(ViewParameter.AGENT_DIAMETER,     10);  // pixels
-  viz.setValue(ViewParameter.AGENT_WEIGHT,       3);   // pixels
-  viz.setValue(ViewParameter.AGENT_ALPHA,        125); // 0 - 255
+  viz.setValue(ViewParameter.AGENT_DIAMETER,     7);    // pixels
+  viz.setValue(ViewParameter.AGENT_WEIGHT,       3);    // pixels
+  viz.setValue(ViewParameter.AGENT_ALPHA,        100);   // 0 - 255
   
   // Generic Person Parameters
-  viz.setValue(ViewParameter.PERSON_DIAMETER,    5);   // pixels
+  viz.setValue(ViewParameter.PERSON_DIAMETER,    5);                         // pixels
   viz.setColor(ViewParameter.PERSON_STROKE,      color(  0,   0,   0, 100)); // Gray
-  viz.setValue(ViewParameter.PERSON_ALPHA,       150); // 0 - 255
+  viz.setValue(ViewParameter.PERSON_ALPHA,       150);                       // 0 - 255
   
   // Generic Commute Paramters
   viz.setColor(ViewParameter.COMMUTE_STROKE,     color(  0,   0,   0,  20)); // Light Gray
-  viz.setValue(ViewParameter.COMMUTE_WEIGHT,     1);   // pixels
+  viz.setValue(ViewParameter.COMMUTE_WEIGHT,     2);                         // pixels
   
   // Other Parameters
-  viz.setValue(ViewParameter.REDUCED_ALPHA,      25); // 0 - 255
+  viz.setValue(ViewParameter.REDUCED_ALPHA,      10);  // 0 - 255
 }

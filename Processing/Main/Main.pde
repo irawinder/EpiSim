@@ -101,7 +101,7 @@ public void setup() {
   configModel();
   
   // Initialize "Front-End" View Model
-  viz = new CityView();
+  viz = new CityView(epidemic);
   configView();
   
   // Initialize auto-run
@@ -131,6 +131,8 @@ public void keyPressed() {
     case 'r':
       epidemic = new CityModel();
       configModel();
+      viz = new CityView(epidemic);
+      configView();
       viz.preDraw(epidemic);
       break;
     case 'h':
@@ -152,6 +154,16 @@ public void keyPressed() {
       viz.switchToggle(ViewParameter.SHOW_AGENTS);
       break;
     case 'p':
+      switch(viz.getPathogenMode()) {
+        case PATHOGEN:
+          viz.nextPathogen();
+          break;
+        case PATHOGEN_TYPE:
+          viz.nextPathogenType();
+          break;
+      }
+      break;
+    case 'o':
       viz.nextPathogenMode();
       break;
     case 's':

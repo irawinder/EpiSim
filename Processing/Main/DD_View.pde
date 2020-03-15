@@ -20,6 +20,13 @@ public class View implements ViewModel {
   }
   
   /**
+   * Expect this to be Overridden by Child Class
+   */
+  public void draw(Model model) {
+    
+  }
+  
+  /**
    * Add a color association to a specified Enum
    *
    * @param e Enum
@@ -135,10 +142,21 @@ public class View implements ViewModel {
     }
   }
   
-  /**
-   * Expect this to be Overridden by Child Class
+  /** 
+   * Map a value to a specific hue color along a gradient
+   *
+   * @param value
+   * @param min
+   * @param max
+   * @param minHue
+   * @param maxHue
    */
-  public void draw(Model model) {
-    
+  public color mapToGradient(double value, double v1, double v2, double hue1, double hue2) {
+    double ratio = (value - v1) / (v2 - v1);
+    double hue = hue1 + ratio * (hue2 - hue1);
+    colorMode(HSB);
+    color map = color((int) hue, 255, 255, 255);
+    colorMode(RGB);
+    return map;
   }
 }

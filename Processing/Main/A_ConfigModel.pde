@@ -88,17 +88,29 @@ private void configModel() {
   epidemic.setPhaseDomain(Phase.LEISURE,    PlaceCategory.PRIMARY);   // e.g. home
   
   // Configure Covid Pathogen
-  Pathogen covid = new Pathogen();
-  configureCovid(covid);
+  Pathogen covid19 = new Pathogen();
+  configureCoronavirus(covid19, "Covid-2019");
   
   // Configure Cold Pathogen
-  Pathogen cold = new Pathogen();
-  configureCold(cold);
+  Pathogen coldA = new Pathogen();
+  configureRhinovirus(coldA, "Common Cold (Type A)");
+  
+  // Configure Covid Pathogen
+  Pathogen coldB = new Pathogen();
+  configureRhinovirus(coldB, "Common Cold (Type B)");
+  
+  // Configure Cold Pathogen
+  Pathogen flu = new Pathogen();
+  configureInfluenza(flu, "Flu-2019");
   
   // Deploy Pathogens as Agents into the Host (Person) Population
   // Parameters: pathogen, initial host count
-  epidemic.patientZero(cold, 10);
-  epidemic.patientZero(covid, 1);
+  epidemic.patientZero(covid19, 1);
+  epidemic.patientZero(coldA, 20);
+  epidemic.patientZero(coldB, 1);
+  epidemic.patientZero(flu, 4);
+  
+  
 }
 
 /**
@@ -106,57 +118,58 @@ private void configModel() {
  *
  * @param covid pathogen to configure
  */
-void configureCovid(Pathogen covid) {
+void configureCoronavirus(Pathogen p, String name) {
   
   // Attributes
-  covid.setType(PathogenType.COVID_19);
-  covid.setAttackRate(new Rate(0.3));
+  p.setName(name);
+  p.setType(PathogenType.CORONAVIRUS);
+  p.setAttackRate(new Rate(0.3));
   
   // Length of time that pathogen can survice outside of host via Agent
   Time agentLife = new Time(36, TimeUnit.HOUR);
-  covid.setAgentLife(agentLife);
+  p.setAgentLife(agentLife);
   
   // Host Pathogen Manifestations
   Time incubationMean              = new Time( 7, TimeUnit.DAY);
   Time incubationStandardDeviation = new Time( 3, TimeUnit.DAY);
   Time infectiousMean              = new Time(14, TimeUnit.DAY);
   Time infectiousStandardDeviation = new Time( 2, TimeUnit.DAY);
-  covid.setIncubationDistribution(incubationMean, incubationStandardDeviation);
-  covid.setInfectiousDistribution(infectiousMean, infectiousStandardDeviation);
+  p.setIncubationDistribution(incubationMean, incubationStandardDeviation);
+  p.setInfectiousDistribution(infectiousMean, infectiousStandardDeviation);
   
   // Mortality Rate When Treated
-  covid.setMortalityTreated(Demographic.CHILD,  new Rate(0.001));
-  covid.setMortalityTreated(Demographic.ADULT,  new Rate(0.010));
-  covid.setMortalityTreated(Demographic.SENIOR, new Rate(0.020));
+  p.setMortalityTreated(Demographic.CHILD,  new Rate(0.001));
+  p.setMortalityTreated(Demographic.ADULT,  new Rate(0.010));
+  p.setMortalityTreated(Demographic.SENIOR, new Rate(0.020));
   
   // Mortality Rate When UnTreated
-  covid.setMortalityUntreated(Demographic.CHILD,  new Rate(0.002));
-  covid.setMortalityUntreated(Demographic.ADULT,  new Rate(0.020));
-  covid.setMortalityUntreated(Demographic.SENIOR, new Rate(0.080));
+  p.setMortalityUntreated(Demographic.CHILD,  new Rate(0.002));
+  p.setMortalityUntreated(Demographic.ADULT,  new Rate(0.020));
+  p.setMortalityUntreated(Demographic.SENIOR, new Rate(0.080));
   
   // Children's rate of expression symptoms
-  covid.setSymptomExpression(Demographic.CHILD, Symptom.FEVER,               new Rate(0.5*0.50));
-  covid.setSymptomExpression(Demographic.CHILD, Symptom.COUGH,               new Rate(0.5*0.50));
-  covid.setSymptomExpression(Demographic.CHILD, Symptom.SHORTNESS_OF_BREATH, new Rate(0.5*0.25));
-  covid.setSymptomExpression(Demographic.CHILD, Symptom.FATIGUE,             new Rate(0.5*0.05));
-  covid.setSymptomExpression(Demographic.CHILD, Symptom.MUSCLE_ACHE,         new Rate(0.5*0.05));
-  covid.setSymptomExpression(Demographic.CHILD, Symptom.DIARRHEA,            new Rate(0.5*0.05));
+  p.setSymptomExpression(Demographic.CHILD, Symptom.FEVER,               new Rate(0.5*0.50));
+  p.setSymptomExpression(Demographic.CHILD, Symptom.COUGH,               new Rate(0.5*0.50));
+  p.setSymptomExpression(Demographic.CHILD, Symptom.SHORTNESS_OF_BREATH, new Rate(0.5*0.25));
+  p.setSymptomExpression(Demographic.CHILD, Symptom.FATIGUE,             new Rate(0.5*0.05));
+  p.setSymptomExpression(Demographic.CHILD, Symptom.MUSCLE_ACHE,         new Rate(0.5*0.05));
+  p.setSymptomExpression(Demographic.CHILD, Symptom.DIARRHEA,            new Rate(0.5*0.05));
   
   // Adult's rate of expression symptoms
-  covid.setSymptomExpression(Demographic.ADULT, Symptom.FEVER,               new Rate(1.0*0.50));
-  covid.setSymptomExpression(Demographic.ADULT, Symptom.COUGH,               new Rate(1.0*0.50));
-  covid.setSymptomExpression(Demographic.ADULT, Symptom.SHORTNESS_OF_BREATH, new Rate(1.0*0.25));
-  covid.setSymptomExpression(Demographic.ADULT, Symptom.FATIGUE,             new Rate(1.0*0.05));
-  covid.setSymptomExpression(Demographic.ADULT, Symptom.MUSCLE_ACHE,         new Rate(1.0*0.05));
-  covid.setSymptomExpression(Demographic.ADULT, Symptom.DIARRHEA,            new Rate(1.0*0.05));
+  p.setSymptomExpression(Demographic.ADULT, Symptom.FEVER,               new Rate(1.0*0.50));
+  p.setSymptomExpression(Demographic.ADULT, Symptom.COUGH,               new Rate(1.0*0.50));
+  p.setSymptomExpression(Demographic.ADULT, Symptom.SHORTNESS_OF_BREATH, new Rate(1.0*0.25));
+  p.setSymptomExpression(Demographic.ADULT, Symptom.FATIGUE,             new Rate(1.0*0.05));
+  p.setSymptomExpression(Demographic.ADULT, Symptom.MUSCLE_ACHE,         new Rate(1.0*0.05));
+  p.setSymptomExpression(Demographic.ADULT, Symptom.DIARRHEA,            new Rate(1.0*0.05));
   
   // Senior's rate of expression symptoms
-  covid.setSymptomExpression(Demographic.SENIOR, Symptom.FEVER,              new Rate(1.5*0.50));
-  covid.setSymptomExpression(Demographic.SENIOR, Symptom.COUGH,              new Rate(1.5*0.50));
-  covid.setSymptomExpression(Demographic.SENIOR, Symptom.SHORTNESS_OF_BREATH,new Rate(1.5*0.25));
-  covid.setSymptomExpression(Demographic.SENIOR, Symptom.FATIGUE,            new Rate(1.5*0.05));
-  covid.setSymptomExpression(Demographic.SENIOR, Symptom.MUSCLE_ACHE,        new Rate(1.5*0.05));
-  covid.setSymptomExpression(Demographic.SENIOR, Symptom.DIARRHEA,           new Rate(1.5*0.05));
+  p.setSymptomExpression(Demographic.SENIOR, Symptom.FEVER,              new Rate(1.5*0.50));
+  p.setSymptomExpression(Demographic.SENIOR, Symptom.COUGH,              new Rate(1.5*0.50));
+  p.setSymptomExpression(Demographic.SENIOR, Symptom.SHORTNESS_OF_BREATH,new Rate(1.5*0.25));
+  p.setSymptomExpression(Demographic.SENIOR, Symptom.FATIGUE,            new Rate(1.5*0.05));
+  p.setSymptomExpression(Demographic.SENIOR, Symptom.MUSCLE_ACHE,        new Rate(1.5*0.05));
+  p.setSymptomExpression(Demographic.SENIOR, Symptom.DIARRHEA,           new Rate(1.5*0.05));
 }
 
 /**
@@ -164,43 +177,91 @@ void configureCovid(Pathogen covid) {
  *
  * @param cold pathogen to configure
  */
-public void configureCold(Pathogen cold) {
+public void configureRhinovirus(Pathogen p, String name) {
   
   // Attributes
-  cold.setType(PathogenType.COMMON_COLD);
-  cold.setAttackRate(new Rate(0.3));
+  p.setName(name);
+  p.setType(PathogenType.RHINOVIRUS);
+  p.setAttackRate(new Rate(0.3));
   
   // Length of time that pathogen can survice outside of host via Agent
   Time agentLife = new Time(8, TimeUnit.HOUR);
-  cold.setAgentLife(agentLife);
+  p.setAgentLife(agentLife);
   
   // Host Pathogen Manifestations
   Time incubationMean              = new Time(  2, TimeUnit.DAY);
   Time incubationStandardDeviation = new Time(0.5, TimeUnit.DAY);
   Time infectiousMean              = new Time(  7, TimeUnit.DAY);
   Time infectiousStandardDeviation = new Time(  2, TimeUnit.DAY);
-  cold.setIncubationDistribution(incubationMean, incubationStandardDeviation);
-  cold.setInfectiousDistribution(infectiousMean, infectiousStandardDeviation);
+  p.setIncubationDistribution(incubationMean, incubationStandardDeviation);
+  p.setInfectiousDistribution(infectiousMean, infectiousStandardDeviation);
   
   // Mortality Rate When Treated
-  cold.setMortalityTreated(Demographic.CHILD,  new Rate(0.0));
-  cold.setMortalityTreated(Demographic.ADULT,  new Rate(0.0));
-  cold.setMortalityTreated(Demographic.SENIOR, new Rate(0.0));
+  p.setMortalityTreated(Demographic.CHILD,  new Rate(0.0));
+  p.setMortalityTreated(Demographic.ADULT,  new Rate(0.0));
+  p.setMortalityTreated(Demographic.SENIOR, new Rate(0.0));
   
   // Mortality Rate When UnTreated
-  cold.setMortalityUntreated(Demographic.CHILD,  new Rate(0.0));
-  cold.setMortalityUntreated(Demographic.ADULT,  new Rate(0.0));
-  cold.setMortalityUntreated(Demographic.SENIOR, new Rate(0.001));
+  p.setMortalityUntreated(Demographic.CHILD,  new Rate(0.000));
+  p.setMortalityUntreated(Demographic.ADULT,  new Rate(0.000));
+  p.setMortalityUntreated(Demographic.SENIOR, new Rate(0.001));
   
   // Child's rate of expression symptoms
-  cold.setSymptomExpression(Demographic.CHILD, Symptom.FEVER,               new Rate(1.0*0.50));
-  cold.setSymptomExpression(Demographic.CHILD, Symptom.COUGH,               new Rate(1.0*0.50));
+  p.setSymptomExpression(Demographic.CHILD, Symptom.FEVER,               new Rate(1.0*0.50));
+  p.setSymptomExpression(Demographic.CHILD, Symptom.COUGH,               new Rate(1.0*0.50));
   
   // Adult's rate of expression symptoms
-  cold.setSymptomExpression(Demographic.ADULT, Symptom.FEVER,               new Rate(1.0*0.50));
-  cold.setSymptomExpression(Demographic.ADULT, Symptom.COUGH,               new Rate(1.0*0.50));
+  p.setSymptomExpression(Demographic.ADULT, Symptom.FEVER,               new Rate(1.0*0.50));
+  p.setSymptomExpression(Demographic.ADULT, Symptom.COUGH,               new Rate(1.0*0.50));
   
   // Senior's rate of expression symptoms
-  cold.setSymptomExpression(Demographic.SENIOR, Symptom.FEVER,              new Rate(1.5*0.50));
-  cold.setSymptomExpression(Demographic.SENIOR, Symptom.COUGH,              new Rate(1.5*0.50));
+  p.setSymptomExpression(Demographic.SENIOR, Symptom.FEVER,              new Rate(1.5*0.50));
+  p.setSymptomExpression(Demographic.SENIOR, Symptom.COUGH,              new Rate(1.5*0.50));
+}
+
+/**
+ * Configure a pathogen to have Common Cold attributes
+ *
+ * @param cold pathogen to configure
+ */
+public void configureInfluenza(Pathogen p, String name) {
+  
+  // Attributes
+  p.setName(name);
+  p.setType(PathogenType.INFLUENZA);
+  p.setAttackRate(new Rate(0.3));
+  
+  // Length of time that pathogen can survice outside of host via Agent
+  Time agentLife = new Time(8, TimeUnit.HOUR);
+  p.setAgentLife(agentLife);
+  
+  // Host Pathogen Manifestations
+  Time incubationMean              = new Time(  2, TimeUnit.DAY);
+  Time incubationStandardDeviation = new Time(  1, TimeUnit.DAY);
+  Time infectiousMean              = new Time(  7, TimeUnit.DAY);
+  Time infectiousStandardDeviation = new Time(  2, TimeUnit.DAY);
+  p.setIncubationDistribution(incubationMean, incubationStandardDeviation);
+  p.setInfectiousDistribution(infectiousMean, infectiousStandardDeviation);
+  
+  // Mortality Rate When Treated
+  p.setMortalityTreated(Demographic.CHILD,  new Rate(0.000));
+  p.setMortalityTreated(Demographic.ADULT,  new Rate(0.000));
+  p.setMortalityTreated(Demographic.SENIOR, new Rate(0.001));
+  
+  // Mortality Rate When UnTreated
+  p.setMortalityUntreated(Demographic.CHILD,  new Rate(0.001));
+  p.setMortalityUntreated(Demographic.ADULT,  new Rate(0.001));
+  p.setMortalityUntreated(Demographic.SENIOR, new Rate(0.002));
+  
+  // Child's rate of expression symptoms
+  p.setSymptomExpression(Demographic.CHILD, Symptom.FEVER,               new Rate(1.0*0.50));
+  p.setSymptomExpression(Demographic.CHILD, Symptom.COUGH,               new Rate(1.0*0.50));
+  
+  // Adult's rate of expression symptoms
+  p.setSymptomExpression(Demographic.ADULT, Symptom.FEVER,               new Rate(1.0*0.50));
+  p.setSymptomExpression(Demographic.ADULT, Symptom.COUGH,               new Rate(1.0*0.50));
+  
+  // Senior's rate of expression symptoms
+  p.setSymptomExpression(Demographic.SENIOR, Symptom.FEVER,              new Rate(1.5*0.50));
+  p.setSymptomExpression(Demographic.SENIOR, Symptom.COUGH,              new Rate(1.5*0.50));
 }

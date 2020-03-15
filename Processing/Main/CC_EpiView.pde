@@ -3,59 +3,99 @@
  */
 public class EpiView extends View {
   
-  // View Mode Setting
-  private PathogenType pathogenMode;
+  // View States
+  private PathogenMode pathogenMode;
+  private PathogenType pathogenType;
+  int pathogenViewIndex;
+  
+  // List of Pathogens in Model
+  ArrayList<Pathogen> pathogenList;
   
   /**
    * Construct EpiView Model
    */
-  public EpiView() {
+  public EpiView(EpiModel model) {
     super();
     
-    pathogenMode = PathogenType.values()[0];
+    // View States
+    pathogenMode = PathogenMode.values()[0];
+    pathogenType = PathogenType.values()[0];
+    pathogenViewIndex = 0;
+    
+    // List of Pathogens in Model
+    pathogenList = model.getPathogens();
   }
   
   /**
-   * Set Pathogen Mode in View Model
-   *
-   * @param pM PathogenType
+   * Expect this to be Overridden by Child Class
    */
-  public void setPathogenMode(PathogenType pM) {
-    this.pathogenMode = pM;
+  public void draw(Model model) {
+    
   }
   
   /**
-   * Get Pathogen Mode in View Model
+   * Set PathogenMode in View Model
    */
-  public PathogenType getPathogenMode() {
+  public void setPathogenMode(PathogenMode pMode) {
+    this.pathogenMode = pMode;
+  }
+  
+  /**
+   * Get PathogenMode in View Model
+   */
+  public PathogenMode getPathogenMode() {
     return this.pathogenMode;
   }
   
   /**
-   * Next Pathogen Mode in View Model
+   * Get PathogenType in View Model
+   */
+  public PathogenType getCurrentPathogenType() {
+    return this.pathogenType;
+  }
+  
+  /**
+   * Get current Pathogen in List
+   */ 
+  protected Pathogen getCurrentPathogen() {
+    return this.pathogenList.get(this.pathogenViewIndex);
+  }
+  
+  /**
+   * Next PathogenType in View Model
    */
   public void nextPathogenMode() {
     int ordinal = pathogenMode.ordinal();
-    int size = PathogenType.values().length;
+    int size = PathogenMode.values().length;
     if(ordinal < size - 1) {
-      pathogenMode = PathogenType.values()[ordinal + 1];
+      pathogenMode = PathogenMode.values()[ordinal + 1];
     } else {
-      pathogenMode = PathogenType.values()[0];
+      pathogenMode = PathogenMode.values()[0];
     }
   }
   
   /**
-   * Get first pathogen in model that matches current PathogenType (Sloppy Sloppy!)
-   *
-   * @param model
-   */ 
-  protected Pathogen getCurrentPathogen(EpiModel model) {
-    for(Pathogen p : model.getPathogens()) {
-      if (p.getType() == this.getPathogenMode()) {
-        return p;
-      }
+   * Next PathogenType in View Model
+   */
+  public void nextPathogenType() {
+    int ordinal = pathogenType.ordinal();
+    int size = PathogenType.values().length;
+    if(ordinal < size - 1) {
+      pathogenType = PathogenType.values()[ordinal + 1];
+    } else {
+      pathogenType = PathogenType.values()[0];
     }
-    return new Pathogen();
+  }
+  
+  /**
+   * Next Pathogen In List
+   */
+  public void nextPathogen() {
+    if(pathogenViewIndex < pathogenList.size() - 1) {
+      this.pathogenViewIndex++;
+    } else {
+      this.pathogenViewIndex = 0;
+    }
   }
   
   /**
@@ -72,8 +112,17 @@ public class EpiView extends View {
     color viewStroke = this.getColor(aType);
     int alpha = (int) this.getValue(ViewParameter.AGENT_ALPHA);
     
-    if(aType != this.getPathogenMode()) {
-      alpha = (int) this.getValue(ViewParameter.REDUCED_ALPHA);
+    switch(pathogenMode) {
+      case PATHOGEN:
+        if(this.getCurrentPathogen() != a.getPathogen()) {
+          alpha = (int) this.getValue(ViewParameter.REDUCED_ALPHA);
+        }
+        break;
+      case PATHOGEN_TYPE:
+        if(this.getCurrentPathogenType() != a.getPathogen().getType()) {
+          alpha = (int) this.getValue(ViewParameter.REDUCED_ALPHA);
+        }
+        break;
     }
     
     stroke(viewStroke, alpha);
@@ -92,8 +141,8 @@ public class EpiView extends View {
    * @param textFill color
    * @praam textHeight int
    */
-  protected void drawPathogenLegend(EpiModel model, int x, int y, color textFill, int textHeight) {
-    String legendName = "Pathogens:";
+  protected void drawPathogenLegend(int x, int y, color textFill, int textHeight) {
+    String legendName = "Pathogens";
     int w = (int) this.getValue(ViewParameter.AGENT_DIAMETER);
     
     // Draw Legend Name
@@ -102,7 +151,7 @@ public class EpiView extends View {
     
     // Iterate through all possible Pathogen
     int yOffset = textHeight/2;
-    for (Pathogen p : model.getPathogens()) {
+    for (Pathogen p : this.pathogenList) {
       yOffset += textHeight;
       
       // Create and Draw a Straw-man Agent for Lengend Item
@@ -112,10 +161,8 @@ public class EpiView extends View {
       drawAgent(a);
       
       // Draw Symbol Label
-      PathogenType aType = a.getPathogen().getType();
-      String aName = this.getName(aType);
       fill(textFill);
-      text(aName, x + 1.5*textHeight, y + yOffset);
+      text(p.getName(), x + 1.5*textHeight, y + yOffset);
     }
   }
   
@@ -127,8 +174,8 @@ public class EpiView extends View {
    * @param textFill color
    * @praam textHeight int
    */
-  protected void drawAgentLegend(int x, int y, color textFill, int textHeight) {
-    String legendName = "Pathogen";
+  protected void drawPathogenTypeLegend(int x, int y, color textFill, int textHeight) {
+    String legendName = "Pathogen Types";
     int w = (int) this.getValue(ViewParameter.AGENT_DIAMETER);
     
     // Draw Legend Name

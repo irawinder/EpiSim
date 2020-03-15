@@ -37,8 +37,10 @@ public enum Symptom {
 }
 
 public enum PathogenType { 
-  COVID_19, 
-  COMMON_COLD
+  RHINOVIRUS, 
+  CORONAVIRUS,
+  INFLUENZA
+  // Add more?
 }
 
 public enum Day { 
@@ -72,6 +74,10 @@ public enum Phase {
   GO_HOME
 }
 
+public enum PathogenMode {
+  PATHOGEN, 
+  PATHOGEN_TYPE
+}
 public enum PersonMode {
   DEMOGRAPHIC, 
   COMPARTMENT
@@ -105,5 +111,11 @@ public enum ViewParameter {
   PERSON_ALPHA, 
   COMMUTE_STROKE,
   COMMUTE_WEIGHT,
-  REDUCED_ALPHA
+  REDUCED_ALPHA,
+  LEFT_MARGIN,
+  GENERAL_MARGIN,
+  INFO_Y,
+  PATHOGEN_LEGEND_Y,
+  PERSON_LEGEND_Y,
+  PLACE_LEGEND_Y
 }
