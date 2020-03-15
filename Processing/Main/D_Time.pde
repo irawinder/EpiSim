@@ -303,4 +303,47 @@ public class Time {
     double time = truncate / Math.pow(10, decimalPlaces);
     return time + " " + this.getUnit();
   }
+  
+  /**
+   * Return Time formatted as a digital clock (e.g. military time)
+   */
+  public String toClock() {
+    
+    int hour = (int) this.convert(TimeUnit.HOUR).getAmount() % (int) HOURS_IN_DAY;
+    int minute = (int) this.convert(TimeUnit.MINUTE).getAmount() % (int) MINUTES_IN_HOUR;
+    
+    String hourString = "";
+    if(hour < 10) hourString += "0";
+    hourString += hour;
+    
+    String minuteString = "";
+    if(minute < 10) minuteString += "0";
+    minuteString += minute;
+    
+    return hourString + ":" + minuteString;
+  }
+  
+  /**
+   * Return Time formatted as day of week
+   */
+  String toDayOfWeek() {
+    
+    int day = (int) this.convert(TimeUnit.DAY).getAmount();
+    
+    if(day % DAYS_IN_WEEK == 0) {
+      return "Sunday";
+    } else if(day % DAYS_IN_WEEK == 1) {
+      return "Monday";
+    } else if(day % DAYS_IN_WEEK == 2) {
+      return "Tuesday";
+    } else if(day % DAYS_IN_WEEK == 3) {
+      return "Wednesay";
+    } else if(day % DAYS_IN_WEEK == 4) {
+      return "Thursday";
+    } else if(day % DAYS_IN_WEEK == 5) {
+      return "Friday";
+    } else {
+      return "Saturday";
+    }
+  }
 }
