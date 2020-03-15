@@ -109,7 +109,6 @@ private void configModel() {
 void configureCovid(Pathogen covid) {
   
   // Attributes
-  covid.setName("COVID-19");
   covid.setType(PathogenType.COVID_19);
   covid.setAttackRate(new Rate(0.3));
   
@@ -168,7 +167,6 @@ void configureCovid(Pathogen covid) {
 public void configureCold(Pathogen cold) {
   
   // Attributes
-  cold.setName("Common Cold");
   cold.setType(PathogenType.COMMON_COLD);
   cold.setAttackRate(new Rate(0.3));
   
