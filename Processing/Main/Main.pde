@@ -49,7 +49,9 @@
   * - Sim() implements @Simulation
   *    - Time()
   *    @ Model()
-  * - EpiView() implements @ViewModel
+  * - View() implements @ViewModel
+  *     *ViewParameter
+  * - EpiView() extends View()
   *     - EpiModel()
   *     * PersonViewMode
   *     * PlaceViewMode
