@@ -110,7 +110,7 @@ public class CityView extends EpiView {
     for(Environment e : model.getEnvironments()) {
       if(e instanceof Place) {
         Place p = (Place) e;
-        this.drawPlace(placeLayer, p);
+        this.drawLandUse(placeLayer, p);
       }
     }
     placeLayer.endDraw();
@@ -149,8 +149,6 @@ public class CityView extends EpiView {
     int textFill = (int) this.getValue(ViewParameter.TEXT_FILL);
     int textHeight = (int) this.getValue(ViewParameter.TEXT_HEIGHT);
     
-    Pathogen pathogen = getCurrentPathogen(model);
-    
     // Draw Commutes
     if(showCommutes) {
       image(commuteLayer, 0, 0);
@@ -158,16 +156,42 @@ public class CityView extends EpiView {
     
     // Draw Places
     if(showPlaces) {
-      image(placeLayer, 0, 0);
+      switch(this.placeMode) {
+        case LANDUSE:
+          image(placeLayer, 0, 0);
+          break;
+        case DENSITY:
+          for(Environment e : model.getEnvironments()) {
+            if(e instanceof Place) {
+              Place p = (Place) e;
+              this.drawDensity(p);
+            }
+          }
+          break;
+      }
+      
     }
     
-    // Draw Persons
+    // Draw People
     if(showPersons) {
-      for(Host h : model.getHosts()) {
-        if(h instanceof Person) {
-          Person p = (Person) h;
-          this.drawPerson(p, pathogen);
-        }
+      switch(this.personMode) {
+        case DEMOGRAPHIC:
+          for(Host h : model.getHosts()) {
+            if(h instanceof Person) {
+              Person p = (Person) h;
+              this.drawDemographic(p);
+            }
+          }
+          break;
+        case COMPARTMENT:
+          for(Host h : model.getHosts()) {
+            if(h instanceof Person) {
+              Person p = (Person) h;
+              Pathogen pathogen = getCurrentPathogen(model);
+              this.drawCompartment(p, pathogen);
+            }
+          }
+          break;
       }
     }
     
@@ -192,7 +216,7 @@ public class CityView extends EpiView {
         drawLandUseLegend(X_INDENT, 500, textFill, textHeight);
         break;
       case DENSITY:
-        // TO DO
+        //drawDensityLegend(X_INDENT, 500, textFill, textHeight);
         break;
     }
     
@@ -207,45 +231,38 @@ public class CityView extends EpiView {
   }
   
   /**
-   * Render a Single Place
+   * Render a Single Land Use
    *
    * @param g PGraphics
    * @param l place
    */
-  protected void drawPlace(PGraphics g, Place l) {
+  protected void drawLandUse(PGraphics g, Place l) {
     int x = (int) l.getCoordinate().getX();
     int y = (int) l.getCoordinate().getY();
     int w = (int) Math.sqrt(l.getSize());
-    color viewColor = this.getColor(l.getUse());
+    LandUse use = l.getUse();
+    color viewFill = this.getColor(use);
     color viewStroke = this.getColor(ViewParameter.PLACE_STROKE);
     
     g.stroke(viewStroke);
-    g.fill(viewColor);
+    g.fill(viewFill);
     g.rectMode(CENTER);
     g.rect(x, y, w, w);
+    g.rectMode(CORNER);
   }
   
   /**
-   * Render a Single Place
+   * Render a Single Land Use
    *
    * @param l place
    */
-  protected void drawPlace(Place l) {
+  protected void drawLandUse(Place l) {
     int x = (int) l.getCoordinate().getX();
     int y = (int) l.getCoordinate().getY();
     int w = (int) Math.sqrt(l.getSize());
-    color viewFill = color(0);
+    LandUse use = l.getUse();
+    color viewFill = this.getColor(use);
     color viewStroke = this.getColor(ViewParameter.PLACE_STROKE);
-    
-    switch(this.placeMode) {
-      case LANDUSE:
-        LandUse use = l.getUse();
-        viewFill = this.getColor(use);
-        break;
-      case DENSITY:
-        // TO DO
-        break;
-    }
     
     stroke(viewStroke);
     fill(viewFill);
@@ -255,44 +272,72 @@ public class CityView extends EpiView {
   }
   
   /**
-   * Render a Single Person
+   * Render a Single Place Density
+   *
+   * @param l place
+   */
+  protected void drawDensity(Place l) {
+    int x = (int) l.getCoordinate().getX();
+    int y = (int) l.getCoordinate().getY();
+    int w = (int) Math.sqrt(l.getSize());
+    
+    double density = l.getDensity();
+    double minVal = this.getValue(ViewParameter.MIN_DENSITY);
+    double maxVal = this.getValue(ViewParameter.MAX_DENSITY);
+    double minHue = this.getValue(ViewParameter.MIN_DENSITY_HUE);
+    double maxHue = this.getValue(ViewParameter.MAX_DENSITY_HUE);
+    color viewFill = this.mapToGradient(density, minVal, maxVal, minHue, maxHue);
+    color viewStroke = this.getColor(ViewParameter.PLACE_STROKE);
+    int alpha = (int) this.getValue(ViewParameter.PLACE_ALPHA);
+    
+    stroke(viewStroke);
+    fill(viewFill, alpha);
+    rectMode(CENTER);
+    rect(x, y, w, w);
+    rectMode(CORNER);
+  }
+  
+  /**
+   * Render a Single Person Demographic
    *
    * @param p person
    * @param pathogenson
    */
-  protected void drawPerson(Person p, Pathogen pathogen) {
+  protected void drawCompartment(Person p, Pathogen pathogen) {
     int x = (int) p.getCoordinate().getX();
     int y = (int) p.getCoordinate().getY();
     int w = (int) this.getValue(ViewParameter.PERSON_DIAMETER);
-    color viewFill = color(0); // black by default
+    Compartment c = p.getCompartment(pathogen);
+    color viewFill = this.getColor(c);
     color viewStroke = this.getColor(ViewParameter.PERSON_STROKE);
-    
-    switch(this.personMode) {
-      case DEMOGRAPHIC:
-        Demographic d = p.getDemographic();
-        viewFill = this.getColor(d);
-        break;
-      case COMPARTMENT:
-        Compartment c = p.getCompartment(pathogen);
-        viewFill = this.getColor(c);
-        break;
-    }
+    int alpha = (int) this.getValue(ViewParameter.PERSON_ALPHA);
     
     stroke(viewStroke);
-    fill(viewFill, 150);
+    fill(viewFill, alpha);
     ellipseMode(CENTER);
     ellipse(x, y, w, w);
   }
   
   /**
-   * Render a Single Person
+   * Render a Single Person Demographic
    *
    * @param p person
+   * @param pathogenson
    */
-  protected void drawPerson(Person p) {
-    Pathogen pathogen = new Pathogen();
-    this.drawPerson(p, pathogen);
-  }
+  protected void drawDemographic(Person p) {
+    int x = (int) p.getCoordinate().getX();
+    int y = (int) p.getCoordinate().getY();
+    int w = (int) this.getValue(ViewParameter.PERSON_DIAMETER);
+    Demographic d = p.getDemographic();
+    color viewFill = this.getColor(d);
+    color viewStroke = this.getColor(ViewParameter.PERSON_STROKE);
+    int alpha = (int) this.getValue(ViewParameter.PERSON_ALPHA);
+    
+    stroke(viewStroke);
+    fill(viewFill, alpha);
+    ellipseMode(CENTER);
+    ellipse(x, y, w, w);
+  } 
   
   /**
    * Render a Single Person's Commute
@@ -349,7 +394,7 @@ public class CityView extends EpiView {
       Person p = new Person();
       p.setDemographic(d);
       p.setCoordinate(new Coordinate(x + w, y + yOffset - 0.25*textHeight));
-      drawPerson(p);
+      drawDemographic(p);
       
       // Draw Symbol Label
       String pName = this.getName(d);
@@ -383,7 +428,7 @@ public class CityView extends EpiView {
       Pathogen pathogen = new Pathogen();
       p.setCompartment(pathogen, c);
       p.setCoordinate(new Coordinate(x + w, y + yOffset - 0.25*textHeight));
-      drawPerson(p, pathogen);
+      drawCompartment(p, pathogen);
       
       // Draw Symbol Label
       String pName = this.getName(c);
@@ -418,7 +463,7 @@ public class CityView extends EpiView {
       l.setUse(type);
       l.setSize(Math.pow(2*w, 2));
       l.setCoordinate(new Coordinate(x + w, y + yOffset - 0.25*textHeight));
-      drawPlace(l);
+      drawLandUse(l);
       
       // Draw Symbol Label
       String pName = this.getName(l.getUse());
@@ -451,12 +496,23 @@ public class CityView extends EpiView {
     text(text, x, y);
   }
   
-  public Pathogen getCurrentPathogen(CityModel model) {
-    for(Pathogen p : model.getPathogens()) {
-      if (p.getType() == this.getPathogenMode()) {
-        return p;
-      }
-    }
-    return new Pathogen();
+  /** 
+   * Map a value to a specific hue color along a gradient
+   *
+   * @param value
+   * @param min
+   * @param max
+   * @param minHue
+   * @param maxHue
+   */
+  public color mapToGradient(double value, double v1, double v2, double hue1, double hue2) {
+    double ratio = (value - v1) / (v2 - v1);
+    double hue = hue1 + ratio * (hue2 - hue1);
+    println(hue);
+    colorMode(HSB);
+    color map = color((int) hue, 255, 255, 255);
+    colorMode(RGB);
+    return map;
+    
   }
 }

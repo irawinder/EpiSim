@@ -6,9 +6,6 @@ public class EpiView extends View {
   // View Mode Setting
   private PathogenType pathogenMode;
   
-  // Current Pathogen of View
-  private Pathogen focus;
-  
   /**
    * Construct EpiView Model
    */
@@ -16,23 +13,6 @@ public class EpiView extends View {
     super();
     
     pathogenMode = PathogenType.values()[0];
-    focus = new Pathogen();
-  }
-  
-  /**
-   * Set Pathogen of Focus in View Model
-   *
-   * @param pM PathogenType
-   */
-  public void setPathogenFocus(Pathogen p) {
-    this.focus = p;
-  }
-  
-  /**
-   * Get Pathogen Focus in View Model
-   */
-  public Pathogen getPathogenFocus() {
-    return this.focus;
   }
   
   /**
@@ -62,6 +42,20 @@ public class EpiView extends View {
     } else {
       pathogenMode = PathogenType.values()[0];
     }
+  }
+  
+  /**
+   * Get first pathogen in model that matches current PathogenType (Sloppy Sloppy!)
+   *
+   * @param model
+   */ 
+  protected Pathogen getCurrentPathogen(EpiModel model) {
+    for(Pathogen p : model.getPathogens()) {
+      if (p.getType() == this.getPathogenMode()) {
+        return p;
+      }
+    }
+    return new Pathogen();
   }
   
   /**

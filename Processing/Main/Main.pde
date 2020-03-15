@@ -157,9 +157,10 @@ public void keyPressed() {
     case 's':
       viz.nextPersonMode();
       break;
-    //case 'l':
-    //  viz.nextPlaceMode();
-    //  break;
+    case 'l':
+      viz.nextPlaceMode();
+      viz.preDraw(epidemic);
+      break;
     case 't': // step model forward by one tick
       epidemic.update();
       break;

@@ -94,7 +94,14 @@ public void configView() {
   // Generic Place Parameters
   viz.setValue(ViewParameter.PLACE_SCALE,        1.0);  // scaler
   viz.setColor(ViewParameter.PLACE_STROKE,       color(255, 255, 255, 255)); // White
-  viz.setValue(ViewParameter.PLACE_DIAMETER,     5);  // scaler
+  viz.setValue(ViewParameter.PLACE_DIAMETER,     5);    // scaler
+  viz.setValue(ViewParameter.PLACE_ALPHA,        125);  // 0 - 255
+  
+  // Density Heatmap Paramters
+  viz.setValue(ViewParameter.MIN_DENSITY,        0);               // people per area
+  viz.setValue(ViewParameter.MAX_DENSITY,        1/200.0);         // people per area
+  viz.setValue(ViewParameter.MIN_DENSITY_HUE,    125.0*255/360);   // 0 - 255
+  viz.setValue(ViewParameter.MAX_DENSITY_HUE,        0*255/360);   // 0 - 255
   
   // Generic Agent Parameters
   viz.setValue(ViewParameter.AGENT_DIAMETER,     10);  // pixels
@@ -104,6 +111,7 @@ public void configView() {
   // Generic Person Parameters
   viz.setValue(ViewParameter.PERSON_DIAMETER,    5);   // pixels
   viz.setColor(ViewParameter.PERSON_STROKE,      color(  0,   0,   0, 100)); // Gray
+  viz.setValue(ViewParameter.PERSON_ALPHA,       150); // 0 - 255
   
   // Generic Commute Paramters
   viz.setColor(ViewParameter.COMMUTE_STROKE,     color(  0,   0,   0,  20)); // Light Gray
