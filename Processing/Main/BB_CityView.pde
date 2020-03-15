@@ -216,7 +216,7 @@ public class CityView extends EpiView {
         drawLandUseLegend(X_INDENT, 500, textFill, textHeight);
         break;
       case DENSITY:
-        //drawDensityLegend(X_INDENT, 500, textFill, textHeight);
+        drawDensityLegend(X_INDENT, 500, textFill, textHeight);
         break;
     }
     
@@ -239,7 +239,9 @@ public class CityView extends EpiView {
   protected void drawLandUse(PGraphics g, Place l) {
     int x = (int) l.getCoordinate().getX();
     int y = (int) l.getCoordinate().getY();
-    int w = (int) Math.sqrt(l.getSize());
+    double scaler = this.getValue(ViewParameter.PLACE_SCALER);
+    int w = (int) ( Math.sqrt(l.getSize()) * scaler);
+    
     LandUse use = l.getUse();
     color viewFill = this.getColor(use);
     color viewStroke = this.getColor(ViewParameter.PLACE_STROKE);
@@ -259,7 +261,9 @@ public class CityView extends EpiView {
   protected void drawLandUse(Place l) {
     int x = (int) l.getCoordinate().getX();
     int y = (int) l.getCoordinate().getY();
-    int w = (int) Math.sqrt(l.getSize());
+    double scaler = this.getValue(ViewParameter.PLACE_SCALER);
+    int w = (int) ( Math.sqrt(l.getSize()) * scaler);
+    
     LandUse use = l.getUse();
     color viewFill = this.getColor(use);
     color viewStroke = this.getColor(ViewParameter.PLACE_STROKE);
@@ -279,7 +283,8 @@ public class CityView extends EpiView {
   protected void drawDensity(Place l) {
     int x = (int) l.getCoordinate().getX();
     int y = (int) l.getCoordinate().getY();
-    int w = (int) Math.sqrt(l.getSize());
+    double scaler = this.getValue(ViewParameter.PLACE_SCALER);
+    int w = (int) ( Math.sqrt(l.getSize()) * scaler);
     
     double density = l.getDensity();
     double minVal = this.getValue(ViewParameter.MIN_DENSITY);
@@ -447,7 +452,8 @@ public class CityView extends EpiView {
    */
   protected void drawLandUseLegend(int x, int y, color textFill, int textHeight) {
     String legendName = this.getName(this.placeMode);
-    int w = (int) this.getValue(ViewParameter.PLACE_DIAMETER);
+    double scaler = this.getValue(ViewParameter.PLACE_SCALER);
+    int w = (int) (this.getValue(ViewParameter.PLACE_DIAMETER));
     
     // Draw Legend Name
     fill(textFill);
@@ -461,7 +467,7 @@ public class CityView extends EpiView {
       // Create and Draw a Straw-man Place for Lengend Item
       Place l = new Place();
       l.setUse(type);
-      l.setSize(Math.pow(2*w, 2));
+      l.setSize(Math.pow(2*w/scaler, 2));
       l.setCoordinate(new Coordinate(x + w, y + yOffset - 0.25*textHeight));
       drawLandUse(l);
       
@@ -469,6 +475,53 @@ public class CityView extends EpiView {
       String pName = this.getName(l.getUse());
       fill(textFill);
       text(pName, x + 1.5*textHeight, y + yOffset);
+    }
+  }
+  
+  /**
+   * Render a Legend of Place Land Use Types
+   *
+   * @param x
+   * @param y
+   * @param textFill color
+   * @praam textHeight int
+   */
+  protected void drawDensityLegend(int x, int y, color textFill, int textHeight) {
+    String legendName = this.getName(this.placeMode);
+    int w = (int) this.getValue(ViewParameter.PLACE_DIAMETER);
+    double minDensity = this.getValue(ViewParameter.MIN_DENSITY);
+    double maxDensity = 1.1*this.getValue(ViewParameter.MAX_DENSITY);
+    int numRows = 6;
+    
+    // Draw Legend Name
+    fill(textFill);
+    text(legendName + ":", x, y);
+    
+    // Iterate through all possible place types
+    int yOffset = textHeight/2;
+    for (int i=0; i<numRows; i++) {
+      yOffset += textHeight;
+      int xP = int(x + w);
+      int yP = int(y + yOffset - 0.25*textHeight);
+      double density = minDensity + (maxDensity - minDensity) * i / (numRows - 1.0);
+      double minVal = this.getValue(ViewParameter.MIN_DENSITY);
+      double maxVal = this.getValue(ViewParameter.MAX_DENSITY);
+      double minHue = this.getValue(ViewParameter.MIN_DENSITY_HUE);
+      double maxHue = this.getValue(ViewParameter.MAX_DENSITY_HUE);
+      color viewFill = this.mapToGradient(density, minVal, maxVal, minHue, maxHue);
+      color viewStroke = this.getColor(ViewParameter.PLACE_STROKE);
+      int alpha = (int) this.getValue(ViewParameter.PLACE_ALPHA);
+    
+      stroke(viewStroke);
+      fill(viewFill, alpha);
+      rectMode(CENTER);
+      rect(xP, yP, 2*w, 2*w);
+      rectMode(CORNER);
+      
+      // Draw Symbol Label
+      String dName = "" + (int) (density * 1000) + " ppl per 1000sm";
+      fill(textFill);
+      text(dName, x + 1.5*textHeight, y + yOffset);
     }
   }
   
@@ -508,7 +561,6 @@ public class CityView extends EpiView {
   public color mapToGradient(double value, double v1, double v2, double hue1, double hue2) {
     double ratio = (value - v1) / (v2 - v1);
     double hue = hue1 + ratio * (hue2 - hue1);
-    println(hue);
     colorMode(HSB);
     color map = color((int) hue, 255, 255, 255);
     colorMode(RGB);

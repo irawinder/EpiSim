@@ -108,7 +108,7 @@ public class EpiView extends View {
       // Create and Draw a Straw-man Agent for Lengend Item
       Agent a = new Agent();
       a.setPathogen(p);
-      a.setCoordinate(new Coordinate(x + w, y + yOffset - 0.25*textHeight));
+      a.setCoordinate(new Coordinate(x + w/2, y + yOffset - 0.25*textHeight));
       drawAgent(a);
       
       // Draw Symbol Label
@@ -145,7 +145,7 @@ public class EpiView extends View {
       Pathogen p = new Pathogen();
       p.setType(pT);
       a.setPathogen(p);
-      a.setCoordinate(new Coordinate(x + w, y + yOffset - 0.25*textHeight));
+      a.setCoordinate(new Coordinate(x + w/2, y + yOffset - 0.25*textHeight));
       drawAgent(a);
       
       // Draw Symbol Label

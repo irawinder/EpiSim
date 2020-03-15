@@ -16,14 +16,14 @@ public void configView() {
   String info = 
     "Epidemic Simulation" + "\n" +
     "EDGEof Planetary Insight Center" + "\n\n" +
-    "Layer Controls:" + "\n" +
+    "View Controls:" + "\n" +
     "Press '1' to hide/show Places" + "\n" +
     "Press '2' to hide/show Persons" + "\n" +
     "Press '3' to hide/show Commutes" + "\n" +
     "Press '4' to hide/show Pathogens" + "\n" +
     "Press 'p' to toggle Pathogen" + "\n" +
-    "Press 's' to toggle Person Status" + "\n\n" +
-    //"Press 'l' to toggle Place Status" + "\n\n" +
+    "Press 's' to toggle Person Status" + "\n" +
+    "Press 'l' to toggle Place Status" + "\n\n" +
     
     "Simulation Controls:" + "\n" +
     "Press 'r' to regenerate random city" + "\n" +
@@ -92,14 +92,14 @@ public void configView() {
   viz.setValue(ViewParameter.TEXT_FILL,          color(  0,   0,   0, 200)); // Dark Gray
   
   // Generic Place Parameters
-  viz.setValue(ViewParameter.PLACE_SCALE,        1.0);  // scaler
+  viz.setValue(ViewParameter.PLACE_SCALER,       1.0);  // scaler
   viz.setColor(ViewParameter.PLACE_STROKE,       color(255, 255, 255, 255)); // White
-  viz.setValue(ViewParameter.PLACE_DIAMETER,     5);    // scaler
+  viz.setValue(ViewParameter.PLACE_DIAMETER,     7);    // pixels
   viz.setValue(ViewParameter.PLACE_ALPHA,        125);  // 0 - 255
   
   // Density Heatmap Paramters
   viz.setValue(ViewParameter.MIN_DENSITY,        0);               // people per area
-  viz.setValue(ViewParameter.MAX_DENSITY,        1/200.0);         // people per area
+  viz.setValue(ViewParameter.MAX_DENSITY,        1/50.0);          // people per area
   viz.setValue(ViewParameter.MIN_DENSITY_HUE,    125.0*255/360);   // 0 - 255
   viz.setValue(ViewParameter.MAX_DENSITY_HUE,        0*255/360);   // 0 - 255
   

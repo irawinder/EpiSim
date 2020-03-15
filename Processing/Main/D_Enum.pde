@@ -89,7 +89,7 @@ public enum ViewParameter {
   SHOW_AGENTS,
   TEXT_HEIGHT, 
   TEXT_FILL, 
-  PLACE_SCALE,
+  PLACE_SCALER,
   PLACE_STROKE, 
   PLACE_DIAMETER, 
   PLACE_ALPHA, 
