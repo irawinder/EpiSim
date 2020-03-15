@@ -9,4 +9,6 @@ Epidemic Simulation for Planetary Insight Center
 	2. Download Processing 3
 	https://processing.org/download/
 
-	3. Open and run "/Episim/Processing/Main/Main.pde" with Processing 3
+	3. Clone this repository, preserving any files and folder structure
+	
+	4. Open and run "/Episim/Processing/Main/Main.pde" with Processing 3
