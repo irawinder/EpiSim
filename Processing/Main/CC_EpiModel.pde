@@ -127,7 +127,7 @@ class EpiModel implements Model, Cloneable {
     
     // Initialize Host Compartments with Pathogens
     for(Pathogen p : this.pathogenList) {
-      h.setCompartment(p.getType(), Compartment.SUSCEPTIBLE);
+      h.setCompartment(p, Compartment.SUSCEPTIBLE);
     }
     
     // Location Sub-dictionary
@@ -190,7 +190,7 @@ class EpiModel implements Model, Cloneable {
     
     // Initialize Host Compartments with New Pathogen
     for(Host h : hostList) {
-      h.setCompartment(p.getType(), Compartment.SUSCEPTIBLE);
+      h.setCompartment(p, Compartment.SUSCEPTIBLE);
     }
   }
   
@@ -263,12 +263,12 @@ class EpiModel implements Model, Cloneable {
     if(pathogenList.contains(p)) {
       pathogenList.remove(p);
     } else {
-      println("No such Pathogen exists");
+      println("No such PAthogen exists");
     }
     
     // Remove Host Compartments containing Pathogen
     for(Host h : hostList) {
-      h.getCompartment().remove(p);
+      h.getCompartments().remove(p);
     }
     
     // Remove Agents containing this Pathogen
@@ -302,7 +302,7 @@ class EpiModel implements Model, Cloneable {
   }
   
   /** 
-   * Get the List of Model Pathogens
+   * Get the Map of Model Pathogens
    */
   public ArrayList<Pathogen> getPathogens() {
     return pathogenList;
@@ -312,7 +312,8 @@ class EpiModel implements Model, Cloneable {
    * Get Random Host from Model
    */
   public Host getRandomHost() {
-    int random_index = (int) random(0, hostList.size());
+    Random generator = new Random();
+    int random_index = generator.nextInt(hostList.size());
     return hostList.get(random_index);
   }
   
@@ -320,7 +321,8 @@ class EpiModel implements Model, Cloneable {
    * Get Random Agent from Model
    */
   public Agent getRandomAgent() {
-    int random_index = (int) random(0, agentList.size());
+    Random generator = new Random();
+    int random_index = generator.nextInt(agentList.size());
     return agentList.get(random_index);
   }
   
@@ -328,7 +330,8 @@ class EpiModel implements Model, Cloneable {
    * Get Random Environment from Model
    */
   public Environment getRandomEnvironment() {
-    int random_index = (int) random(0, environmentList.size());
+    Random generator = new Random();
+    int random_index = generator.nextInt(environmentList.size());
     return environmentList.get(random_index);
   }
   
@@ -336,7 +339,8 @@ class EpiModel implements Model, Cloneable {
    * Get Random Pathogen from Model
    */
   public Pathogen getRandomPathogen() {
-    int random_index = (int) random(0, pathogenList.size());
+    Random generator = new Random();
+    int random_index = generator.nextInt(pathogenList.size());
     return pathogenList.get(random_index);
   }
   
@@ -398,9 +402,8 @@ class EpiModel implements Model, Cloneable {
     }
     
     // Update Host's Compartment Status
-    PathogenType pType = p.getType();
-    if(h.getCompartment(pType) == Compartment.SUSCEPTIBLE) {
-      h.setCompartment(pType, Compartment.INCUBATING);
+    if(h.getCompartment(p) == Compartment.SUSCEPTIBLE) {
+      h.setCompartment(p, Compartment.INCUBATING);
     }
     return infect((Element) h, p);
   }

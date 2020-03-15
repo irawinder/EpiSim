@@ -81,6 +81,7 @@ public void configView() {
   viz.setColor(LandUse.PUBLIC,                  color( 50, 200,  50,  50)); // Green
   viz.setColor(LandUse.HOSPITAL,                color(  0, 255, 255, 100)); // Teal
 
+  // View Mode Names
   viz.setName(PersonMode.DEMOGRAPHIC,           "Demographic");
   viz.setName(PersonMode.COMPARTMENT,           "Pathogen Status");
   viz.setName(PlaceMode.LANDUSE,                "Land Use");
@@ -92,7 +93,8 @@ public void configView() {
   
   // Generic Place Parameters
   viz.setValue(ViewParameter.PLACE_SCALE,        1.0);  // scaler
-  viz.setColor(ViewParameter.PLACE_STROKE,      color(255, 255, 255, 255)); // White
+  viz.setColor(ViewParameter.PLACE_STROKE,       color(255, 255, 255, 255)); // White
+  viz.setValue(ViewParameter.PLACE_DIAMETER,     5);  // scaler
   
   // Generic Agent Parameters
   viz.setValue(ViewParameter.AGENT_DIAMETER,     10);  // pixels

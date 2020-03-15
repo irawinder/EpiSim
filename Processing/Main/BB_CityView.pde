@@ -149,6 +149,8 @@ public class CityView extends EpiView {
     int textFill = (int) this.getValue(ViewParameter.TEXT_FILL);
     int textHeight = (int) this.getValue(ViewParameter.TEXT_HEIGHT);
     
+    Pathogen pathogen = getCurrentPathogen(model);
+    
     // Draw Commutes
     if(showCommutes) {
       image(commuteLayer, 0, 0);
@@ -164,7 +166,7 @@ public class CityView extends EpiView {
       for(Host h : model.getHosts()) {
         if(h instanceof Person) {
           Person p = (Person) h;
-          this.drawPerson(p);
+          this.drawPerson(p, pathogen);
         }
       }
     }
@@ -179,11 +181,11 @@ public class CityView extends EpiView {
     int X_INDENT = 50;
     
     // Draw Information
-    drawInfo(X_INDENT, 100, textFill);
+    drawInfo(X_INDENT, 100, 250, 800, textFill);
     drawTime(model, X_INDENT, height - 125, textFill);
     
     // Draw Legends
-    drawAgentLegend(X_INDENT, 400, textFill, textHeight);
+    drawPathogenLegend(model, X_INDENT, 400, textFill, textHeight);
     drawPlaceLegend(X_INDENT, 500, textFill, textHeight);
     drawPersonLegend(X_INDENT, 650, textFill, textHeight);
   }
@@ -194,7 +196,7 @@ public class CityView extends EpiView {
    * @param g PGraphics
    * @param l place
    */
-  private void drawPlace(PGraphics g, Place l) {
+  protected void drawPlace(PGraphics g, Place l) {
     int x = (int) l.getCoordinate().getX();
     int y = (int) l.getCoordinate().getY();
     int w = (int) Math.sqrt(l.getSize());
@@ -212,7 +214,7 @@ public class CityView extends EpiView {
    *
    * @param l place
    */
-  private void drawPlace(Place l) {
+  protected void drawPlace(Place l) {
     int x = (int) l.getCoordinate().getX();
     int y = (int) l.getCoordinate().getY();
     int w = (int) Math.sqrt(l.getSize());
@@ -230,8 +232,9 @@ public class CityView extends EpiView {
    * Render a Single Person
    *
    * @param p person
+   * @param pathogenson
    */
-  private void drawPerson(Person p) {
+  protected void drawPerson(Person p, Pathogen pathogen) {
     int x = (int) p.getCoordinate().getX();
     int y = (int) p.getCoordinate().getY();
     int w = (int) this.getValue(ViewParameter.PERSON_DIAMETER);
@@ -244,7 +247,7 @@ public class CityView extends EpiView {
         viewFill = this.getColor(d);
         break;
       case COMPARTMENT:
-        Compartment c = p.getCompartment(this.getPathogenMode());
+        Compartment c = p.getCompartment(pathogen);
         viewFill = this.getColor(c);
         break;
     }
@@ -256,12 +259,22 @@ public class CityView extends EpiView {
   }
   
   /**
+   * Render a Single Person
+   *
+   * @param p person
+   */
+  protected void drawPerson(Person p) {
+    Pathogen pathogen = new Pathogen();
+    this.drawPerson(p, pathogen);
+  }
+  
+  /**
    * Render a Single Person's Commute
    *
    * @param g PGraphics
    * @param p person
    */
-  private void drawCommute(PGraphics g, Person p) {
+  protected void drawCommute(PGraphics g, Person p) {
     int x1 = (int) p.getPrimaryPlace().getCoordinate().getX();
     int y1 = (int) p.getPrimaryPlace().getCoordinate().getY();
     int x2 = (int) p.getSecondaryPlace().getCoordinate().getX();
@@ -273,40 +286,17 @@ public class CityView extends EpiView {
   }
   
   /**
-   * Render a Single Agent
-   *
-   * @param a agent
-   */
-  private void drawAgent(Agent a) {
-    int x = (int) a.getCoordinate().getX();
-    int y = (int) a.getCoordinate().getY();
-    int w = (int) this.getValue(ViewParameter.AGENT_DIAMETER);
-    int viewWeight = (int) this.getValue(ViewParameter.AGENT_WEIGHT);
-    PathogenType aType = a.getPathogen().getType();
-    color viewStroke = this.getColor(aType);
-    int alpha = (int) this.getValue(ViewParameter.AGENT_ALPHA);
-    
-    if(aType != this.getPathogenMode()) {
-      alpha = (int) this.getValue(ViewParameter.REDUCED_ALPHA);
-    }
-    
-    stroke(viewStroke, alpha);
-    noFill();
-    strokeWeight(viewWeight);
-    ellipseMode(CENTER);
-    ellipse(x, y, w, w);
-    strokeWeight(1); // processing default
-  }
-  
-  /**
    * Draw Application Info
    *
    * @param x
    * @param y
+   * @param w
+   * @param h
+   * @param textFill color
    */
-  private void drawInfo(int x, int y, color textFill) {
+  private void drawInfo(int x, int y, int w, int h, color textFill) {
     fill(textFill);
-    text(info, x, y, 200, 800);
+    text(info, x, y, w, h);
   }
   
   /**
@@ -314,18 +304,22 @@ public class CityView extends EpiView {
    *
    * @param x
    * @param y
+   * @param textFill color
+   * @praam textHeight int
    */
-  private void drawPersonLegend(int x, int y, color textFill, int textHeight) {
-    String legendName = this.getName(this.personMode);
+  protected void drawPersonLegend(int x, int y, color textFill, int textHeight) {
+    String legendName;
     int w = (int) this.getValue(ViewParameter.PERSON_DIAMETER);
     int yOffset = textHeight/2;
     
-    // Draw Legend Name
-    fill(textFill);
-    text(legendName + ":", x, y);
-        
     switch(this.getPersonMode()) {
       case DEMOGRAPHIC:
+        
+        // Draw Legend Name
+        legendName = this.getName(this.personMode);
+        fill(textFill);
+        text(legendName + ":", x, y);
+        
         for (Demographic d : Demographic.values()) {
           yOffset += textHeight;
           
@@ -338,24 +332,30 @@ public class CityView extends EpiView {
           // Draw Symbol Label
           String pName = this.getName(d);
           fill(textFill);
-          text(pName, x + 4*w, y + yOffset);
+          text(pName, x + 1.5*textHeight, y + yOffset);
         }
         break;
       case COMPARTMENT:
+      
+        // Draw Legend Name
+        legendName = this.getName(this.getPathogenMode()) + " Status";
+        fill(textFill);
+        text(legendName + ":", x, y);
+        
         for (Compartment c : Compartment.values()) {
           yOffset += textHeight;
           
           // Create and Draw a Straw-man Host for Lengend Item
           Person p = new Person();
-          PathogenType pType = this.getPathogenMode();
-          p.setCompartment(pType, c);
+          Pathogen pathogen = new Pathogen();
+          p.setCompartment(pathogen, c);
           p.setCoordinate(new Coordinate(x + w, y + yOffset - 0.25*textHeight));
-          drawPerson(p);
+          drawPerson(p, pathogen);
           
           // Draw Symbol Label
           String pName = this.getName(c);
           fill(textFill);
-          text(pName, x + 4*w, y + yOffset);
+          text(pName, x + 1.5*textHeight, y + yOffset);
         }
         break;
     }
@@ -366,10 +366,12 @@ public class CityView extends EpiView {
    *
    * @param x
    * @param y
+   * @param textFill color
+   * @praam textHeight int
    */
-  private void drawPlaceLegend(int x, int y, color textFill, int textHeight) {
+  protected void drawPlaceLegend(int x, int y, color textFill, int textHeight) {
     String legendName = this.getName(this.placeMode);
-    int w = (int) this.getValue(ViewParameter.PERSON_DIAMETER);
+    int w = (int) this.getValue(ViewParameter.PLACE_DIAMETER);
     
     // Draw Legend Name
     fill(textFill);
@@ -390,42 +392,7 @@ public class CityView extends EpiView {
       // Draw Symbol Label
       String pName = this.getName(l.getUse());
       fill(textFill);
-      text(pName, x + 4*w, y + yOffset);
-    }
-  }
-  
-  /**
-   * Render a Legend of Pathogen Types
-   *
-   * @param x
-   * @param y
-   */
-  private void drawAgentLegend(int x, int y, color textFill, int textHeight) {
-    String legendName = "Pathogen Mode";
-    int w = (int) this.getValue(ViewParameter.PERSON_DIAMETER);
-    
-    // Draw Legend Name
-    fill(textFill);
-    text(legendName + ":", x, y);
-    
-    // Iterate through all possible Pathogen
-    int yOffset = textHeight/2;
-    for (PathogenType pT : PathogenType.values()) {
-      yOffset += textHeight;
-      
-      // Create and Draw a Straw-man Agent for Lengend Item
-      Agent a = new Agent();
-      Pathogen p = new Pathogen();
-      p.setType(pT);
-      a.setPathogen(p);
-      a.setCoordinate(new Coordinate(x + w, y + yOffset - 0.25*textHeight));
-      drawAgent(a);
-      
-      // Draw Symbol Label
-      PathogenType aType = a.getPathogen().getType();
-      String aName = this.getName(aType);
-      fill(textFill);
-      text(aName, x + 4*w, y + yOffset);
+      text(pName, x + 1.5*textHeight, y + yOffset);
     }
   }
   
@@ -434,8 +401,10 @@ public class CityView extends EpiView {
    *
    * @param x
    * @param y
+   * @param textFill color
+   * @praam textHeight int
    */
-  private void drawTime(CityModel model, int x, int y, color textFill) {
+  protected void drawTime(CityModel model, int x, int y, color textFill) {
     
     int day = (int) model.getTime().convert(TimeUnit.DAY).getAmount();
     String clock = model.getTime().toClock();
@@ -451,4 +420,12 @@ public class CityView extends EpiView {
     text(text, x, y);
   }
   
+  public Pathogen getCurrentPathogen(CityModel model) {
+    for(Pathogen p : model.getPathogens()) {
+      if (p.getType() == this.getPathogenMode()) {
+        return p;
+      }
+    }
+    return new Pathogen();
+  }
 }

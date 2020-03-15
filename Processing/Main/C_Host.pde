@@ -20,7 +20,7 @@ public class Host extends Element {
   private ArrayList<Agent> agentList;
   
   // Host's current compartment status
-  private HashMap<PathogenType, Compartment> statusMap;
+  private HashMap<Pathogen, Compartment> statusMap;
   
   //// Whether host has already been exposed to Pathogen
   //private HashMap<PathogenType, Boolean> exposed;
@@ -28,7 +28,7 @@ public class Host extends Element {
   public Host() {
     super();
     this.agentList = new ArrayList<Agent>();
-    this.statusMap = new HashMap<PathogenType, Compartment>();
+    this.statusMap = new HashMap<Pathogen, Compartment>();
   }
   
   /**
@@ -61,16 +61,16 @@ public class Host extends Element {
   }
   
   /**
-   * Set the Host's compartment status for a Particular Agent Type
+   * Set the Host's compartment status for a Particular Pathogen
    */
-  public void setCompartment(PathogenType pType, Compartment status) {
-    statusMap.put(pType, status);
+  public void setCompartment(Pathogen p, Compartment status) {
+    statusMap.put(p, status);
   }
   
   /**
    * Get the Host's Statuses for All Pathogens
    */
-  public HashMap<PathogenType, Compartment> getCompartment() {
+  public HashMap<Pathogen, Compartment> getCompartments() {
     return statusMap;
   }
   
@@ -79,9 +79,9 @@ public class Host extends Element {
    *
    * @param type Pathogen
    */
-  public Compartment getCompartment(PathogenType pType) {
-    if(statusMap.containsKey(pType)) {
-      return statusMap.get(pType);
+  public Compartment getCompartment(Pathogen p) {
+    if(statusMap.containsKey(p)) {
+      return statusMap.get(p);
     } else {
       return null;
     }
