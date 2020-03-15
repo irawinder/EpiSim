@@ -1,5 +1,5 @@
 /**
- * Configure a Epidemiological Model in a City
+ * Configure an Epidemiological Model in a City
  */
 private void configModel() {
   
@@ -32,9 +32,8 @@ private void configModel() {
 
   // Add randomly placed Places to Model within a specified rectangle (x1, y1, x2, y2)
   // Parameters (amount, name_prefix, type, x1, y1, x2, y2, minSize, maxSize)
-  //
-  int MARGIN = 100; // Window Border Margin
   int N = 2;
+  int MARGIN = 100;
   epidemic.randomPlaces(N*25,       "Public Space",    LandUse.PUBLIC,    2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 500,       2000);
   epidemic.randomPlaces(N*250,      "Dwelling Unit",   LandUse.DWELLING,  2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 50,        200);
   epidemic.randomPlaces(N*10,       "Office Space",    LandUse.OFFICE,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500,       2000);
@@ -96,10 +95,8 @@ private void configModel() {
   Pathogen cold = new Pathogen();
   configureCold(cold);
   
-  /**
-   * Deploy Pathogens as Agents into the Host (Person) Population
-   * Parameters: pathogen, initial host count
-   */
+  // Deploy Pathogens as Agents into the Host (Person) Population
+  // Parameters: pathogen, initial host count
   epidemic.patientZero(cold, 10);
   epidemic.patientZero(covid, 1);
 }
