@@ -186,8 +186,24 @@ public class CityView extends EpiView {
     
     // Draw Legends
     drawPathogenLegend(model, X_INDENT, 400, textFill, textHeight);
-    drawPlaceLegend(X_INDENT, 500, textFill, textHeight);
-    drawPersonLegend(X_INDENT, 650, textFill, textHeight);
+    
+    switch(this.placeMode) {
+      case LANDUSE:
+        drawLandUseLegend(X_INDENT, 500, textFill, textHeight);
+        break;
+      case DENSITY:
+        // TO DO
+        break;
+    }
+    
+    switch(this.personMode) {
+      case DEMOGRAPHIC:
+        drawDemographicLegend(X_INDENT, 650, textFill, textHeight);
+        break;
+      case COMPARTMENT:
+        drawCompartmentLegend(X_INDENT, 650, textFill, textHeight);
+        break;
+    }
   }
   
   /**
@@ -218,8 +234,18 @@ public class CityView extends EpiView {
     int x = (int) l.getCoordinate().getX();
     int y = (int) l.getCoordinate().getY();
     int w = (int) Math.sqrt(l.getSize());
-    color viewFill = this.getColor(l.getUse());
+    color viewFill = color(0);
     color viewStroke = this.getColor(ViewParameter.PLACE_STROKE);
+    
+    switch(this.placeMode) {
+      case LANDUSE:
+        LandUse use = l.getUse();
+        viewFill = this.getColor(use);
+        break;
+      case DENSITY:
+        // TO DO
+        break;
+    }
     
     stroke(viewStroke);
     fill(viewFill);
@@ -300,64 +326,69 @@ public class CityView extends EpiView {
   }
   
   /**
-   * Render a Legend of Person Demographic Types
+   * Render a Legend of Demographic Types
    *
    * @param x
    * @param y
    * @param textFill color
    * @praam textHeight int
    */
-  protected void drawPersonLegend(int x, int y, color textFill, int textHeight) {
-    String legendName;
+  protected void drawDemographicLegend(int x, int y, color textFill, int textHeight) {
+    String legendName = this.getName(this.personMode);
     int w = (int) this.getValue(ViewParameter.PERSON_DIAMETER);
     int yOffset = textHeight/2;
     
-    switch(this.getPersonMode()) {
-      case DEMOGRAPHIC:
-        
-        // Draw Legend Name
-        legendName = this.getName(this.personMode);
-        fill(textFill);
-        text(legendName + ":", x, y);
-        
-        for (Demographic d : Demographic.values()) {
-          yOffset += textHeight;
-          
-          // Create a Straw-man Host for Lengend Item
-          Person p = new Person();
-          p.setDemographic(d);
-          p.setCoordinate(new Coordinate(x + w, y + yOffset - 0.25*textHeight));
-          drawPerson(p);
-          
-          // Draw Symbol Label
-          String pName = this.getName(d);
-          fill(textFill);
-          text(pName, x + 1.5*textHeight, y + yOffset);
-        }
-        break;
-      case COMPARTMENT:
+    // Draw Legend Name
+    fill(textFill);
+    text(legendName + ":", x, y);
+    
+    for (Demographic d : Demographic.values()) {
+      yOffset += textHeight;
       
-        // Draw Legend Name
-        legendName = this.getName(this.getPathogenMode()) + " Status";
-        fill(textFill);
-        text(legendName + ":", x, y);
-        
-        for (Compartment c : Compartment.values()) {
-          yOffset += textHeight;
-          
-          // Create and Draw a Straw-man Host for Lengend Item
-          Person p = new Person();
-          Pathogen pathogen = new Pathogen();
-          p.setCompartment(pathogen, c);
-          p.setCoordinate(new Coordinate(x + w, y + yOffset - 0.25*textHeight));
-          drawPerson(p, pathogen);
-          
-          // Draw Symbol Label
-          String pName = this.getName(c);
-          fill(textFill);
-          text(pName, x + 1.5*textHeight, y + yOffset);
-        }
-        break;
+      // Create a Straw-man Host for Lengend Item
+      Person p = new Person();
+      p.setDemographic(d);
+      p.setCoordinate(new Coordinate(x + w, y + yOffset - 0.25*textHeight));
+      drawPerson(p);
+      
+      // Draw Symbol Label
+      String pName = this.getName(d);
+      fill(textFill);
+      text(pName, x + 1.5*textHeight, y + yOffset);
+    }
+  }
+  
+  /**
+   * Render a Legend of Person Compartment Types
+   *
+   * @param x
+   * @param y
+   * @param textFill color
+   * @praam textHeight int
+   */
+  protected void drawCompartmentLegend(int x, int y, color textFill, int textHeight) {
+    String legendName = this.getName(this.getPathogenMode()) + " Status";
+    int w = (int) this.getValue(ViewParameter.PERSON_DIAMETER);
+    int yOffset = textHeight/2;
+    
+    // Draw Legend Name
+    fill(textFill);
+    text(legendName + ":", x, y);
+    
+    for (Compartment c : Compartment.values()) {
+      yOffset += textHeight;
+      
+      // Create and Draw a Straw-man Host for Lengend Item
+      Person p = new Person();
+      Pathogen pathogen = new Pathogen();
+      p.setCompartment(pathogen, c);
+      p.setCoordinate(new Coordinate(x + w, y + yOffset - 0.25*textHeight));
+      drawPerson(p, pathogen);
+      
+      // Draw Symbol Label
+      String pName = this.getName(c);
+      fill(textFill);
+      text(pName, x + 1.5*textHeight, y + yOffset);
     }
   }
   
@@ -369,7 +400,7 @@ public class CityView extends EpiView {
    * @param textFill color
    * @praam textHeight int
    */
-  protected void drawPlaceLegend(int x, int y, color textFill, int textHeight) {
+  protected void drawLandUseLegend(int x, int y, color textFill, int textHeight) {
     String legendName = this.getName(this.placeMode);
     int w = (int) this.getValue(ViewParameter.PLACE_DIAMETER);
     
@@ -382,7 +413,7 @@ public class CityView extends EpiView {
     for (LandUse type : LandUse.values()) {
       yOffset += textHeight;
       
-      // Create and Draw a Straw-man Host for Lengend Item
+      // Create and Draw a Straw-man Place for Lengend Item
       Place l = new Place();
       l.setUse(type);
       l.setSize(Math.pow(2*w, 2));
