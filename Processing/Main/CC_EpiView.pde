@@ -4,7 +4,7 @@
 public class EpiView extends View {
   
   // View States
-  private PathogenMode pathogenMode;
+  private AgentMode agentMode;
   private PathogenType pathogenType;
   int pathogenViewIndex;
   
@@ -18,7 +18,7 @@ public class EpiView extends View {
     super();
     
     // View States
-    pathogenMode = PathogenMode.values()[0];
+    agentMode = AgentMode.values()[0];
     pathogenType = PathogenType.values()[0];
     pathogenViewIndex = 0;
     
@@ -34,17 +34,17 @@ public class EpiView extends View {
   }
   
   /**
-   * Set PathogenMode in View Model
+   * Set AgentMode in View Model
    */
-  public void setPathogenMode(PathogenMode pMode) {
-    this.pathogenMode = pMode;
+  public void setPathogenMode(AgentMode pMode) {
+    this.agentMode = pMode;
   }
   
   /**
-   * Get PathogenMode in View Model
+   * Get AgentMode in View Model
    */
-  public PathogenMode getPathogenMode() {
-    return this.pathogenMode;
+  public AgentMode getPathogenMode() {
+    return this.agentMode;
   }
   
   /**
@@ -62,15 +62,15 @@ public class EpiView extends View {
   }
   
   /**
-   * Next PathogenType in View Model
+   * Next AgentMode in View Model
    */
-  public void nextPathogenMode() {
-    int ordinal = pathogenMode.ordinal();
-    int size = PathogenMode.values().length;
+  public void nextAgentMode() {
+    int ordinal = agentMode.ordinal();
+    int size = AgentMode.values().length;
     if(ordinal < size - 1) {
-      pathogenMode = PathogenMode.values()[ordinal + 1];
+      agentMode = AgentMode.values()[ordinal + 1];
     } else {
-      pathogenMode = PathogenMode.values()[0];
+      agentMode = AgentMode.values()[0];
     }
   }
   
@@ -112,7 +112,7 @@ public class EpiView extends View {
     color viewStroke = this.getColor(aType);
     int alpha = (int) this.getValue(ViewParameter.AGENT_ALPHA);
     
-    switch(pathogenMode) {
+    switch(agentMode) {
       case PATHOGEN:
         if(this.getCurrentPathogen() != a.getPathogen()) {
           alpha = (int) this.getValue(ViewParameter.REDUCED_ALPHA);

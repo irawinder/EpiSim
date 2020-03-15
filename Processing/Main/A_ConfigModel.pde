@@ -36,7 +36,7 @@ private void configModel() {
   int MARGIN = 100;
   epidemic.randomPlaces(N*25,       "Public Space",    LandUse.PUBLIC,    2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 500,       2000);
   epidemic.randomPlaces(N*250,      "Dwelling Unit",   LandUse.DWELLING,  2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 50,        200);
-  epidemic.randomPlaces(N*10,       "Office Space",    LandUse.OFFICE,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500,       2000);
+  epidemic.randomPlaces(N*10,       "Office Space",    LandUse.OFFICE,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500,       1000);
   epidemic.randomPlaces(N*4,        "School",          LandUse.SCHOOL,    2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 500,       2000);
   epidemic.randomPlaces(N*25,       "Retail Shopping", LandUse.RETAIL,    2*MARGIN + 2*MARGIN, 2*MARGIN, width - 2*MARGIN, height - 2*MARGIN, 50,        1000);
   epidemic.randomPlaces(N*1,        "Hospital",        LandUse.HOSPITAL,  2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 2000,      2000);
@@ -68,12 +68,12 @@ private void configModel() {
   
   //Chance that person will shift state from dominant state to tertiary state (per HOUR)
   epidemic.setPhaseAnomoly(Phase.SLEEP,      new Rate(0.05));
-  epidemic.setPhaseAnomoly(Phase.HOME,       new Rate(0.10));
+  epidemic.setPhaseAnomoly(Phase.HOME,       new Rate(0.20));
   epidemic.setPhaseAnomoly(Phase.GO_WORK,    new Rate(0.00));
   epidemic.setPhaseAnomoly(Phase.WORK,       new Rate(0.10));
   epidemic.setPhaseAnomoly(Phase.WORK_LUNCH, new Rate(0.90));
   epidemic.setPhaseAnomoly(Phase.GO_HOME,    new Rate(0.00));
-  epidemic.setPhaseAnomoly(Phase.LEISURE,    new Rate(0.20));
+  epidemic.setPhaseAnomoly(Phase.LEISURE,    new Rate(0.30));
   
   // Chance that Person will recover from a tertiary anomoly and return to their primary or secondary state (per HOUR)
   epidemic.setRecoverAnomoly(new Rate(0.40));

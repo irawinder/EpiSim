@@ -9,7 +9,7 @@ public void configView() {
   viz.setToggle(ViewParameter.SHOW_PLACES,      true);
   viz.setToggle(ViewParameter.SHOW_AGENTS,      true);
   
-  viz.setPathogenMode(PathogenMode.PATHOGEN);
+  viz.setPathogenMode(AgentMode.PATHOGEN);
   viz.setPersonMode(PersonMode.DEMOGRAPHIC);
   viz.setPlaceMode(PlaceMode.LANDUSE);
   
@@ -21,8 +21,8 @@ public void configView() {
     "Press '2' to hide/show Persons" + "\n" +
     "Press '3' to hide/show Commutes" + "\n" +
     "Press '4' to hide/show Pathogens" + "\n\n" +
-    "Press 'p' for next Pathogen" + "\n\n" +
-    "Press 'o' to toggle Pathogen Legend" + "\n" +
+    "Press 'p' for next Infection Type" + "\n\n" +
+    "Press 'o' to toggle Agent Legend" + "\n" +
     "Press 's' to toggle Person Legend" + "\n" +
     "Press 'l' to toggle Place Legend" + "\n\n" +
     
@@ -64,9 +64,9 @@ public void configView() {
   viz.setName(Demographic.SENIOR,              "Senior");
   
   // Host Demographic Colors
-  viz.setColor(Demographic.CHILD,              color(255, 255, 255, 230)); // Light Gray
-  viz.setColor(Demographic.ADULT,              color(100, 100, 100, 230)); // Dark Gray
-  viz.setColor(Demographic.SENIOR,             color(  0,   0,   0, 230)); // Black
+  viz.setColor(Demographic.CHILD,              color(255, 255, 255, 255)); // Light Gray
+  viz.setColor(Demographic.ADULT,              color(100, 100, 100, 255)); // Dark Gray
+  viz.setColor(Demographic.SENIOR,             color(  0,   0,   0, 255)); // Black
   
   // Place Names
   viz.setName(LandUse.DWELLING,                "Dwelling Unit");
@@ -85,10 +85,12 @@ public void configView() {
   viz.setColor(LandUse.HOSPITAL,                color(  0, 255, 255, 100)); // Teal
 
   // View Mode Names
-  viz.setName(PersonMode.DEMOGRAPHIC,           "Demographic");
+  viz.setName(AgentMode.PATHOGEN,               "Infectious Agent");
+  viz.setName(AgentMode.PATHOGEN_TYPE,          "Pathogen Type");
+  viz.setName(PersonMode.DEMOGRAPHIC,           "Age Demographic");
   viz.setName(PersonMode.COMPARTMENT,           "Pathogen Status");
-  viz.setName(PlaceMode.LANDUSE,                "Land Use");
-  viz.setName(PlaceMode.DENSITY,                "Denisty");
+  viz.setName(PlaceMode.LANDUSE,                "Land Use Type");
+  viz.setName(PlaceMode.DENSITY,                "Gathering Denisty");
 
   // Graphics Location Parameters
   viz.setValue(ViewParameter.LEFT_MARGIN,        50);  // pixels
@@ -121,8 +123,8 @@ public void configView() {
   
   // Generic Person Parameters
   viz.setValue(ViewParameter.PERSON_DIAMETER,    5);                         // pixels
-  viz.setColor(ViewParameter.PERSON_STROKE,      color(  0,   0,   0, 100)); // Gray
-  viz.setValue(ViewParameter.PERSON_ALPHA,       150);                       // 0 - 255
+  viz.setColor(ViewParameter.PERSON_STROKE,      color(200, 200, 200, 255)); // Light Gray
+  viz.setValue(ViewParameter.PERSON_ALPHA,       255);                       // 0 - 255
   
   // Generic Commute Paramters
   viz.setColor(ViewParameter.COMMUTE_STROKE,     color(  0,   0,   0,  20)); // Light Gray

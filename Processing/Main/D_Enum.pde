@@ -74,7 +74,7 @@ public enum Phase {
   GO_HOME
 }
 
-public enum PathogenMode {
+public enum AgentMode {
   PATHOGEN, 
   PATHOGEN_TYPE
 }
