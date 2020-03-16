@@ -396,6 +396,7 @@ public class CityModel extends EpiModel {
       Person patientZero = options.get(randomIndex);
       
       this.infectHost(patientZero, pathogen);
+      this.putAgent(patientZero, pathogen);
       
       // Set Initial time such that agent is already infectious
       PathogenEffect pE = patientZero.getStatus(pathogen);
