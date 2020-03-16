@@ -138,7 +138,7 @@ void configureCoronavirus(Pathogen p, String name) {
   p.setAttackRate(new Rate(0.3));
   
   // Length of time that pathogen can survice outside of host via Agent
-  Time agentLife = new Time(36, TimeUnit.HOUR);
+  Time agentLife = new Time(12, TimeUnit.HOUR);
   p.setAgentLife(agentLife);
   
   // Host Pathogen Manifestations
@@ -172,7 +172,7 @@ public void configureRhinovirus(Pathogen p, String name) {
   // Attributes
   p.setName(name);
   p.setType(PathogenType.RHINOVIRUS);
-  p.setAttackRate(new Rate(0.3));
+  p.setAttackRate(new Rate(0.8));
   
   // Length of time that pathogen can survice outside of host via Agent
   Time agentLife = new Time(8, TimeUnit.HOUR);
@@ -181,7 +181,7 @@ public void configureRhinovirus(Pathogen p, String name) {
   // Host Pathogen Manifestations
   Time incubationMean              = new Time(  2, TimeUnit.DAY);
   Time incubationStandardDeviation = new Time(0.5, TimeUnit.DAY);
-  Time infectiousMean              = new Time(  7, TimeUnit.DAY);
+  Time infectiousMean              = new Time(  4, TimeUnit.DAY);
   Time infectiousStandardDeviation = new Time(  2, TimeUnit.DAY);
   p.setIncubationDistribution(incubationMean, incubationStandardDeviation);
   p.setInfectiousDistribution(infectiousMean, infectiousStandardDeviation);

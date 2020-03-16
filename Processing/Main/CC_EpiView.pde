@@ -142,7 +142,7 @@ public class EpiView extends View {
    * @praam textHeight int
    */
   protected void drawPathogenLegend(int x, int y, color textFill, int textHeight) {
-    String legendName = "Pathogens";
+    String legendName = this.getName(this.agentMode);
     int w = (int) this.getValue(ViewParameter.AGENT_DIAMETER);
     
     // Draw Legend Name
@@ -175,7 +175,7 @@ public class EpiView extends View {
    * @praam textHeight int
    */
   protected void drawPathogenTypeLegend(int x, int y, color textFill, int textHeight) {
-    String legendName = "Pathogen Types";
+    String legendName = this.getName(this.agentMode);
     int w = (int) this.getValue(ViewParameter.AGENT_DIAMETER);
     
     // Draw Legend Name

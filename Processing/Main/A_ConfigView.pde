@@ -12,7 +12,7 @@ public void configView() {
   viz.setToggle(ViewParameter.SHOW_AGENTS,      true);
   
   viz.setPathogenMode(AgentMode.PATHOGEN);
-  viz.setPersonMode(PersonMode.DEMOGRAPHIC);
+  viz.setPersonMode(PersonMode.COMPARTMENT);
   viz.setPlaceMode(PlaceMode.LANDUSE);
   
   // Graphics Location Parameters

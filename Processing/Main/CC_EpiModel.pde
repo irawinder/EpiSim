@@ -393,46 +393,16 @@ class EpiModel implements Model, Cloneable {
   }
   
   /**
-   * Infect a Host  with a pathogen-carrying Agent
+   * Infect Host with a pathogen if not already exposed
    *
    * @param h Host
    * @param p Pathogen
    */
-  public Agent infectHost(Host h, Pathogen p) {
-    
-    // Check If Agent Already Present
-    for(Agent a : h.getAgents()) {
-      if(a.getPathogen() == p) {
-        return null;
-      }
-    }
-    
-    // Expose host to pathogen if not already exposed
+  protected void infectHost(Host h, Pathogen p) {
     PathogenEffect pE = h.getStatus(p);
     if(!pE.exposed()) {
       pE.expose(this.currentTime);
     }
-    
-    return infect((Element) h, p);
-  }
-  
-  /**
-   * Infect an Environment with a pathogen-carrying Agent
-   *
-   * @param e Environment
-   * @param p Pathogen
-   * @return new infectious Agent or null if infection fails
-   */
-  public Agent infectEnvironment(Environment e, Pathogen p) {
-    
-    // Check If Agent Already Present  
-    for(Agent a : e.getAgents()) {
-      if(a.getPathogen() == p) {
-        return null;
-      }
-    }
-    
-    return infect((Element) e, p);
   }
   
   /**
@@ -441,7 +411,7 @@ class EpiModel implements Model, Cloneable {
    * @param e Element
    * @param p Pathogen
    */
-  private Agent infect(Element e, Pathogen p) {
+  protected Agent putAgent(Element e, Pathogen p) {
     Agent a = makeAgent();
     a.setPathogen(p);
     a.setCoordinate(e.getCoordinate());

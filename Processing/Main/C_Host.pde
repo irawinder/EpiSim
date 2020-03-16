@@ -160,7 +160,7 @@ public class Host extends Element {
    */
   public boolean alive() {
     for(HashMap.Entry<Pathogen, PathogenEffect> entry : this.status.entrySet()) {
-      if(entry.getValue().alive()) {
+      if(!entry.getValue().alive()) {
         return false;
       }
     }

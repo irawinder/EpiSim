@@ -458,35 +458,42 @@ public class CityModel extends EpiModel {
     for(Demographic d : Demographic.values()) {
       for(Person p : this.person.get(d)) {
         
-        // Current Place
-        Place currentPlace = p.getPlace();
+        // Are you dead?
+        if(!p.alive()) {
+          p.moveToPrimary();
         
-        // Dominant Place
-        Place dominantPlace = currentPlace;
-        switch(phaseDomain) {
-          case PRIMARY:
-            dominantPlace = p.getPrimaryPlace();
-            break;
-          case SECONDARY:
-            dominantPlace = p.getSecondaryPlace();
-            break;
-          case TERTIARY:
-            // Do Nothing
-            break;
-        }
-        
-        // Wander away from domain to teriary activity
-        if(currentPlace == dominantPlace) {
-          boolean goToAnomoly = roll(anomolyPerStep);
-          if(goToAnomoly) {
-            p.moveTo(behavior.getRandomPlace(p, PlaceCategory.TERTIARY));
+        // If you're alive, carry on!
+        } else {
+          // Current Place
+          Place currentPlace = p.getPlace();
+          
+          // Dominant Place
+          Place dominantPlace = currentPlace;
+          switch(phaseDomain) {
+            case PRIMARY:
+              dominantPlace = p.getPrimaryPlace();
+              break;
+            case SECONDARY:
+              dominantPlace = p.getSecondaryPlace();
+              break;
+            case TERTIARY:
+              // Do Nothing
+              break;
           }
           
-        // Return to domain from tertiary activity
-        } else {
-          boolean goToDomain = roll(recoverPerStep);
-          if(goToDomain) {
-            p.moveTo(dominantPlace);
+          // Wander away from domain to teriary activity
+          if(currentPlace == dominantPlace) {
+            boolean goToAnomoly = roll(anomolyPerStep);
+            if(goToAnomoly) {
+              p.moveTo(behavior.getRandomPlace(p, PlaceCategory.TERTIARY));
+            }
+            
+          // Return to domain from tertiary activity
+          } else {
+            boolean goToDomain = roll(recoverPerStep);
+            if(goToDomain) {
+              p.moveTo(dominantPlace);
+            }
           }
         }
       }
@@ -505,42 +512,63 @@ public class CityModel extends EpiModel {
     Time step = this.getTimeStep();
     this.setTime(current.add(step));
     
+    // Base Encounters Per Step
+    Time hoursPerStep = step.convert(TimeUnit.HOUR);
+    
     // Set Phase
     this.setPhase();
     
     // Move Hosts
     this.movePersons();
     
-    // Update Agents
-    for(Agent a : this.getAgents()) {
-      a.update(step);
-    }
-    
-    // Add New Infectious Agents From Hosts
+    // Create Infectious Agents
     for(Host h : this.getHosts()) {
       for(Pathogen p : this.getPathogens()) {
         
         // Only add agent pathogens if host is infectious
         if(h.getStatus(p).infectious()) {
           
-          // Create Agent within self
-          this.infectHost(h, p);
+          // 0. Host has Agent Internal To Self
+          //
+          boolean hasAgent = false;
+          for(Agent a : h.getAgents()) {
+            if(a.getPathogen() == p) {
+              hasAgent = true;
+              break;
+            }
+          }
+          if(!hasAgent) {
+            this.putAgent(h, p);
+          }
           
-          // Transmit pathogen from Host to Environment
+          // 1. Transmit agent from Host to Environment
+          //    DepositeRate ~ attackRate * time
+          //
           Environment e = h.getEnvironment();
-          if(Math.random() < 0.25) 
-            this.infectEnvironment(e, p);
+          double depositRate = p.getAttackRate().toDouble() * hoursPerStep.getAmount();
+          if(Math.random() < depositRate) {
+            this.putAgent(e, p);
+          }
           
-          // Transmit pathogen from Host to Host
-          for(Host h2 : e.getHosts()) {
-            if(Math.random() < 0.025) 
-              this.infectHost(h2, p);
+          // 2. Transmit pathogen from Host to Host
+          //    EncounterRate ~ attackRate * time * people / area
+          //
+          if(e instanceof Place) {
+            Place l = (Place) e;
+            double encounterRate = p.getAttackRate().toDouble() * hoursPerStep.getAmount() * l.getDensity();
+            for(Host h2 : e.getHosts()) {
+              if(Math.random() < encounterRate) {
+                this.infectHost(h2, p);
+              }
+            }
           }
         }
       }
     }
     
-    // Transmit Agents to Hosts from Environment
+    // 3. Transmit infectious agents from Environment to Host
+    //    TransmissionRate ~ attackRate * time / area
+    //
     int numAgents = this.getAgents().size();
     for(int i=0; i<numAgents; i++) {
       Agent a = this.getAgents().get(i);
@@ -548,27 +576,32 @@ public class CityModel extends EpiModel {
         Pathogen p = a.getPathogen();
         Element vessel = a.getVessel();
         
-        // Transmit from Environment to Host
-        if (vessel instanceof Environment) {
+        
+        if (vessel instanceof Place) {
+          Place l = (Place) vessel;
           Environment e = (Environment) vessel;
+          double transmissionRate = p.getAttackRate().toDouble() * hoursPerStep.getAmount() / l.getSize();
           for(Host h : e.getHosts()) {
-            if(Math.random() < 0.025) 
+            if(Math.random() < transmissionRate) 
               this.infectHost(h, p);
           }
         }
       }
     }
     
-    // Update Compartment status
+    // Update Host Compartment status
     for(Host h : this.getHosts()) {
       boolean treated = true;
       h.update(current, treated);
     }
     
-    // Clean "dead" agents
+    // Update and Clean
     for(int i=this.getAgents().size()-1; i>=0; i--) {
       Agent a = this.getAgents().get(i);
-      if(!a.alive()) this.removeAgent(a);
+      a.update(step);
+      if(!a.alive()) {
+        this.removeAgent(a);
+      }
     }
   }
   
