@@ -111,35 +111,35 @@ public void configView() {
   viz.setName(PlaceMode.DENSITY,                "Gathering Denisty");
   
   // Text Settings
-  viz.setValue(ViewParameter.TEXT_HEIGHT,        15);                        // pixels
-  viz.setValue(ViewParameter.TEXT_FILL,          color(  0,   0,   0, 200)); // Dark Gray
+  viz.setValue(ViewParameter.TEXT_HEIGHT,       15);                        // pixels
+  viz.setValue(ViewParameter.TEXT_FILL,         color(  0,   0,   0, 200)); // Dark Gray
   
   // Generic Place Parameters
-  viz.setValue(ViewParameter.PLACE_SCALER,       1.0);                       // scaler
-  viz.setColor(ViewParameter.PLACE_STROKE,       color(255, 255, 255, 255)); // White
-  viz.setValue(ViewParameter.PLACE_DIAMETER,     7);                         // pixels
-  viz.setValue(ViewParameter.PLACE_ALPHA,        125);                       // 0 - 255
+  viz.setValue(ViewParameter.PLACE_SCALER,      1.0);                       // scaler
+  viz.setColor(ViewParameter.PLACE_STROKE,      color(255, 255, 255, 255)); // White
+  viz.setValue(ViewParameter.PLACE_DIAMETER,    7);                         // pixels
+  viz.setValue(ViewParameter.PLACE_ALPHA,       125);                       // 0 - 255
   
   // Density Heatmap Paramters
-  viz.setValue(ViewParameter.MIN_DENSITY,        0);               // people per area
-  viz.setValue(ViewParameter.MAX_DENSITY,        1/50.0);          // people per area
-  viz.setValue(ViewParameter.MIN_DENSITY_HUE,    90);              // Green
-  viz.setValue(ViewParameter.MAX_DENSITY_HUE,    0);               // Red
+  viz.setValue(ViewParameter.MIN_DENSITY,       0);               // people per area
+  viz.setValue(ViewParameter.MAX_DENSITY,       1/50.0);          // people per area
+  viz.setValue(ViewParameter.MIN_DENSITY_HUE,   90);              // Green
+  viz.setValue(ViewParameter.MAX_DENSITY_HUE,   0);               // Red
   
   // Generic Agent Parameters
-  viz.setValue(ViewParameter.AGENT_DIAMETER,     7);    // pixels
-  viz.setValue(ViewParameter.AGENT_WEIGHT,       3);    // pixels
-  viz.setValue(ViewParameter.AGENT_ALPHA,        100);   // 0 - 255
+  viz.setValue(ViewParameter.AGENT_DIAMETER,    7);    // pixels
+  viz.setValue(ViewParameter.AGENT_WEIGHT,      3);    // pixels
+  viz.setValue(ViewParameter.AGENT_ALPHA,       100);   // 0 - 255
   
   // Generic Person Parameters
-  viz.setValue(ViewParameter.PERSON_DIAMETER,    5);                         // pixels
-  viz.setColor(ViewParameter.PERSON_STROKE,      color(200, 200, 200, 255)); // Light Gray
-  viz.setValue(ViewParameter.PERSON_ALPHA,       255);                       // 0 - 255
+  viz.setValue(ViewParameter.PERSON_DIAMETER,   5);                         // pixels
+  viz.setColor(ViewParameter.PERSON_STROKE,     color(200, 200, 200, 255)); // Light Gray
+  viz.setValue(ViewParameter.PERSON_ALPHA,      255);                       // 0 - 255
   
   // Generic Commute Paramters
-  viz.setColor(ViewParameter.COMMUTE_STROKE,     color(  0,   0,   0,  20)); // Light Gray
-  viz.setValue(ViewParameter.COMMUTE_WEIGHT,     2);                         // pixels
+  viz.setColor(ViewParameter.COMMUTE_STROKE,    color(  0,   0,   0,  20)); // Light Gray
+  viz.setValue(ViewParameter.COMMUTE_WEIGHT,    2);                         // pixels
   
   // Other Parameters
-  viz.setValue(ViewParameter.REDUCED_ALPHA,      10);  // 0 - 255
+  viz.setValue(ViewParameter.REDUCED_ALPHA,     10);  // 0 - 255
 }

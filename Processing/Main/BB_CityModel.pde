@@ -395,12 +395,14 @@ public class CityModel extends EpiModel {
       int randomIndex = (int) (Math.random() * (options.size() - 1));
       Person patientZero = options.get(randomIndex);
       
+      this.infectHost(patientZero, pathogen);
+      
       // Set Initial time such that agent is already infectious
       PathogenEffect pE = patientZero.getStatus(pathogen);
       Time incubationDuration = pE.getIncubationDuration();
-      pE.setInitialTime(incubationDuration.multiply(new Time(1, incubationDuration.getUnit())));
-      
-      this.infectHost(patientZero, pathogen);
+      Time negativeOne = new Time(-1, incubationDuration.getUnit());
+      Time initialTime = incubationDuration.multiply(negativeOne);
+      pE.setInitialTime(initialTime);
     }
   }
   
@@ -509,41 +511,48 @@ public class CityModel extends EpiModel {
     // Move Hosts
     this.movePersons();
     
-    // Add New Infectious Agents
+    // Update Agents
+    for(Agent a : this.getAgents()) {
+      a.update(step);
+    }
+    
+    // Add New Infectious Agents From Hosts
+    for(Host h : this.getHosts()) {
+      for(Pathogen p : this.getPathogens()) {
+        
+        // Only add agent pathogens if host is infectious
+        if(h.getStatus(p).infectious()) {
+          
+          // Create Agent within self
+          this.infectHost(h, p);
+          
+          // Transmit pathogen from Host to Environment
+          Environment e = h.getEnvironment();
+          if(Math.random() < 0.25) 
+            this.infectEnvironment(e, p);
+          
+          // Transmit pathogen from Host to Host
+          for(Host h2 : e.getHosts()) {
+            if(Math.random() < 0.025) 
+              this.infectHost(h2, p);
+          }
+        }
+      }
+    }
+    
+    // Transmit Agents to Hosts from Environment
     int numAgents = this.getAgents().size();
     for(int i=0; i<numAgents; i++) {
       Agent a = this.getAgents().get(i);
-      a.update(step);
       if(a.alive()) {
         Pathogen p = a.getPathogen();
         Element vessel = a.getVessel();
         
-        // Agent Originates from Infectious Host
-        if(vessel instanceof Host) {
-          Host h = (Host) vessel;
-          
-          if(h.getStatus(p).infectious()) {
-            
-            // Creat Agent within self
-            this.infectHost(h, p);
-            
-            // Transmit pathogen from Host to Environment
-            Environment e = h.getEnvironment();
-            //if(Math.random() < 0.25) 
-              this.infectEnvironment(e, p);
-            
-            // Transmit pathogen from Host to Host
-            for(Host h2 : e.getHosts()) {
-              //if(Math.random() < 0.025) 
-                this.infectHost(h2, p);
-            }
-          }
-          
         // Transmit from Environment to Host
-        } else if (vessel instanceof Environment) {
+        if (vessel instanceof Environment) {
           Environment e = (Environment) vessel;
           for(Host h : e.getHosts()) {
-            //if(Math.random() < 0.025) 
+            if(Math.random() < 0.025) 
               this.infectHost(h, p);
           }
         }

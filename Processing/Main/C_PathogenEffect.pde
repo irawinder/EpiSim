@@ -105,11 +105,9 @@ public class PathogenEffect {
       Time incubating = this.incubationDuration;
       Time infectious = this.infectiousDuration;
       
-      println(current, initialTime, ellapsed, incubating, infectious); 
-      
       // Check if has become DEAD or RECOVERED
       if(compartment == Compartment.INFECTIOUS) {
-        if(ellapsed.subtract(incubating.add(infectious)).getAmount() < 0) {
+        if(incubating.add(infectious).subtract(ellapsed).getAmount() < 0) {
           if(fatalTreated && treated) {
             compartment = Compartment.DEAD;
           } else if(fatalUntreated && !treated) {
@@ -122,7 +120,7 @@ public class PathogenEffect {
       
       // Check if has become INFECTIOUS
       else if(compartment == Compartment.INCUBATING) {
-        if(ellapsed.subtract(incubating).getAmount() < 0) {
+        if(incubating.subtract(ellapsed).getAmount() < 0) {
           compartment = Compartment.INFECTIOUS;
         }
       }

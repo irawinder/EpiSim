@@ -97,7 +97,7 @@ public void setup() {
   size(1200, 1000);
   
   // Force Framerate (frames per second)
-  frameRate(10);
+  //frameRate(10);
   
   /** 
    * Initialize "Back-End" Object Model
@@ -128,7 +128,7 @@ public void draw() {
   if(autoRun) {
     epidemic.update();
     viz.draw(epidemic);
-    //text("Framerate: " + frameRate, width - 225, height - 75);
+    text("Framerate: " + frameRate, width - 225, height - 75);
   }
 }
 
