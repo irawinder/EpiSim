@@ -1,5 +1,5 @@
 /**
- * Generic attributes of an Infectious Pathogen
+ * Generic attributes of an Infectious Pathogen that can infect Hosts and Environments
  */
 public class Pathogen {
   
@@ -22,13 +22,13 @@ public class Pathogen {
   private TimeDistribution infectiousDuration;
   
   // Mortality Rate with Treatment
-  private HashMap<Demographic, Rate> mortalityTreated;
+  private Rate mortalityTreated;
   
   // Mortality Rate without Treatment
-  private HashMap<Demographic, Rate> mortalityUntreated;
+  private Rate mortalityUntreated;
   
   // Rate of expression for various Symptoms
-  private HashMap<Demographic, HashMap<Symptom, Rate>> symptomExpression;
+  private HashMap<Symptom, Rate> symptomExpression;
   
   /**
    * Construct new Pathogen
@@ -41,25 +41,16 @@ public class Pathogen {
    * Initialize Values to Zero
    */
   public void init() {
-    
     this.name = "";
     this.agentLife = new Time();
     this.attackRate = new Rate();
     this.incubationDuration = new TimeDistribution();
     this.infectiousDuration = new TimeDistribution();
-    
-    this.mortalityTreated = new HashMap<Demographic, Rate>();
-    this.mortalityUntreated = new HashMap<Demographic, Rate>();
-    this.symptomExpression = new HashMap<Demographic, HashMap<Symptom, Rate>>(); 
-    
-    for (Demographic d : Demographic.values()) {
-      this.mortalityTreated.put(d, new Rate());
-      this.mortalityUntreated.put(d, new Rate());
-      HashMap<Symptom, Rate> expression = new HashMap<Symptom, Rate>();
-      for (Symptom s : Symptom.values()) {
-        expression.put(s, new Rate());
-      }
-      this.symptomExpression.put(d, expression);
+    this.mortalityTreated = new Rate();
+    this.mortalityUntreated = new Rate();
+    this.symptomExpression = new HashMap<Symptom, Rate>();
+    for(Symptom s : Symptom.values()) {
+      this.symptomExpression.put(s, new Rate());
     }
   }
   
@@ -147,8 +138,8 @@ public class Pathogen {
   /** 
    * Get a value for incubation duration [days]
    */
-  public Time getIncubationDuration() {
-    Time value = this.incubationDuration.getValue();
+  public Time generateIncubationDuration() {
+    Time value = this.incubationDuration.generateValue();
     value.setAmount(Math.max(0, value.getAmount())); // no negative values allowed
     return value;
   }
@@ -173,69 +164,63 @@ public class Pathogen {
   /** 
    * Get a value for infectious duration [days]
    */
-  public Time getInfectiousDuration() {
-    Time value = this.infectiousDuration.getValue();
+  public Time generateInfectiousDuration() {
+    Time value = this.infectiousDuration.generateValue();
     value.setAmount(Math.max(0, value.getAmount())); // no negative values allowed
     return value;
   }
   
   /** 
-   * Set mortality rate for treated demographic
+   * Set mortality rate for treated
    *
-   * @param d demographic
    * @param r rate
    */
-  public void setMortalityTreated(Demographic d, Rate r) {
-    this.mortalityTreated.put(d, r);
+  public void setMortalityTreated(Rate r) {
+    this.mortalityTreated = r;
   }
   
   /** 
-   * Get mortality rate for treated demographic
-   *
-   * @param d demographic
+   * Get mortality rate for treated
    */
-  public Rate getMortalityTreated(Demographic d) {
-    return this.mortalityTreated.get(d);
+  public Rate getMortalityTreated() {
+    return this.mortalityTreated;
   }
   
   /** 
-   * Set mortality rate for untreated demographic
+   * Set mortality rate for untreated
    *
-   * @param d demographic
    * @param r rate
    */
-  public void setMortalityUntreated(Demographic d, Rate r) {
-    this.mortalityUntreated.put(d, r);
+  public void setMortalityUntreated(Rate r) {
+    this.mortalityUntreated = r;
   }
   
   /** 
-   * Get mortality rate for untreated demographic
+   * Get mortality rate for untreated
    *
    * @param d demographic
    */
-  public Rate getMortalityUntreated(Demographic d) {
-    return this.mortalityUntreated.get(d);
+  public Rate getMortalityUntreated() {
+    return this.mortalityUntreated;
   }
   
   /** 
-   * Set symptom expression rate for demographic
+   * Set symptom expression rate
    *
-   * @param d demographic
    * @param s Symptom
    * @param r rate
    */
-  public void setSymptomExpression(Demographic d, Symptom s, Rate r) {
-    this.symptomExpression.get(d).put(s, r);
+  public void setSymptomExpression(Symptom s, Rate r) {
+    this.symptomExpression.put(s, r);
   }
   
   /** 
-   * Get symptom expression rate for demographic
+   * Get symptom expression rate
    *
-   * @param d demographic
    * @param s Symptom
    */
-  public Rate getSymptomExpression(Demographic d, Symptom s) {
-    return this.symptomExpression.get(d).get(s);
+  public Rate getSymptomExpression(Symptom s) {
+    return this.symptomExpression.get(s);
   }
   
   @Override
@@ -245,12 +230,10 @@ public class Pathogen {
       "Attack Rate: " + this.getAttackRate() + "\n" +
       "Incubation[days]: " + this.getIncubationDistribution() + "\n" +
       "Infectious[days]: " + this.getInfectiousDistribution() + "\n";
-    for (Demographic d : Demographic.values()) {
-      info += d + " Mortality (Treated): " + mortalityTreated.get(d) + "\n";
-      info += d + " Mortality (Untreated): " + mortalityUntreated.get(d) + "\n";
-      for (Symptom s : Symptom.values()) {
-        info += d + " " + s + " Expression: " + getSymptomExpression(d, s) + "\n";
-      }
+    info += "Mortality (Treated): " + this.mortalityTreated + "\n";
+    info += " Mortality (Untreated): " + this.mortalityUntreated + "\n";
+    for (Symptom s : Symptom.values()) {
+      info += s + " Expression: " + getSymptomExpression(s) + "\n";
     }
     return info;
   }

@@ -17,7 +17,7 @@ void test() {
   Person adult = new Person();
   adult.setUID(counter); counter++;
   adult.setName("Ira");
-  adult.setAge(32, 18, 65);
+  adult.setAge(32);
   adult.setPrimaryPlace(home);
   adult.setSecondaryPlace(work);
   

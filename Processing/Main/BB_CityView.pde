@@ -324,7 +324,7 @@ public class CityView extends EpiView {
     int x = (int) p.getCoordinate().getX();
     int y = (int) p.getCoordinate().getY();
     int w = (int) this.getValue(ViewParameter.PERSON_DIAMETER);
-    Compartment c = p.getCompartment(pathogen);
+    Compartment c = p.getStatus(pathogen).getCompartment();
     color viewFill = this.getColor(c);
     color viewStroke = this.getColor(ViewParameter.PERSON_STROKE);
     int alpha = (int) this.getValue(ViewParameter.PERSON_ALPHA);
@@ -443,7 +443,9 @@ public class CityView extends EpiView {
       // Create and Draw a Straw-man Host for Lengend Item
       Person p = new Person();
       Pathogen pathogen = new Pathogen();
-      p.setCompartment(pathogen, c);
+      PathogenEffect pE = new PathogenEffect();
+      pE.setCompartment(c);
+      p.setStatus(pathogen, pE);
       p.setCoordinate(new Coordinate(x + w, y + yOffset - 0.25*textHeight));
       drawCompartment(p, pathogen);
       

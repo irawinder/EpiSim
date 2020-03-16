@@ -29,7 +29,7 @@ public class Rate {
   /**
    * Get the Rate as a decimal numeric value where value of 1.0 is 100%
    */
-  public double get() {
+  public double toDouble() {
     return rate;
   }
   

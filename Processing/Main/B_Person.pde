@@ -46,12 +46,12 @@ public class Person extends Host {
    *
    * @param age
    */
-  public void setAge(int age, int adultAge, int seniorAge) {
+  public void setAge(int age) {
     if (age < 0) {
       println("Age out of Range");
+      this.age = 0;
     } else {
       this.age = age;
-      setDemographic(adultAge, seniorAge);
     }
   }
   

@@ -75,7 +75,7 @@ public class GaussianDistribution {
   /**
    * Pick a value within the Gaussian distribution
    */
-  public double getValue() {
+  public double generateValue() {
     return this.mean + this.standardDeviation * this.random.nextGaussian(); 
   }
   
@@ -160,7 +160,7 @@ public class TimeDistribution{
   /**
    * Pick a Time value within the Gaussian distribution, using units of mean value
    */
-  public Time getValue() {
+  public Time generateValue() {
     double variance = this.random.nextGaussian();
     TimeUnit unit = this.mean.getUnit();
     Time value = new Time(variance, unit);

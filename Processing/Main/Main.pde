@@ -33,6 +33,7 @@
   *         - Agent()
   *         - Host()
   *     - Host() extends Element()
+  *         - PathogenEffect()
   *         - Agent()
   *         - Environment()
   *         * Compartment 

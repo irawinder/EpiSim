@@ -74,7 +74,7 @@ class EpiModel implements Model, Cloneable {
   /**
    * Iterates and returns the next Unique ID
    */
-  public int nextUID() {
+  protected int nextUID() {
     uidCounter++;
     return uidCounter;
   }
@@ -125,9 +125,11 @@ class EpiModel implements Model, Cloneable {
       this.hostList.add(h);
     }
     
-    // Initialize Host Compartments with Pathogens
+    // Initialize Host With pre-determined Pathogen Effect
     for(Pathogen p : this.pathogenList) {
-      h.setCompartment(p, Compartment.SUSCEPTIBLE);
+      PathogenEffect pE = new PathogenEffect();
+      pE.preDetermine(p, h.getResilience());
+      h.setStatus(p, pE);
     }
     
     // Location Sub-dictionary
@@ -190,7 +192,9 @@ class EpiModel implements Model, Cloneable {
     
     // Initialize Host Compartments with New Pathogen
     for(Host h : hostList) {
-      h.setCompartment(p, Compartment.SUSCEPTIBLE);
+      PathogenEffect pE = new PathogenEffect();
+      pE.preDetermine(p, h.getResilience());
+      h.setStatus(p, pE);
     }
   }
   
@@ -268,7 +272,7 @@ class EpiModel implements Model, Cloneable {
     
     // Remove Host Compartments containing Pathogen
     for(Host h : hostList) {
-      h.getCompartments().remove(p);
+      h.getStatusMap().remove(p);
     }
     
     // Remove Agents containing this Pathogen
@@ -349,7 +353,7 @@ class EpiModel implements Model, Cloneable {
    *
    * @param a Agent
    */
-  public Agent copyAgent(Agent a) {
+  protected Agent copyAgent(Agent a) {
     Pathogen p = a.getPathogen();
     Agent copy = makeAgent();
     copy.setPathogen(p);
@@ -361,7 +365,7 @@ class EpiModel implements Model, Cloneable {
   /**
    * Make a new default agent with unique ID
    */
-  public Agent makeAgent() {
+  protected Agent makeAgent() {
     Agent a = new Agent();
     int new_uid = this.nextUID();
     a.setUID(new_uid);
@@ -371,7 +375,7 @@ class EpiModel implements Model, Cloneable {
   /**
    * Make a new default host with unique ID
    */
-  public Host makeHost() {
+  protected Host makeHost() {
     Host h = new Host();
     int new_uid = this.nextUID();
     h.setUID(new_uid);
@@ -381,7 +385,7 @@ class EpiModel implements Model, Cloneable {
   /**
    * Make a new default environment with unique ID
    */
-  public Environment makeEnvironment() {
+  protected Environment makeEnvironment() {
     Environment e = new Environment();
     int new_uid = this.nextUID();
     e.setUID(new_uid);
@@ -394,17 +398,21 @@ class EpiModel implements Model, Cloneable {
    * @param h Host
    * @param p Pathogen
    */
-  public Agent infect(Host h, Pathogen p) {
+  public Agent infectHost(Host h, Pathogen p) {
     
     // Check If Agent Already Present
     for(Agent a : h.getAgents()) {
-      if(a.getPathogen() == p) return null;
+      if(a.getPathogen() == p) {
+        return null;
+      }
     }
     
-    // Update Host's Compartment Status
-    if(h.getCompartment(p) == Compartment.SUSCEPTIBLE) {
-      h.setCompartment(p, Compartment.INCUBATING);
+    // Expose host to pathogen if not already exposed
+    PathogenEffect pE = h.getStatus(p);
+    if(!pE.exposed()) {
+      pE.expose(this.currentTime);
     }
+    
     return infect((Element) h, p);
   }
   
@@ -415,11 +423,13 @@ class EpiModel implements Model, Cloneable {
    * @param p Pathogen
    * @return new infectious Agent or null if infection fails
    */
-  public Agent infect(Environment e, Pathogen p) {
+  public Agent infectEnvironment(Environment e, Pathogen p) {
     
-    // Check If Agent Already Present
+    // Check If Agent Already Present  
     for(Agent a : e.getAgents()) {
-      if(a.getPathogen() == p) return null;
+      if(a.getPathogen() == p) {
+        return null;
+      }
     }
     
     return infect((Element) e, p);
@@ -439,7 +449,6 @@ class EpiModel implements Model, Cloneable {
     this.addAgent(a);
     return a;
   }
-  
   
   /**
    * Updating the Object model moves time forward by one time step 

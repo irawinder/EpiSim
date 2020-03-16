@@ -329,7 +329,7 @@ public class CityModel extends EpiModel {
    * @param minDwellingSize smallest household size of a dwelling unit
    * @param maxDwellingSize largest household size of a dwelling unit
    */
-  public void populate(int minAge, int maxAge, int adultAge, int seniorAge, int minDwellingSize, int maxDwellingSize) {
+  public void populate(int minAge, int maxAge, int adultAge, int seniorAge, Rate childResilience, Rate adultResilience, Rate seniorResilience, int minDwellingSize, int maxDwellingSize) {
     this.adultAge = adultAge;
     this.seniorAge = seniorAge;
     
@@ -341,9 +341,25 @@ public class CityModel extends EpiModel {
         Person person = this.makePerson();
         person.setName("House of " + l.getUID() + ", " + person.getUID());
         
-        // Set Age and Demographic
+        // Set Age
         int age = (int) random(minAge, maxAge);
-        person.setAge(age, this.adultAge, this.seniorAge);
+        person.setAge(age);
+        
+        // Set Demographic
+        person.setDemographic(this.adultAge, this.seniorAge);
+        
+        // Set Pathogen Resilience
+        switch(person.getDemographic()) {
+          case CHILD:
+            person.setResilience(childResilience);
+            break;
+          case ADULT:
+            person.setResilience(adultResilience);
+            break;
+          case SENIOR:
+            person.setResilience(seniorResilience);
+            break;
+        }
         
         // Set Current Environment
         person.setEnvironment(l);
@@ -378,7 +394,13 @@ public class CityModel extends EpiModel {
       ArrayList<Person> options = this.person.get(Demographic.ADULT);
       int randomIndex = (int) (Math.random() * (options.size() - 1));
       Person patientZero = options.get(randomIndex);
-      this.infect(patientZero, pathogen);
+      
+      // Set Initial time such that agent is already infectious
+      PathogenEffect pE = patientZero.getStatus(pathogen);
+      Time incubationDuration = pE.getIncubationDuration();
+      pE.setInitialTime(incubationDuration.multiply(new Time(1, incubationDuration.getUnit())));
+      
+      this.infectHost(patientZero, pathogen);
     }
   }
   
@@ -427,9 +449,9 @@ public class CityModel extends EpiModel {
     Time oneHour = new Time(1, TimeUnit.HOUR);
     Time hourPerStep = timeStep.divide(oneHour);
     Rate anomolyPerHour = this.phaseAnomoly.get(currentPhase);
-    Rate anomolyPerStep = new Rate(hourPerStep.getAmount() * anomolyPerHour.get());
+    Rate anomolyPerStep = new Rate(hourPerStep.getAmount() * anomolyPerHour.toDouble());
     Rate recoverPerHour = this.recoverAnomoly;
-    Rate recoverPerStep = new Rate(hourPerStep.getAmount() * recoverPerHour.get());
+    Rate recoverPerStep = new Rate(hourPerStep.getAmount() * recoverPerHour.toDouble());
     
     for(Demographic d : Demographic.values()) {
       for(Person p : this.person.get(d)) {
@@ -453,13 +475,15 @@ public class CityModel extends EpiModel {
         
         // Wander away from domain to teriary activity
         if(currentPlace == dominantPlace) {
-          if(roll(anomolyPerStep)) {
+          boolean goToAnomoly = roll(anomolyPerStep);
+          if(goToAnomoly) {
             p.moveTo(behavior.getRandomPlace(p, PlaceCategory.TERTIARY));
           }
           
         // Return to domain from tertiary activity
         } else {
-          if(roll(recoverPerStep)) {
+          boolean goToDomain = roll(recoverPerStep);
+          if(goToDomain) {
             p.moveTo(dominantPlace);
           }
         }
@@ -485,7 +509,7 @@ public class CityModel extends EpiModel {
     // Move Hosts
     this.movePersons();
     
-    // Add New Agents
+    // Add New Infectious Agents
     int numAgents = this.getAgents().size();
     for(int i=0; i<numAgents; i++) {
       Agent a = this.getAgents().get(i);
@@ -494,30 +518,43 @@ public class CityModel extends EpiModel {
         Pathogen p = a.getPathogen();
         Element vessel = a.getVessel();
         
-        // Agent Originates from Host
+        // Agent Originates from Infectious Host
         if(vessel instanceof Host) {
           Host h = (Host) vessel;
           
-          // Transmit pathogen from Host to Environment
-          Environment e = h.getEnvironment();
-          if(Math.random() < 0.25) this.infect(e, p);
-          
-          // Transmit pathogen from Host to Host
-          for(Host h2 : e.getHosts()) {
-            if(Math.random() < 0.025) this.infect(h2, p);
+          if(h.getStatus(p).infectious()) {
+            
+            // Creat Agent within self
+            this.infectHost(h, p);
+            
+            // Transmit pathogen from Host to Environment
+            Environment e = h.getEnvironment();
+            //if(Math.random() < 0.25) 
+              this.infectEnvironment(e, p);
+            
+            // Transmit pathogen from Host to Host
+            for(Host h2 : e.getHosts()) {
+              //if(Math.random() < 0.025) 
+                this.infectHost(h2, p);
+            }
           }
           
         // Transmit from Environment to Host
         } else if (vessel instanceof Environment) {
           Environment e = (Environment) vessel;
           for(Host h : e.getHosts()) {
-            if(Math.random() < 0.025) this.infect(h, p);
+            //if(Math.random() < 0.025) 
+              this.infectHost(h, p);
           }
         }
       }
     }
     
     // Update Compartment status
+    for(Host h : this.getHosts()) {
+      boolean treated = true;
+      h.update(current, treated);
+    }
     
     // Clean "dead" agents
     for(int i=this.getAgents().size()-1; i>=0; i--) {
@@ -533,6 +570,6 @@ public class CityModel extends EpiModel {
    * @return true at rate r
    */
   public boolean roll(Rate r) {
-    return Math.random() < r.get();
+    return Math.random() < r.toDouble();
   }
 }

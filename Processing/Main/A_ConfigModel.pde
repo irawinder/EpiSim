@@ -43,9 +43,21 @@ private void configModel() {
   epidemic.randomPlaces(N*25,       "Retail Shopping", LandUse.RETAIL,    2*MARGIN + 2*MARGIN, 2*MARGIN, width - 2*MARGIN, height - 2*MARGIN, 50,        1000);
   epidemic.randomPlaces(N*1,        "Hospital",        LandUse.HOSPITAL,  2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 2000,      2000);
   
+  // Resilience*: Impact of Demographic on Pathogen Intensities (1.0 == no impact; < 1 == less resilient; > 1 == more resilient)
+  Rate childResilience  = new Rate(1.5);
+  Rate adultResilience  = new Rate(1.0);
+  Rate seniorResilience = new Rate(0.5);
+  
+  // Population Attributes
+  int adultAge        = 18;
+  int seniorAge       = 65;
+  int minAge          = 5;
+  int maxAge          = 85;
+  int minDwellingSize = 1;
+  int maxDwellingSize = 5;
+  
   // Add people to Model, initially located at their respective dwellings
-  // Parameters (minAge, maxAge, adultAge, seniorAge, minDwellingSize, maxDwellingSize)
-  epidemic.populate(5, 85, 18, 65, 1, 5);
+  epidemic.populate(minAge, maxAge, adultAge, seniorAge, childResilience, adultResilience, seniorResilience, minDwellingSize, maxDwellingSize);
   
   // Configure City Schedule
   Schedule nineToFive = new Schedule();
@@ -111,8 +123,6 @@ private void configModel() {
   epidemic.patientZero(coldA, 20);
   epidemic.patientZero(coldB, 1);
   epidemic.patientZero(flu, 4);
-  
-  
 }
 
 /**
@@ -139,39 +149,17 @@ void configureCoronavirus(Pathogen p, String name) {
   p.setIncubationDistribution(incubationMean, incubationStandardDeviation);
   p.setInfectiousDistribution(infectiousMean, infectiousStandardDeviation);
   
-  // Mortality Rate When Treated
-  p.setMortalityTreated(Demographic.CHILD,  new Rate(0.001));
-  p.setMortalityTreated(Demographic.ADULT,  new Rate(0.010));
-  p.setMortalityTreated(Demographic.SENIOR, new Rate(0.020));
-  
-  // Mortality Rate When UnTreated
-  p.setMortalityUntreated(Demographic.CHILD,  new Rate(0.002));
-  p.setMortalityUntreated(Demographic.ADULT,  new Rate(0.020));
-  p.setMortalityUntreated(Demographic.SENIOR, new Rate(0.080));
-  
-  // Children's rate of expression symptoms
-  p.setSymptomExpression(Demographic.CHILD, Symptom.FEVER,               new Rate(0.5*0.50));
-  p.setSymptomExpression(Demographic.CHILD, Symptom.COUGH,               new Rate(0.5*0.50));
-  p.setSymptomExpression(Demographic.CHILD, Symptom.SHORTNESS_OF_BREATH, new Rate(0.5*0.25));
-  p.setSymptomExpression(Demographic.CHILD, Symptom.FATIGUE,             new Rate(0.5*0.05));
-  p.setSymptomExpression(Demographic.CHILD, Symptom.MUSCLE_ACHE,         new Rate(0.5*0.05));
-  p.setSymptomExpression(Demographic.CHILD, Symptom.DIARRHEA,            new Rate(0.5*0.05));
+  // Mortality Rates
+  p.setMortalityTreated(new Rate(0.020));
+  p.setMortalityUntreated(new Rate(0.080));
   
   // Adult's rate of expression symptoms
-  p.setSymptomExpression(Demographic.ADULT, Symptom.FEVER,               new Rate(1.0*0.50));
-  p.setSymptomExpression(Demographic.ADULT, Symptom.COUGH,               new Rate(1.0*0.50));
-  p.setSymptomExpression(Demographic.ADULT, Symptom.SHORTNESS_OF_BREATH, new Rate(1.0*0.25));
-  p.setSymptomExpression(Demographic.ADULT, Symptom.FATIGUE,             new Rate(1.0*0.05));
-  p.setSymptomExpression(Demographic.ADULT, Symptom.MUSCLE_ACHE,         new Rate(1.0*0.05));
-  p.setSymptomExpression(Demographic.ADULT, Symptom.DIARRHEA,            new Rate(1.0*0.05));
-  
-  // Senior's rate of expression symptoms
-  p.setSymptomExpression(Demographic.SENIOR, Symptom.FEVER,              new Rate(1.5*0.50));
-  p.setSymptomExpression(Demographic.SENIOR, Symptom.COUGH,              new Rate(1.5*0.50));
-  p.setSymptomExpression(Demographic.SENIOR, Symptom.SHORTNESS_OF_BREATH,new Rate(1.5*0.25));
-  p.setSymptomExpression(Demographic.SENIOR, Symptom.FATIGUE,            new Rate(1.5*0.05));
-  p.setSymptomExpression(Demographic.SENIOR, Symptom.MUSCLE_ACHE,        new Rate(1.5*0.05));
-  p.setSymptomExpression(Demographic.SENIOR, Symptom.DIARRHEA,           new Rate(1.5*0.05));
+  p.setSymptomExpression(Symptom.FEVER,               new Rate(0.50));
+  p.setSymptomExpression(Symptom.COUGH,               new Rate(0.50));
+  p.setSymptomExpression(Symptom.SHORTNESS_OF_BREATH, new Rate(0.25));
+  p.setSymptomExpression(Symptom.FATIGUE,             new Rate(0.05));
+  p.setSymptomExpression(Symptom.MUSCLE_ACHE,         new Rate(0.05));
+  p.setSymptomExpression(Symptom.DIARRHEA,            new Rate(0.05));
 }
 
 /**
@@ -198,27 +186,12 @@ public void configureRhinovirus(Pathogen p, String name) {
   p.setIncubationDistribution(incubationMean, incubationStandardDeviation);
   p.setInfectiousDistribution(infectiousMean, infectiousStandardDeviation);
   
-  // Mortality Rate When Treated
-  p.setMortalityTreated(Demographic.CHILD,  new Rate(0.0));
-  p.setMortalityTreated(Demographic.ADULT,  new Rate(0.0));
-  p.setMortalityTreated(Demographic.SENIOR, new Rate(0.0));
-  
-  // Mortality Rate When UnTreated
-  p.setMortalityUntreated(Demographic.CHILD,  new Rate(0.000));
-  p.setMortalityUntreated(Demographic.ADULT,  new Rate(0.000));
-  p.setMortalityUntreated(Demographic.SENIOR, new Rate(0.001));
+  // Mortality Rates
+  p.setMortalityTreated(new Rate(0.0));
+  p.setMortalityUntreated(new Rate(0.001));
   
   // Child's rate of expression symptoms
-  p.setSymptomExpression(Demographic.CHILD, Symptom.FEVER,               new Rate(1.0*0.50));
-  p.setSymptomExpression(Demographic.CHILD, Symptom.COUGH,               new Rate(1.0*0.50));
-  
-  // Adult's rate of expression symptoms
-  p.setSymptomExpression(Demographic.ADULT, Symptom.FEVER,               new Rate(1.0*0.50));
-  p.setSymptomExpression(Demographic.ADULT, Symptom.COUGH,               new Rate(1.0*0.50));
-  
-  // Senior's rate of expression symptoms
-  p.setSymptomExpression(Demographic.SENIOR, Symptom.FEVER,              new Rate(1.5*0.50));
-  p.setSymptomExpression(Demographic.SENIOR, Symptom.COUGH,              new Rate(1.5*0.50));
+  p.setSymptomExpression(Symptom.COUGH,  new Rate(0.50));
 }
 
 /**
@@ -231,7 +204,7 @@ public void configureInfluenza(Pathogen p, String name) {
   // Attributes
   p.setName(name);
   p.setType(PathogenType.INFLUENZA);
-  p.setAttackRate(new Rate(0.3));
+  p.setAttackRate(new Rate(0.5));
   
   // Length of time that pathogen can survice outside of host via Agent
   Time agentLife = new Time(8, TimeUnit.HOUR);
@@ -245,25 +218,15 @@ public void configureInfluenza(Pathogen p, String name) {
   p.setIncubationDistribution(incubationMean, incubationStandardDeviation);
   p.setInfectiousDistribution(infectiousMean, infectiousStandardDeviation);
   
-  // Mortality Rate When Treated
-  p.setMortalityTreated(Demographic.CHILD,  new Rate(0.000));
-  p.setMortalityTreated(Demographic.ADULT,  new Rate(0.000));
-  p.setMortalityTreated(Demographic.SENIOR, new Rate(0.001));
-  
-  // Mortality Rate When UnTreated
-  p.setMortalityUntreated(Demographic.CHILD,  new Rate(0.001));
-  p.setMortalityUntreated(Demographic.ADULT,  new Rate(0.001));
-  p.setMortalityUntreated(Demographic.SENIOR, new Rate(0.002));
+  // Mortality Rates
+  p.setMortalityTreated(new Rate(0.0));
+  p.setMortalityUntreated(new Rate(0.001));
   
   // Child's rate of expression symptoms
-  p.setSymptomExpression(Demographic.CHILD, Symptom.FEVER,               new Rate(1.0*0.50));
-  p.setSymptomExpression(Demographic.CHILD, Symptom.COUGH,               new Rate(1.0*0.50));
-  
-  // Adult's rate of expression symptoms
-  p.setSymptomExpression(Demographic.ADULT, Symptom.FEVER,               new Rate(1.0*0.50));
-  p.setSymptomExpression(Demographic.ADULT, Symptom.COUGH,               new Rate(1.0*0.50));
-  
-  // Senior's rate of expression symptoms
-  p.setSymptomExpression(Demographic.SENIOR, Symptom.FEVER,              new Rate(1.5*0.50));
-  p.setSymptomExpression(Demographic.SENIOR, Symptom.COUGH,              new Rate(1.5*0.50));
+  p.setSymptomExpression(Symptom.FEVER,               new Rate(0.50));
+  p.setSymptomExpression(Symptom.COUGH,               new Rate(0.50));
+  p.setSymptomExpression(Symptom.DIARRHEA,            new Rate(0.50));
+  p.setSymptomExpression(Symptom.FATIGUE,             new Rate(0.05));
+  p.setSymptomExpression(Symptom.MUSCLE_ACHE,         new Rate(0.05));
+  p.setSymptomExpression(Symptom.DIARRHEA,            new Rate(0.05));
 }
