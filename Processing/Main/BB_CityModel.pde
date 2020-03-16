@@ -383,6 +383,17 @@ public class CityModel extends EpiModel {
   }
   
   /**
+   * Force movement of all People to their primary Place
+   */
+  public void allToPrimary() {
+    for(Demographic d : Demographic.values()) {
+      for(Person p : this.person.get(d)) {
+        p.moveToPrimary();
+      }
+    }
+  }
+  
+  /**
    * Force movement of all People to their secondary Place
    */
   public void allToSecondary() {
@@ -394,12 +405,12 @@ public class CityModel extends EpiModel {
   }
   
   /**
-   * Force movement of all People to their primary Place
+   * Force movement of all People to their secondary Place
    */
-  public void allToPrimary() {
+  public void allToTertiary() {
     for(Demographic d : Demographic.values()) {
       for(Person p : this.person.get(d)) {
-        p.moveToPrimary();
+        p.moveTo(behavior.getRandomPlace(p, PlaceCategory.TERTIARY));
       }
     }
   }

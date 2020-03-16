@@ -13,6 +13,14 @@ public void configView() {
   viz.setPersonMode(PersonMode.DEMOGRAPHIC);
   viz.setPlaceMode(PlaceMode.LANDUSE);
   
+  // Graphics Location Parameters
+  viz.setValue(ViewParameter.LEFT_MARGIN,        50);  // pixels
+  viz.setValue(ViewParameter.GENERAL_MARGIN,     125); // pixels
+  viz.setValue(ViewParameter.INFO_Y,             100); // pixels
+  viz.setValue(ViewParameter.PATHOGEN_LEGEND_Y,  500); // pixels
+  viz.setValue(ViewParameter.PERSON_LEGEND_Y,    610); // pixels
+  viz.setValue(ViewParameter.PLACE_LEGEND_Y,     760); // pixels
+  
   String info = 
     "Epidemic Simulation" + "\n" +
     "EDGEof Planetary Insight Center" + "\n\n" +
@@ -29,8 +37,12 @@ public void configView() {
     
     "Simulation Controls:" + "\n" +
     "Press 'r' to regenerate random city" + "\n" +
-    "Press 'z' to send everyone home" + "\n" +
-    "Press 'x' to send everyone to work" + "\n\n" +
+    "Press 'z' to teleport all to primary" + "\n" +
+    "   (e.g. home)" + "\n" +
+    "Press 'x' to teleport all to secondary" + "\n" +
+    "   (e.g. work, school)" + "\n" +
+    "Press 'c' to teleport all to tertiary" + "\n" +
+    "   (e.g. shopping, leisure)" + "\n\n" +
     
     "Time Controls:" + "\n" +
     "Press 's' to iterate one time step" + "\n" +
@@ -95,14 +107,6 @@ public void configView() {
   viz.setName(PersonMode.COMPARTMENT,           "Pathogen Status");
   viz.setName(PlaceMode.LANDUSE,                "Land Use Type");
   viz.setName(PlaceMode.DENSITY,                "Gathering Denisty");
-
-  // Graphics Location Parameters
-  viz.setValue(ViewParameter.LEFT_MARGIN,        50);  // pixels
-  viz.setValue(ViewParameter.GENERAL_MARGIN,     125); // pixels
-  viz.setValue(ViewParameter.INFO_Y,             100); // pixels
-  viz.setValue(ViewParameter.PATHOGEN_LEGEND_Y,  470); // pixels
-  viz.setValue(ViewParameter.PERSON_LEGEND_Y,    580); // pixels
-  viz.setValue(ViewParameter.PLACE_LEGEND_Y,     730); // pixels
   
   // Text Settings
   viz.setValue(ViewParameter.TEXT_HEIGHT,        15);                        // pixels

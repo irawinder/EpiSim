@@ -10,7 +10,7 @@ private void configModel() {
   epidemic.setTimeStep(new Time(15, TimeUnit.MINUTE));
   
   // Behaviors (Demographic, Travel Category, Land Use, Max Distance Willing to Travel)
-  double BASE_DIST = 100;
+  double BASE_DIST = 150;
   BehaviorMap behavior = new BehaviorMap();
   behavior.setMap(Demographic.CHILD,  PlaceCategory.PRIMARY,   LandUse.DWELLING,   BASE_DIST*100);
   behavior.setMap(Demographic.CHILD,  PlaceCategory.SECONDARY, LandUse.SCHOOL,     BASE_DIST*2.0);

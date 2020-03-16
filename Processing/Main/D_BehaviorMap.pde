@@ -139,7 +139,7 @@ public class BehaviorMap {
     Place current = (Place) p.getEnvironment();
     
     int counter = 0;
-    while(counter < 100) { // Give up after 100 tries
+    while(counter < 1000) { // Give up after 100 tries
       counter++;
       
       // Pick Random Place from Options

@@ -179,6 +179,9 @@ public void keyPressed() {
     case 'x':
       epidemic.allToSecondary();
       break;
+    case 'c':
+      epidemic.allToTertiary();
+      break;
     case 'a': // autoplay
       autoRun = !autoRun;
       break;
