@@ -89,10 +89,13 @@ public enum PlaceMode {
 }
 
 public enum ViewParameter {
+  AUTO_RUN,
+  FRAMES_PER_SIMULATION,
   SHOW_PERSONS,
   SHOW_COMMUTES,
   SHOW_PLACES,
   SHOW_AGENTS,
+  SHOW_FRAMERATE,
   TEXT_HEIGHT, 
   TEXT_FILL, 
   PLACE_SCALER,

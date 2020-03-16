@@ -6,14 +6,15 @@
 public void configView() {
   
   // Simulation Rate
-  viz.autoRun = false;
-  viz.framesPerSimulation = 5;
+  viz.setValue(ViewParameter.FRAMES_PER_SIMULATION, 10); // Frames
   
   // Default View Mode Settings
+  viz.setToggle(ViewParameter.AUTO_RUN,         false);
   viz.setToggle(ViewParameter.SHOW_PERSONS,     true);
   viz.setToggle(ViewParameter.SHOW_COMMUTES,    true);
   viz.setToggle(ViewParameter.SHOW_PLACES,      true);
   viz.setToggle(ViewParameter.SHOW_AGENTS,      true);
+  viz.setToggle(ViewParameter.SHOW_FRAMERATE,   false);
   
   viz.setPathogenMode(AgentMode.PATHOGEN);
   viz.setPersonMode(PersonMode.COMPARTMENT);
@@ -30,29 +31,28 @@ public void configView() {
   String info = 
     "Epidemic Simulation" + "\n" +
     "EDGEof Planetary Insight Center" + "\n\n" +
-    "View Controls:" + "\n" +
+    "Layers:" + "\n" +
     "Press '1' to hide/show Places" + "\n" +
     "Press '2' to hide/show Persons" + "\n" +
     "Press '3' to hide/show Commutes" + "\n" +
     "Press '4' to hide/show Pathogens" + "\n\n" +
-    "Press 'n' for next Infection Type" + "\n\n" +
+    
+    "Filters:" + "\n" +
+    "Press 'n' for next Infection Type" + "\n" +
     "Press 'q' to toggle Agent Legend" + "\n" +
     "Press 'w' to toggle Place Legend" + "\n" +
     "Press 'e' to toggle Person Legend" + "\n\n" +
     
-    
-    "Simulation Controls:" + "\n" +
+    "Simulation:" + "\n" +
     "Press 'r' to regenerate random city" + "\n" +
     "Press 'z' to teleport all to primary" + "\n" +
-    "   (e.g. home)" + "\n" +
     "Press 'x' to teleport all to secondary" + "\n" +
-    "   (e.g. work, school)" + "\n" +
-    "Press 'c' to teleport all to tertiary" + "\n" +
-    "   (e.g. shopping, leisure)" + "\n\n" +
+    "Press 'c' to teleport all to tertiary" + "\n\n" +
     
-    "Time Controls:" + "\n" +
-    "Press 's' to iterate one time step" + "\n" +
-    "Press 'a' to autoplay simulation" + "\n";
+    "Time:" + "\n" +
+    "Press 'a' to autoplay simulation" + "\n" +
+    "Press 's' to iterate one time step" + "\n";
+    
     
   viz.setInfo(info);
 
@@ -145,5 +145,5 @@ public void configView() {
   viz.setValue(ViewParameter.COMMUTE_WEIGHT,    2);                         // pixels
   
   // Other Parameters
-  viz.setValue(ViewParameter.REDUCED_ALPHA,     10);  // 0 - 255
+  viz.setValue(ViewParameter.REDUCED_ALPHA,     50);  // 0 - 255
 }

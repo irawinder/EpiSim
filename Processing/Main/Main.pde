@@ -85,6 +85,8 @@ private CityModel epidemic;
 // Visualization Model for Object Model
 private CityView viz;
 
+int frameCounter;
+
 /**
  * setup() runs once at the very beginning
  */
@@ -92,9 +94,7 @@ public void setup() {
   
   // Windowed Application Size (pixels)
   size(1200, 1000);
-  
-  // Force Framerate (frames per second)
-  //frameRate(30);
+  frameCounter = 0;
   
   /** 
    * Initialize "Back-End" Object Model
@@ -110,20 +110,24 @@ public void setup() {
   viz = new CityView(epidemic);
   configView();
   
-  // Draw Visualization for first frame only
+  // Pre-Draw Static Images
   viz.preDraw(epidemic);
-  viz.draw(epidemic);
 }
 
 /**
  * draw() runs on an infinite loop after setup() is finished
  */
 public void draw() {
-  if(viz.autoRun && frameCount % viz.framesPerSimulation == 0) {
+  
+  // Update Model Simulation
+  if(frameCounter % viz.framesPerSim() == 0 && viz.isRunning()) {
     epidemic.update();
   }
-  viz.draw(epidemic, frameCount);
-  text("Framerate: " + frameRate, width - 225, height - 75);
+  
+  // Update Graphics every frame
+  viz.draw(epidemic, frameCounter);
+  
+  frameCounter++;
 }
 
 /**
@@ -176,19 +180,28 @@ public void keyPressed() {
       break;
     case 'z':
       epidemic.allToPrimary();
+      frameCounter = 0;
       break;
     case 'x':
       epidemic.allToSecondary();
+      frameCounter = 0;
       break;
     case 'c':
       epidemic.allToTertiary();
+      frameCounter = 0;
       break;
     case 'a': // autoplay
-      viz.autoRun = !viz.autoRun;
+      viz.toggleAutoRun();
       break;
     case 's': // step model forward by one tick
       epidemic.update();
+      frameCounter = 0;
+      break;
+    case 'f':
+      viz.toggleFrameRate();
       break;
   }
-  viz.draw(epidemic);
+  
+  // Update Graphics every frame
+  viz.draw(epidemic, frameCounter);
 }

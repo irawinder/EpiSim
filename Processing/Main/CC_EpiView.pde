@@ -3,12 +3,6 @@
  */
 public class EpiView extends View {
   
-  // Auto-run model
-  public boolean autoRun;
-  
-  // Number of frames rendered between simulation steps
-  public int framesPerSimulation;
-  
   // View States
   private AgentMode agentMode;
   private PathogenType pathogenType;
@@ -22,8 +16,6 @@ public class EpiView extends View {
    */
   public EpiView(EpiModel model) {
     super();
-    this.autoRun = false;
-    this.framesPerSimulation = 5;
     
     // View States
     this.agentMode = AgentMode.values()[0];
@@ -32,6 +24,38 @@ public class EpiView extends View {
     
     // List of Pathogens in Model
     this.pathogenList = model.getPathogens();
+  }
+  
+  /**
+   * Toggle Auto Run
+   */ 
+  public void toggleAutoRun() {
+    this.setToggle(ViewParameter.AUTO_RUN, !this.getToggle(ViewParameter.AUTO_RUN));
+  }
+  
+  /**
+   * Toggle FrameRate
+   */ 
+  public void toggleFrameRate() {
+    this.setToggle(ViewParameter.SHOW_FRAMERATE, !this.getToggle(ViewParameter.SHOW_FRAMERATE));
+  }
+  
+  /**
+   * Check if Simulation is Running
+   *
+   * @return true if running
+   */
+  public boolean isRunning() {
+    return this.getToggle(ViewParameter.AUTO_RUN);
+  }
+  
+  /**
+   * Check Number Of Frames to visualize before iterating model
+   *
+   * @return frames per simulation
+   */
+  public int framesPerSim() {
+    return (int) this.getValue(ViewParameter.FRAMES_PER_SIMULATION);
   }
   
   /**

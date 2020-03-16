@@ -22,8 +22,6 @@ public class CityView extends EpiView {
    */
   public CityView(CityModel model) {
     super(model);
-    this.autoRun = false;
-    this.framesPerSimulation = 5;
     this.personMode = PersonMode.values()[0];
     this.placeMode = PlaceMode.values()[0];
     
@@ -67,10 +65,11 @@ public class CityView extends EpiView {
   public void draw(CityModel model, int frame) {
     background(255);
     
-    boolean showCommutes = this.getToggle(ViewParameter.SHOW_COMMUTES);
-    boolean showPlaces   = this.getToggle(ViewParameter.SHOW_PLACES);
-    boolean showPersons  = this.getToggle(ViewParameter.SHOW_PERSONS);
-    boolean showAgents   = this.getToggle(ViewParameter.SHOW_AGENTS);
+    boolean showCommutes  = this.getToggle(ViewParameter.SHOW_COMMUTES);
+    boolean showPlaces    = this.getToggle(ViewParameter.SHOW_PLACES);
+    boolean showPersons   = this.getToggle(ViewParameter.SHOW_PERSONS);
+    boolean showAgents    = this.getToggle(ViewParameter.SHOW_AGENTS);
+    boolean showFrameRate = this.getToggle(ViewParameter.SHOW_FRAMERATE);
     
     int textFill = (int) this.getValue(ViewParameter.TEXT_FILL);
     int textHeight = (int) this.getValue(ViewParameter.TEXT_HEIGHT);
@@ -167,6 +166,8 @@ public class CityView extends EpiView {
         drawCompartmentLegend(leftMargin, placeLegendY, textFill, textHeight);
         break;
     }
+    
+    if(showFrameRate) text("Framerate: " + frameRate, width - 2*generalMargin, height - 0.5*generalMargin);
   }
   
   /**
@@ -357,8 +358,9 @@ public class CityView extends EpiView {
    * @param pathogenson
    */
   protected void drawCompartment(Person p, Pathogen pathogen, int frame) {
+    int framesPerSimulation = (int) this.getValue(ViewParameter.FRAMES_PER_SIMULATION);
     Animated dot = this.getAnimated(p);
-    Coordinate location = dot.position(this.framesPerSimulation, frame, p.getCoordinate());
+    Coordinate location = dot.position(framesPerSimulation, frame, p.getCoordinate());
     int x = (int) location.getX();
     int y = (int) location.getY();
     int w = (int) this.getValue(ViewParameter.PERSON_DIAMETER);
@@ -380,8 +382,9 @@ public class CityView extends EpiView {
    * @param pathogenson
    */
   protected void drawDemographic(Person p, int frame) {
+    int framesPerSimulation = (int) this.getValue(ViewParameter.FRAMES_PER_SIMULATION);
     Animated dot = this.getAnimated(p);
-    Coordinate location = dot.position(this.framesPerSimulation, frame, p.getCoordinate());
+    Coordinate location = dot.position(framesPerSimulation, frame, p.getCoordinate());
     int x = (int) location.getX();
     int y = (int) location.getY();
     int w = (int) this.getValue(ViewParameter.PERSON_DIAMETER);
