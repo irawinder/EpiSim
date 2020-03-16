@@ -1,5 +1,7 @@
 /**
  * Configure an Epidemiological Model in a City
+ *
+ * (Edit/modify the initial city model and epidemic state from here!)
  */
 private void configModel() {
   

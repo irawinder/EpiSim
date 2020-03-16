@@ -1,5 +1,7 @@
 /**
  * Configure City View Model
+ *
+  (Edit/modify how the simulation looks from here!)
  */
 public void configView() {
   

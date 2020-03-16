@@ -98,11 +98,17 @@ public void setup() {
   // Force Framerate (frames per second)
   frameRate(10);
   
-  // Initialize "Back-End" Object Model
+  /** 
+   * Initialize "Back-End" Object Model
+   * Edit/modify the initial city model and epidemic state from "A_ConfigModel" tab
+   */
   epidemic = new CityModel();
-  configModel();
+  configModel(); 
   
-  // Initialize "Front-End" View Model
+  /** 
+   * Initialize "Front-End" View Model
+   * Edit/modify how the simulation looks from the "A_ConfigView" tab
+   */
   viz = new CityView(epidemic);
   configView();
   
