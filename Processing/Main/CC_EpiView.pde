@@ -3,6 +3,12 @@
  */
 public class EpiView extends View {
   
+  // Auto-run model
+  public boolean autoRun;
+  
+  // Number of frames rendered between simulation steps
+  public int framesPerSimulation;
+  
   // View States
   private AgentMode agentMode;
   private PathogenType pathogenType;
@@ -16,14 +22,16 @@ public class EpiView extends View {
    */
   public EpiView(EpiModel model) {
     super();
+    this.autoRun = false;
+    this.framesPerSimulation = 5;
     
     // View States
-    agentMode = AgentMode.values()[0];
-    pathogenType = PathogenType.values()[0];
-    pathogenViewIndex = 0;
+    this.agentMode = AgentMode.values()[0];
+    this.pathogenType = PathogenType.values()[0];
+    this.pathogenViewIndex = 0;
     
     // List of Pathogens in Model
-    pathogenList = model.getPathogens();
+    this.pathogenList = model.getPathogens();
   }
   
   /**

@@ -85,9 +85,6 @@ private CityModel epidemic;
 // Visualization Model for Object Model
 private CityView viz;
 
-// Auto-run model
-private boolean autoRun;
-
 /**
  * setup() runs once at the very beginning
  */
@@ -97,7 +94,7 @@ public void setup() {
   size(1200, 1000);
   
   // Force Framerate (frames per second)
-  //frameRate(10);
+  //frameRate(30);
   
   /** 
    * Initialize "Back-End" Object Model
@@ -113,9 +110,6 @@ public void setup() {
   viz = new CityView(epidemic);
   configView();
   
-  // Initialize auto-run
-  autoRun = false;
-  
   // Draw Visualization for first frame only
   viz.preDraw(epidemic);
   viz.draw(epidemic);
@@ -125,11 +119,11 @@ public void setup() {
  * draw() runs on an infinite loop after setup() is finished
  */
 public void draw() {
-  if(autoRun) {
+  if(viz.autoRun && frameCount % viz.framesPerSimulation == 0) {
     epidemic.update();
-    viz.draw(epidemic);
-    text("Framerate: " + frameRate, width - 225, height - 75);
   }
+  viz.draw(epidemic, frameCount);
+  text("Framerate: " + frameRate, width - 225, height - 75);
 }
 
 /**
@@ -190,7 +184,7 @@ public void keyPressed() {
       epidemic.allToTertiary();
       break;
     case 'a': // autoplay
-      autoRun = !autoRun;
+      viz.autoRun = !viz.autoRun;
       break;
     case 's': // step model forward by one tick
       epidemic.update();

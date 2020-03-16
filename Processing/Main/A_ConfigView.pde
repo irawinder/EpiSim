@@ -5,6 +5,10 @@
  */
 public void configView() {
   
+  // Simulation Rate
+  viz.autoRun = false;
+  viz.framesPerSimulation = 5;
+  
   // Default View Mode Settings
   viz.setToggle(ViewParameter.SHOW_PERSONS,     true);
   viz.setToggle(ViewParameter.SHOW_COMMUTES,    true);

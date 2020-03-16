@@ -2,7 +2,7 @@
  * City Visualization Model extending Epidemiological Object Model
  */
 public class CityView extends EpiView {
-  
+
   // Information text
   private String info;
   
@@ -14,13 +14,49 @@ public class CityView extends EpiView {
   private PersonMode personMode;
   private PlaceMode placeMode;
   
+  // Array of Animated People
+  private HashMap<Person, Animated> animatedPerson;
+  
   /**
    * Construct EpiView Model
    */
   public CityView(CityModel model) {
     super(model);
-    personMode = PersonMode.values()[0];
-    placeMode = PlaceMode.values()[0];
+    this.autoRun = false;
+    this.framesPerSimulation = 5;
+    this.personMode = PersonMode.values()[0];
+    this.placeMode = PlaceMode.values()[0];
+    
+    this.animatedPerson = new HashMap<Person, Animated>();
+    for(Host h : model.getHosts()) {
+      if(h instanceof Person) {
+        Person p = (Person) h;
+        this.setAnimated(p);
+      }
+    }
+  }
+  
+  /**
+   * Set Animated Person
+   *
+   * @param p Person
+   */
+  public void setAnimated(Person p) {
+    Animated aPerson = new Animated();
+    aPerson.setCoordinate(p.getCoordinate());
+    this.animatedPerson.put(p, aPerson);
+  }
+  
+  /**
+   * Get the Animated object associated with a person, creating it if one doesn't already exist
+   *
+   * @param p Person
+   */
+  public Animated getAnimated(Person p) {
+    if(!this.animatedPerson.keySet().contains(p)) {
+      this.setAnimated(p);
+    }
+    return animatedPerson.get(p);
   }
   
   /**
@@ -28,7 +64,7 @@ public class CityView extends EpiView {
    *
    * @param mode CityModel
    */
-  public void draw(CityModel model) {
+  public void draw(CityModel model, int frame) {
     background(255);
     
     boolean showCommutes = this.getToggle(ViewParameter.SHOW_COMMUTES);
@@ -75,7 +111,7 @@ public class CityView extends EpiView {
           for(Host h : model.getHosts()) {
             if(h instanceof Person) {
               Person p = (Person) h;
-              this.drawDemographic(p);
+              this.drawDemographic(p, frame);
             }
           }
           break;
@@ -84,7 +120,7 @@ public class CityView extends EpiView {
             if(h instanceof Person) {
               Person p = (Person) h;
               Pathogen pathogen = this.getCurrentPathogen();
-              this.drawCompartment(p, pathogen);
+              this.drawCompartment(p, pathogen, frame);
             }
           }
           break;
@@ -320,9 +356,11 @@ public class CityView extends EpiView {
    * @param p person
    * @param pathogenson
    */
-  protected void drawCompartment(Person p, Pathogen pathogen) {
-    int x = (int) p.getCoordinate().getX();
-    int y = (int) p.getCoordinate().getY();
+  protected void drawCompartment(Person p, Pathogen pathogen, int frame) {
+    Animated dot = this.getAnimated(p);
+    Coordinate location = dot.position(this.framesPerSimulation, frame, p.getCoordinate());
+    int x = (int) location.getX();
+    int y = (int) location.getY();
     int w = (int) this.getValue(ViewParameter.PERSON_DIAMETER);
     Compartment c = p.getStatus(pathogen).getCompartment();
     color viewFill = this.getColor(c);
@@ -341,9 +379,11 @@ public class CityView extends EpiView {
    * @param p person
    * @param pathogenson
    */
-  protected void drawDemographic(Person p) {
-    int x = (int) p.getCoordinate().getX();
-    int y = (int) p.getCoordinate().getY();
+  protected void drawDemographic(Person p, int frame) {
+    Animated dot = this.getAnimated(p);
+    Coordinate location = dot.position(this.framesPerSimulation, frame, p.getCoordinate());
+    int x = (int) location.getX();
+    int y = (int) location.getY();
     int w = (int) this.getValue(ViewParameter.PERSON_DIAMETER);
     Demographic d = p.getDemographic();
     color viewFill = this.getColor(d);
@@ -411,7 +451,7 @@ public class CityView extends EpiView {
       Person p = new Person();
       p.setDemographic(d);
       p.setCoordinate(new Coordinate(x + w, y + yOffset - 0.25*textHeight));
-      drawDemographic(p);
+      drawDemographic(p, 0);
       
       // Draw Symbol Label
       String pName = this.getName(d);
@@ -447,7 +487,7 @@ public class CityView extends EpiView {
       pE.setCompartment(c);
       p.setStatus(pathogen, pE);
       p.setCoordinate(new Coordinate(x + w, y + yOffset - 0.25*textHeight));
-      drawCompartment(p, pathogen);
+      drawCompartment(p, pathogen, 0);
       
       // Draw Symbol Label
       String pName = this.getName(c);
