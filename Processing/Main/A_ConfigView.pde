@@ -6,7 +6,7 @@
 public void configView() {
   
   // Simulation Rate
-  viz.setValue(ViewParameter.FRAMES_PER_SIMULATION, 2); // Frames
+  viz.setValue(ViewParameter.FRAMES_PER_SIMULATION, 10); // Frames
   
   // Default View Mode Settings
   viz.setToggle(ViewParameter.AUTO_RUN,         false);
@@ -18,7 +18,7 @@ public void configView() {
   
   viz.setPathogenMode(AgentMode.PATHOGEN);
   viz.setPersonMode(PersonMode.COMPARTMENT);
-  viz.setPlaceMode(PlaceMode.LANDUSE);
+  viz.setPlaceMode(PlaceMode.DENSITY);
   
   // Graphics Location Parameters
   viz.setValue(ViewParameter.LEFT_MARGIN,        50);  // pixels
@@ -76,9 +76,9 @@ public void configView() {
   viz.setName(PathogenType.INFLUENZA,         "Influenza");
   
   // Pathogen Colors
-  viz.setColor(PathogenType.CORONAVIRUS,       color(255,   0,   0, 230)); // Red
-  viz.setColor(PathogenType.RHINOVIRUS,        color(  0,   0, 255, 230)); // Blue
-  viz.setColor(PathogenType.INFLUENZA,         color(  0, 150,   0, 230)); // Green
+  viz.setColor(PathogenType.CORONAVIRUS,       color(200,   0,   0, 255)); // Dark Red
+  viz.setColor(PathogenType.RHINOVIRUS,        color(190, 100,   0, 255)); // Dark Orange
+  viz.setColor(PathogenType.INFLUENZA,         color(  0,   0, 200, 255)); // Green
   
   // Host Demographic Names
   viz.setName(Demographic.CHILD,               "Child");
@@ -128,12 +128,12 @@ public void configView() {
   viz.setValue(ViewParameter.MIN_DENSITY,       0);               // people per area
   viz.setValue(ViewParameter.MAX_DENSITY,       1/50.0);          // people per area
   viz.setValue(ViewParameter.MIN_DENSITY_HUE,   90);              // Green (0 - 255)
-  viz.setValue(ViewParameter.MAX_DENSITY_HUE,   0);               // Red   (0 - 255)
+  viz.setValue(ViewParameter.MAX_DENSITY_HUE,   180);             // Blue  (0 - 255)
   
   // Generic Agent Parameters
-  viz.setValue(ViewParameter.AGENT_DIAMETER,    7);    // pixels
   viz.setValue(ViewParameter.AGENT_WEIGHT,      3);    // pixels
   viz.setValue(ViewParameter.AGENT_ALPHA,       150);   // 0 - 255
+  viz.setValue(ViewParameter.AGENT_SCALER,      1.5);   // scaler
   
   // Generic Person Parameters
   viz.setValue(ViewParameter.PERSON_DIAMETER,   5);                         // pixels

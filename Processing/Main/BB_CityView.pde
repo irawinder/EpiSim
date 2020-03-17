@@ -81,7 +81,7 @@ public class CityView extends EpiView {
     
     // Draw Places
     if(showPlaces) {
-      switch(this.placeMode) {
+      switch(this.getPlaceMode()) {
         case LANDUSE:
           image(placeLayer, 0, 0);
           break;
@@ -99,32 +99,36 @@ public class CityView extends EpiView {
     // Draw Pathogen Agents
     if(showAgents) {
       for(Agent a : model.getAgents()) {
-        if(a.getPathogen() == this.getCurrentPathogen()) {
-          this.drawAgent(a);
+        switch(this.getPathogenMode()) {
+          case PATHOGEN:
+            if(a.getPathogen() == this.getCurrentPathogen()) {
+              this.drawAgent(a);
+            }
+            break;
+          case PATHOGEN_TYPE:
+            if(a.getPathogen().getType() == this.getCurrentPathogenType()) {
+              this.drawAgent(a);
+            }
+            break;
         }
       }
     }
     
     // Draw People
     if(showPersons) {
-      switch(this.personMode) {
-        case DEMOGRAPHIC:
-          for(Host h : model.getHosts()) {
-            if(h instanceof Person) {
-              Person p = (Person) h;
+      for(Host h : model.getHosts()) {
+        if(h instanceof Person) {
+          Person p = (Person) h;
+          switch(this.getPersonMode()) {
+            case DEMOGRAPHIC:
               this.drawDemographic(p, frame);
-            }
-          }
-          break;
-        case COMPARTMENT:
-          for(Host h : model.getHosts()) {
-            if(h instanceof Person) {
-              Person p = (Person) h;
+              break;
+            case COMPARTMENT:
               Pathogen pathogen = this.getCurrentPathogen();
               this.drawCompartment(p, pathogen, frame);
-            }
+              break;
           }
-          break;
+        }
       }
     }
     
@@ -488,10 +492,28 @@ public class CityView extends EpiView {
       // Create and Draw a Straw-man Host for Lengend Item
       Person p = new Person();
       Pathogen pathogen = new Pathogen();
+      switch(this.getPathogenMode()) {
+          case PATHOGEN:
+            pathogen = this.getCurrentPathogen();
+            break;
+          case PATHOGEN_TYPE:
+            pathogen.setType(getCurrentPathogenType());
+            break;
+        }
       PathogenEffect pE = new PathogenEffect();
       pE.setCompartment(c);
       p.setStatus(pathogen, pE);
       p.setCoordinate(new Coordinate(x + w, y + yOffset - 0.25*textHeight));
+      
+      // Draw Halo Around Infectious Compartment
+      if(c == Compartment.INFECTIOUS) {
+        Agent a = new Agent();
+        a.setPathogen(pathogen);
+        a.setVessel(p);
+        drawAgent(a);
+      }
+      
+      // Draw Compartment Type
       drawCompartment(p, pathogen, 0);
       
       // Draw Symbol Label
@@ -578,7 +600,11 @@ public class CityView extends EpiView {
       rectMode(CORNER);
       
       // Draw Symbol Label
-      String dName = "" + (int) (density * 1000) + " ppl per 1000sm";
+      String suffix = " ppl per 1000sm";
+      if(i == numRows - 1) {
+        suffix = "+ " + suffix;
+      }
+      String dName = "" + (int) (density * 1000) + suffix;
       fill(textFill);
       text(dName, x + 1.5*textHeight, y + yOffset);
     }

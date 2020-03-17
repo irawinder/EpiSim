@@ -136,33 +136,60 @@ public class EpiView extends View {
    * @param a agent
    */
   protected void drawAgent(Agent a) {
-    int x = (int) a.getCoordinate().getX();
-    int y = (int) a.getCoordinate().getY();
-    int w = (int) this.getValue(ViewParameter.AGENT_DIAMETER);
     int viewWeight = (int) this.getValue(ViewParameter.AGENT_WEIGHT);
     PathogenType aType = a.getPathogen().getType();
     color viewStroke = this.getColor(aType);
     int alpha = (int) this.getValue(ViewParameter.AGENT_ALPHA);
     
-    switch(agentMode) {
-      case PATHOGEN:
-        if(this.getCurrentPathogen() != a.getPathogen()) {
-          alpha = (int) this.getValue(ViewParameter.REDUCED_ALPHA);
-        }
-        break;
-      case PATHOGEN_TYPE:
-        if(this.getCurrentPathogenType() != a.getPathogen().getType()) {
-          alpha = (int) this.getValue(ViewParameter.REDUCED_ALPHA);
-        }
-        break;
+    if(a.getVessel() instanceof Environment) {
+      drawEnvironmentAgent(a, viewStroke, viewWeight, alpha);
+    } else if(a.getVessel() instanceof Host) {
+      drawHostAgent(a, viewStroke, viewWeight, alpha);
     }
-    
-    stroke(viewStroke, alpha);
-    noFill();
-    strokeWeight(viewWeight);
-    ellipseMode(CENTER);
-    ellipse(x, y, w, w);
-    strokeWeight(1); // processing default
+  }
+  
+  /**
+   * Render a Single Agent
+   *
+   * @param a agent
+   */
+  private void drawEnvironmentAgent(Agent a, color viewStroke, int viewWeight, int alpha) {
+    if(a.getVessel() instanceof Environment) {
+      Environment e = (Environment) a.getVessel();
+      int x = (int) e.getCoordinate().getX();
+      int y = (int) e.getCoordinate().getY();
+      double scaler = this.getValue(ViewParameter.PLACE_SCALER);
+      int w = (int) ( Math.sqrt(e.getSize()) * scaler);
+      
+      stroke(viewStroke, alpha);
+      noFill();
+      strokeWeight(viewWeight);
+      rectMode(CENTER);
+      rect(x, y, w, w);
+      rectMode(CORNER);
+      strokeWeight(1); // processing default
+    }
+  }
+  
+  /**
+   * Render a Single Agent
+   *
+   * @param a agent
+   */
+  private void drawHostAgent(Agent a, color viewStroke, int viewWeight, int alpha) {
+    if(a.getVessel() instanceof Host) {
+      Host h = (Host) a.getVessel();
+      int x = (int) h.getCoordinate().getX();
+      int y = (int) h.getCoordinate().getY();
+      int w = (int) (this.getValue(ViewParameter.AGENT_SCALER) * this.getValue(ViewParameter.PERSON_DIAMETER));
+      
+      stroke(viewStroke, alpha);
+      noFill();
+      strokeWeight(viewWeight);
+      ellipseMode(CENTER);
+      ellipse(x, y, w, w);
+      strokeWeight(1); // processing default
+    }
   }
   
   /**
@@ -175,7 +202,7 @@ public class EpiView extends View {
    */
   protected void drawPathogenLegend(int x, int y, color textFill, int textHeight) {
     String legendName = this.getName(this.agentMode);
-    int w = (int) this.getValue(ViewParameter.AGENT_DIAMETER);
+    int w = (int) (this.getValue(ViewParameter.AGENT_SCALER) * this.getValue(ViewParameter.PERSON_DIAMETER));
     
     // Draw Legend Name
     fill(textFill);
@@ -191,8 +218,10 @@ public class EpiView extends View {
       // Create and Draw a Straw-man Agent for Lengend Item
       Agent a = new Agent();
       a.setPathogen(p);
-      a.setCoordinate(new Coordinate(aX, aY));
-      drawAgent(a);
+      Host h = new Host();
+      h.setCoordinate(new Coordinate(aX, aY));
+      a.setVessel(h);
+      this.drawAgent(a);
       
       // Draw Highlight
       if(p == this.getCurrentPathogen()) {
@@ -215,7 +244,7 @@ public class EpiView extends View {
    */
   protected void drawPathogenTypeLegend(int x, int y, color textFill, int textHeight) {
     String legendName = this.getName(this.agentMode);
-    int w = (int) this.getValue(ViewParameter.AGENT_DIAMETER);
+    int w = (int) (this.getValue(ViewParameter.AGENT_SCALER) * this.getValue(ViewParameter.PERSON_DIAMETER));
     
     // Draw Legend Name
     fill(textFill);
@@ -233,11 +262,13 @@ public class EpiView extends View {
       Pathogen p = new Pathogen();
       p.setType(pT);
       a.setPathogen(p);
-      a.setCoordinate(new Coordinate(aX, aY));
+      Host h = new Host();
+      h.setCoordinate(new Coordinate(aX, aY));
+      a.setVessel(h);
       drawAgent(a);
       
       // Draw Highlight
-      if(p == this.getCurrentPathogen()) {
+      if(pT == this.getCurrentPathogenType()) {
         drawSelection(aX, aY, w);
       }
       
