@@ -107,7 +107,7 @@ private void configModel() {
   
   // Configure Cold Pathogen
   Pathogen coldA = new Pathogen();
-  configureRhinovirus(coldA, "Common Cold (Type A)");
+  configureRhinovirus(coldA, "Common Cold");
   
   // Configure Covid Pathogen
   Pathogen coldB = new Pathogen();
@@ -121,8 +121,8 @@ private void configModel() {
   // Parameters: pathogen, initial host count
   epidemic.patientZero(covid19, 1);
   epidemic.patientZero(coldA, 20);
-  epidemic.patientZero(coldB, 1);
-  epidemic.patientZero(flu, 4);
+  //epidemic.patientZero(coldB, 1);
+  //epidemic.patientZero(flu, 4);
 }
 
 /**
@@ -138,14 +138,14 @@ void configureCoronavirus(Pathogen p, String name) {
   p.setAttackRate(new Rate(0.3));
   
   // Length of time that pathogen can survice outside of host via Agent
-  Time agentLife = new Time(12, TimeUnit.HOUR);
+  Time agentLife = new Time(24, TimeUnit.HOUR);
   p.setAgentLife(agentLife);
   
   // Host Pathogen Manifestations
-  Time incubationMean              = new Time( 7, TimeUnit.DAY);
-  Time incubationStandardDeviation = new Time( 3, TimeUnit.DAY);
-  Time infectiousMean              = new Time(14, TimeUnit.DAY);
-  Time infectiousStandardDeviation = new Time( 2, TimeUnit.DAY);
+  Time incubationMean              = new Time(  7, TimeUnit.DAY);
+  Time incubationStandardDeviation = new Time(  3, TimeUnit.DAY);
+  Time infectiousMean              = new Time( 14, TimeUnit.DAY);
+  Time infectiousStandardDeviation = new Time(1.5, TimeUnit.DAY);
   p.setIncubationDistribution(incubationMean, incubationStandardDeviation);
   p.setInfectiousDistribution(infectiousMean, infectiousStandardDeviation);
   
@@ -172,7 +172,7 @@ public void configureRhinovirus(Pathogen p, String name) {
   // Attributes
   p.setName(name);
   p.setType(PathogenType.RHINOVIRUS);
-  p.setAttackRate(new Rate(0.8));
+  p.setAttackRate(new Rate(0.5));
   
   // Length of time that pathogen can survice outside of host via Agent
   Time agentLife = new Time(8, TimeUnit.HOUR);
@@ -181,8 +181,8 @@ public void configureRhinovirus(Pathogen p, String name) {
   // Host Pathogen Manifestations
   Time incubationMean              = new Time(  2, TimeUnit.DAY);
   Time incubationStandardDeviation = new Time(0.5, TimeUnit.DAY);
-  Time infectiousMean              = new Time(  4, TimeUnit.DAY);
-  Time infectiousStandardDeviation = new Time(  2, TimeUnit.DAY);
+  Time infectiousMean              = new Time(  5, TimeUnit.DAY);
+  Time infectiousStandardDeviation = new Time(1.5, TimeUnit.DAY);
   p.setIncubationDistribution(incubationMean, incubationStandardDeviation);
   p.setInfectiousDistribution(infectiousMean, infectiousStandardDeviation);
   
