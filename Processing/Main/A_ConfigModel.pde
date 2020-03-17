@@ -9,7 +9,7 @@ private void configModel() {
   epidemic.setTime(new Time(0, TimeUnit.DAY));
   
   // Time Step
-  epidemic.setTimeStep(new Time(15, TimeUnit.MINUTE));
+  epidemic.setTimeStep(new Time(1, TimeUnit.HOUR));
   
   // Behaviors (Demographic, Travel Category, Land Use, Max Distance Willing to Travel)
   double BASE_DIST = 150;
