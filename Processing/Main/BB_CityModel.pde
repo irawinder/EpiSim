@@ -482,15 +482,17 @@ public class CityModel extends EpiModel {
               break;
           }
           
-          // Wander away from domain to teriary activity
+          // Are you at your dominant place?
           if(currentPlace == dominantPlace) {
+            // Maybe wander away from domain to tertiary activity
             boolean goToAnomoly = roll(anomolyPerStep);
             if(goToAnomoly) {
               p.moveTo(behavior.getRandomPlace(p, PlaceCategory.TERTIARY));
             }
             
-          // Return to domain from tertiary activity
+          // Are you at a tertiary place?
           } else {
+            // Maybe return to domain
             boolean goToDomain = roll(recoverPerStep);
             if(goToDomain) {
               p.moveTo(dominantPlace);
