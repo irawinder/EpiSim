@@ -24,9 +24,9 @@ public void configView() {
   viz.setValue(ViewParameter.LEFT_MARGIN,        50);  // pixels
   viz.setValue(ViewParameter.GENERAL_MARGIN,     125); // pixels
   viz.setValue(ViewParameter.INFO_Y,             100); // pixels
-  viz.setValue(ViewParameter.PATHOGEN_LEGEND_Y,  500); // pixels
-  viz.setValue(ViewParameter.PERSON_LEGEND_Y,    610); // pixels
-  viz.setValue(ViewParameter.PLACE_LEGEND_Y,     760); // pixels
+  viz.setValue(ViewParameter.PATHOGEN_LEGEND_Y,  475); // pixels
+  viz.setValue(ViewParameter.PERSON_LEGEND_Y,    585); // pixels
+  viz.setValue(ViewParameter.PLACE_LEGEND_Y,     735); // pixels
   
   String info = 
     "Epidemic Simulation" + "\n" +
@@ -131,9 +131,9 @@ public void configView() {
   viz.setValue(ViewParameter.MAX_DENSITY_HUE,   180);             // Blue  (0 - 255)
   
   // Generic Agent Parameters
-  viz.setValue(ViewParameter.AGENT_WEIGHT,      3);    // pixels
+  viz.setValue(ViewParameter.AGENT_WEIGHT,      4);     // pixels
   viz.setValue(ViewParameter.AGENT_ALPHA,       150);   // 0 - 255
-  viz.setValue(ViewParameter.AGENT_SCALER,      1.5);   // scaler
+  viz.setValue(ViewParameter.AGENT_SCALER,      1.6);   // scaler
   
   // Generic Person Parameters
   viz.setValue(ViewParameter.PERSON_DIAMETER,   5);                         // pixels
@@ -147,5 +147,5 @@ public void configView() {
   // Other Parameters
   viz.setValue(ViewParameter.REDUCED_ALPHA,     75);  // 0 - 255
   viz.setValue(ViewParameter.SELECTION_WEIGHT,  2);   // pixels
-  viz.setValue(ViewParameter.SELECTION_SCALER,  2.2); // scaler
+  viz.setValue(ViewParameter.SELECTION_SCALER,  2.1); // scaler
 }
