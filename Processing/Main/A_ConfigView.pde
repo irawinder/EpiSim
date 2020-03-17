@@ -6,7 +6,7 @@
 public void configView() {
   
   // Simulation Rate
-  viz.setValue(ViewParameter.FRAMES_PER_SIMULATION, 10); // Frames
+  viz.setValue(ViewParameter.FRAMES_PER_SIMULATION, 2); // Frames
   
   // Default View Mode Settings
   viz.setToggle(ViewParameter.AUTO_RUN,         false);
@@ -127,13 +127,13 @@ public void configView() {
   // Density Heatmap Paramters
   viz.setValue(ViewParameter.MIN_DENSITY,       0);               // people per area
   viz.setValue(ViewParameter.MAX_DENSITY,       1/50.0);          // people per area
-  viz.setValue(ViewParameter.MIN_DENSITY_HUE,   90);              // Green
-  viz.setValue(ViewParameter.MAX_DENSITY_HUE,   0);               // Red
+  viz.setValue(ViewParameter.MIN_DENSITY_HUE,   90);              // Green (0 - 255)
+  viz.setValue(ViewParameter.MAX_DENSITY_HUE,   0);               // Red   (0 - 255)
   
   // Generic Agent Parameters
   viz.setValue(ViewParameter.AGENT_DIAMETER,    7);    // pixels
   viz.setValue(ViewParameter.AGENT_WEIGHT,      3);    // pixels
-  viz.setValue(ViewParameter.AGENT_ALPHA,       100);   // 0 - 255
+  viz.setValue(ViewParameter.AGENT_ALPHA,       150);   // 0 - 255
   
   // Generic Person Parameters
   viz.setValue(ViewParameter.PERSON_DIAMETER,   5);                         // pixels
@@ -145,5 +145,7 @@ public void configView() {
   viz.setValue(ViewParameter.COMMUTE_WEIGHT,    2);                         // pixels
   
   // Other Parameters
-  viz.setValue(ViewParameter.REDUCED_ALPHA,     50);  // 0 - 255
+  viz.setValue(ViewParameter.REDUCED_ALPHA,     75);  // 0 - 255
+  viz.setValue(ViewParameter.SELECTION_WEIGHT,  2);   // pixels
+  viz.setValue(ViewParameter.SELECTION_SCALER,  2.2); // scaler
 }

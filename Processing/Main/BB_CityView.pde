@@ -99,7 +99,9 @@ public class CityView extends EpiView {
     // Draw Pathogen Agents
     if(showAgents) {
       for(Agent a : model.getAgents()) {
-        this.drawAgent(a);
+        if(a.getPathogen() == this.getCurrentPathogen()) {
+          this.drawAgent(a);
+        }
       }
     }
     

@@ -185,12 +185,19 @@ public class EpiView extends View {
     int yOffset = textHeight/2;
     for (Pathogen p : this.pathogenList) {
       yOffset += textHeight;
+      int aX = (int) (x + w/2);
+      int aY = (int) (y + yOffset - 0.25*textHeight);
       
       // Create and Draw a Straw-man Agent for Lengend Item
       Agent a = new Agent();
       a.setPathogen(p);
-      a.setCoordinate(new Coordinate(x + w/2, y + yOffset - 0.25*textHeight));
+      a.setCoordinate(new Coordinate(aX, aY));
       drawAgent(a);
+      
+      // Draw Highlight
+      if(p == this.getCurrentPathogen()) {
+        drawSelection(aX, aY, w);
+      }
       
       // Draw Symbol Label
       fill(textFill);
@@ -218,14 +225,21 @@ public class EpiView extends View {
     int yOffset = textHeight/2;
     for (PathogenType pT : PathogenType.values()) {
       yOffset += textHeight;
+      int aX = (int) (x + w/2);
+      int aY = (int) (y + yOffset - 0.25*textHeight);
       
       // Create and Draw a Straw-man Agent for Lengend Item
       Agent a = new Agent();
       Pathogen p = new Pathogen();
       p.setType(pT);
       a.setPathogen(p);
-      a.setCoordinate(new Coordinate(x + w/2, y + yOffset - 0.25*textHeight));
+      a.setCoordinate(new Coordinate(aX, aY));
       drawAgent(a);
+      
+      // Draw Highlight
+      if(p == this.getCurrentPathogen()) {
+        drawSelection(aX, aY, w);
+      }
       
       // Draw Symbol Label
       PathogenType aType = a.getPathogen().getType();
@@ -233,5 +247,18 @@ public class EpiView extends View {
       fill(textFill);
       text(aName, x + 1.5*textHeight, y + yOffset);
     }
+  }
+  
+  protected void drawSelection(int x, int y, int selectedDiameter) {
+    color selectionStroke = (int) this.getValue(ViewParameter.TEXT_FILL);
+    int selectionAlpha = (int) this.getValue(ViewParameter.REDUCED_ALPHA);
+    int selectionWeight = (int) this.getValue(ViewParameter.SELECTION_WEIGHT);
+    int selectionDiameter = (int) (this.getValue(ViewParameter.SELECTION_SCALER) * selectedDiameter);
+    
+    strokeWeight(selectionWeight);
+    stroke(selectionStroke, selectionAlpha);
+    noFill();
+    ellipse(x, y, selectionDiameter, selectionDiameter);
+    strokeWeight(1); // back to default stroke weight
   }
 }
