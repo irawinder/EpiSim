@@ -152,10 +152,15 @@ public class View implements ViewModel {
    * @param maxHue
    */
   public color mapToGradient(double value, double v1, double v2, double hue1, double hue2) {
+    
+    int FULL = 255;
     double ratio = (value - v1) / (v2 - v1);
-    double hue = hue1 + ratio * (hue2 - hue1);
+    int hue = (int) (hue1 + ratio * (hue2 - hue1));
+    hue = (int) Math.max(hue, hue1);
+    hue = (int) Math.min(hue, hue2);
+    
     colorMode(HSB);
-    color map = color((int) hue, 255, 255, 255);
+    color map = color(hue, FULL, FULL, FULL);
     colorMode(RGB);
     return map;
   }
