@@ -19,7 +19,7 @@ public class Animated {
    * @param current frame of animation
    */
   public Coordinate position(int simulationRate, int frame, Coordinate destination) {
-    int modFrame = frame % simulationRate;
+    int modFrame = frame % simulationRate + 1;
     double ratio = 1.0 * modFrame / simulationRate;
     double newX = screen.getX() + ratio * (destination.getX() - screen.getX());
     double newY = screen.getY() + ratio * (destination.getY() - screen.getY());
