@@ -429,4 +429,48 @@ class EpiModel implements Model, Cloneable {
   public void update() {
     this.currentTime = currentTime.add(this.timeStep);
   }
+  
+  /**
+   * Return the smallest X value in the model
+   */
+  public double xMin() {
+    double xMin = this.getEnvironments().get(0).getCoordinate().getX();
+    for(Environment e : this.getEnvironments()) {
+      xMin = Math.min(e.getCoordinate().getX(), xMin);
+    }
+    return xMin;
+  }
+  
+  /**
+   * Return the largest X value in the model
+   */
+  public double xMax() {
+    double xMax = this.getEnvironments().get(0).getCoordinate().getX();
+    for(Environment e : this.getEnvironments()) {
+      xMax = Math.max(e.getCoordinate().getX(), xMax);
+    }
+    return xMax;
+  }
+  
+  /**
+   * Return the smallest Y value in the model
+   */
+  public double yMin() {
+    double yMin = this.getEnvironments().get(0).getCoordinate().getY();
+    for(Environment e : this.getEnvironments()) {
+      yMin = Math.min(e.getCoordinate().getY(), yMin);
+    }
+    return yMin;
+  }
+  
+  /**
+   * Return the largest Y value in the model
+   */
+  public double yMax() {
+    double yMax = this.getEnvironments().get(0).getCoordinate().getY();
+    for(Environment e : this.getEnvironments()) {
+      yMax = Math.max(e.getCoordinate().getY(), yMax);
+    }
+    return yMax;
+  }
 }

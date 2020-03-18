@@ -243,21 +243,23 @@ public class CityModel extends EpiModel {
   }
   
   /**
-   * Add randomly placed Environments to Model within a specified rectangle
+   * Add randomly placed Environments to Model within specified rectilinear range of a specified center
    *
    * @param amount
    * @param name_prefix
    * @param type
+   * @param centerX
+   * @param centerY
+   * @param rangeX
+   * @param rangeY
    * @param minSize
    * @param maxSize
-   * @param minX
-   * @param maxY
    */
-  public void randomPlaces(int amount, String name_prefix, LandUse type, int x1, int y1, int x2, int y2, int minSize, int maxSize) {
+  public void randomPlaces(int amount, String name_prefix, LandUse type, int centerX, int centerY, int rangeX, int rangeY, int minSize, int maxSize) {
     for(int i=0; i<amount; i++) {
       Place l = this.makePlace();
       l.setName(name_prefix + " " + l.getUID());
-      l.setCoordinate(new Coordinate(random(x1, x2), random(y1, y2)));
+      l.setCoordinate(new Coordinate(random(centerX - rangeX, centerX + rangeX), random(centerY - rangeY, centerY + rangeY)));
       l.setUse(type);
       l.setSize(random(minSize, maxSize));
       

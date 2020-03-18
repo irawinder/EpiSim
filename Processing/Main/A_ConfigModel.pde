@@ -88,16 +88,18 @@ private void configModel() {
   
   epidemic.setBehavior(behavior);
 
-  // Add randomly placed Places to Model within a specified rectangle (x1, y1, x2, y2)
+  // Add randomly placed Places to Model within a specified rectangle (centerX, centerY, rangeX, rangeY)
   // Parameters (amount, name_prefix, type, x1, y1, x2, y2, minSize, maxSize)
   int N = 2;
-  int MARGIN = 100;
-  epidemic.randomPlaces(N*25,       "Public Space",    LandUse.PUBLIC,    2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 500,       2000);
-  epidemic.randomPlaces(N*250,      "Dwelling Unit",   LandUse.DWELLING,  2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 50,        200);
-  epidemic.randomPlaces(N*10,       "Office Space",    LandUse.OFFICE,    2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 500,       1000);
-  epidemic.randomPlaces(N*4,        "School",          LandUse.SCHOOL,    2*MARGIN + 1*MARGIN, 1*MARGIN, width - 1*MARGIN, height - 1*MARGIN, 500,       2000);
-  epidemic.randomPlaces(N*25,       "Retail Shopping", LandUse.RETAIL,    2*MARGIN + 2*MARGIN, 2*MARGIN, width - 2*MARGIN, height - 2*MARGIN, 50,        1000);
-  epidemic.randomPlaces(N*1,        "Hospital",        LandUse.HOSPITAL,  2*MARGIN + 3*MARGIN, 4*MARGIN, width - 3*MARGIN, height - 3*MARGIN, 2000,      2000);
+  int CENTER_X = 500;
+  int CENTER_Y = 500;
+  int BASE_RANGE = 100;
+  epidemic.randomPlaces(N*25,       "Public Space",    LandUse.PUBLIC,    CENTER_X, CENTER_Y, 5*BASE_RANGE, 5*BASE_RANGE, 500,  2000);
+  epidemic.randomPlaces(N*250,      "Dwelling Unit",   LandUse.DWELLING,  CENTER_X, CENTER_Y, 5*BASE_RANGE, 5*BASE_RANGE, 50,   200);
+  epidemic.randomPlaces(N*10,       "Office Space",    LandUse.OFFICE,    CENTER_X, CENTER_Y, 2*BASE_RANGE, 2*BASE_RANGE, 500,  1000);
+  epidemic.randomPlaces(N*4,        "School",          LandUse.SCHOOL,    CENTER_X, CENTER_Y, 5*BASE_RANGE, 5*BASE_RANGE, 500,  2000);
+  epidemic.randomPlaces(N*25,       "Retail Shopping", LandUse.RETAIL,    CENTER_X, CENTER_Y, 3*BASE_RANGE, 3*BASE_RANGE, 50,   1000);
+  epidemic.randomPlaces(N*1,        "Hospital",        LandUse.HOSPITAL,  CENTER_X, CENTER_Y, 1*BASE_RANGE, 1*BASE_RANGE, 2000, 2000);
   
   // Resilience*: Impact of Demographic on Pathogen Intensities (1.0 == no impact; < 1 == less resilient; > 1 == more resilient)
   Rate childResilience  = new Rate(1.5);

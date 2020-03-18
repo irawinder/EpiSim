@@ -172,6 +172,12 @@ int frameCounter;
  * setup() runs once at the very beginning
  */
 public void setup() {
+ 
+  // Default Application Window Settings
+  size(1600, 900);
+  surface.setTitle("Planetary Insight Center | Epidemic Simulation");
+  surface.setResizable(true);
+  surface.setLocation(100, 100);
   
   // Frame Counter
   frameCounter = 0;
@@ -188,7 +194,7 @@ public void setup() {
    * Edit/modify how the simulation looks from the "A_ConfigView" tab
    */
   viz = new CityView(epidemic);
-  configView();
+  configView(epidemic);
   
   // Pre-Draw Static Images
   viz.preDraw(epidemic);
@@ -255,7 +261,7 @@ public void keyPressed() {
       epidemic = new CityModel();
       configModel();
       viz = new CityView(epidemic);
-      configView();
+      configView(epidemic);
       viz.preDraw(epidemic);
       break;
     case 'z':

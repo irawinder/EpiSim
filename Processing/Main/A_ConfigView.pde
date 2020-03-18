@@ -1,24 +1,14 @@
 /**
- *  Default Application Window Settings
- */
-public void settings() {
-  size(1280, 960);
-  surface.setTitle("Planetary Insight Center | Epidemic Simulation");
-  surface.setResizable(true);
-  surface.setLocation(100, 100);
-}
-
-/**
  * Configure City View Model
  *
-  (Edit/modify how the simulation looks from here!)
+ * (Edit/modify how the simulation looks from here!)
  */
-public void configView() {
+public void configView(CityModel model) {
   
   // Simulation Rate
   viz.setValue(ViewParameter.FRAMES_PER_SIMULATION, 10); // Frames
   
-  // Default View Mode Settings
+  // Default Layer Settings
   viz.setToggle(ViewParameter.AUTO_RUN,         false);
   viz.setToggle(ViewParameter.SHOW_PERSONS,     true);
   viz.setToggle(ViewParameter.SHOW_COMMUTES,    true);
@@ -26,17 +16,29 @@ public void configView() {
   viz.setToggle(ViewParameter.SHOW_AGENTS,      true);
   viz.setToggle(ViewParameter.SHOW_FRAMERATE,   false);
   
+  // Default View Mode Settings
   viz.setAgentMode(AgentMode.PATHOGEN);
   viz.setPersonMode(PersonMode.COMPARTMENT);
   viz.setPlaceMode(PlaceMode.DENSITY);
   
-  // Graphics Location Parameters
-  viz.setValue(ViewParameter.LEFT_MARGIN,        50);  // pixels
-  viz.setValue(ViewParameter.GENERAL_MARGIN,     125); // pixels
-  viz.setValue(ViewParameter.INFO_Y,             100); // pixels
-  viz.setValue(ViewParameter.PATHOGEN_LEGEND_Y,  475); // pixels
-  viz.setValue(ViewParameter.PERSON_LEGEND_Y,    585); // pixels
-  viz.setValue(ViewParameter.PLACE_LEGEND_Y,     735); // pixels
+  // General Graphics Location Parameters
+  viz.setValue(ViewParameter.LEFT_PANEL_WIDTH,   300); // pixels
+  viz.setValue(ViewParameter.RIGHT_PANEL_WIDTH,  500); // pixels
+  viz.setValue(ViewParameter.GENERAL_MARGIN,      50); // pixels
+  viz.setScreen();                                     // Set Screen location of model
+  
+  // Set extents of model to view in "real" units
+  double xMin = model.xMin();
+  double xMax = model.xMax();
+  double yMin = model.yMin();
+  double yMax = model.yMax();
+  viz.setModelExtents(xMin, yMin, xMax, yMax);
+  
+  // Vertical Locations of Application Elements (0 is top)
+  viz.setValue(ViewParameter.INFO_Y,              50); // pixels
+  viz.setValue(ViewParameter.PATHOGEN_LEGEND_Y,  425); // pixels
+  viz.setValue(ViewParameter.PERSON_LEGEND_Y,    535); // pixels
+  viz.setValue(ViewParameter.PLACE_LEGEND_Y,     685); // pixels
   
   String info = 
     "Epidemic Simulation" + "\n" +
@@ -131,7 +133,7 @@ public void configView() {
   // Generic Place Parameters
   viz.setValue(ViewParameter.ENVIRONMENT_SCALER,      1.0);                       // scaler
   viz.setValue(ViewParameter.ENVIRONMENT_DIAMETER,    7);                         // pixels
-  viz.setColor(ViewParameter.ENVIRONMENT_STROKE,      color(200, 200, 200, 255)); // Light Gray
+  viz.setColor(ViewParameter.ENVIRONMENT_STROKE,      color(255, 255, 255, 255)); // White
   viz.setValue(ViewParameter.ENVIRONMENT_ALPHA,       200);                       // 0 - 255
   
   // Density Heatmap Paramters
@@ -139,8 +141,8 @@ public void configView() {
   viz.setValue(ViewParameter.MAX_DENSITY,       1/50.0);          // people per area
   viz.setValue(ViewParameter.MIN_DENSITY_HUE,   90);              // Green (0 - 255)
   viz.setValue(ViewParameter.MAX_DENSITY_HUE,   180);             // Blue  (0 - 255)
-  viz.setValue(ViewParameter.MIN_DENSITY_SAT,   0);               // NONE  (0 - 255)
-  viz.setValue(ViewParameter.MAX_DENSITY_SAT,   255);             // FULL  (0 - 255)
+  viz.setValue(ViewParameter.MIN_DENSITY_SAT,   50);              // Light (0 - 255)
+  viz.setValue(ViewParameter.MAX_DENSITY_SAT,   255);             // Dark  (0 - 255)
   
   // Generic Agent Parameters
   viz.setValue(ViewParameter.AGENT_WEIGHT,      4);     // pixels
@@ -149,7 +151,7 @@ public void configView() {
   
   // Generic Person Parameters
   viz.setValue(ViewParameter.HOST_DIAMETER,   5);                         // pixels
-  viz.setColor(ViewParameter.HOST_STROKE,   color(200, 200, 200, 255)); // Light Gray
+  viz.setColor(ViewParameter.HOST_STROKE,     color(200, 200, 200, 255)); // Light Gray
   viz.setValue(ViewParameter.HOST_ALPHA,      255);                       // 0 - 255
   
   // Generic Commute Paramters

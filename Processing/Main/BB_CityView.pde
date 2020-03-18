@@ -97,6 +97,9 @@ public class CityView extends EpiView {
    */
   public void draw(CityModel model, int frame) {
     background(255);
+    this.setScreen();
+    
+    if(this.resized(this.placeLayer)) preDraw(model);
     
     boolean showCommutes  = this.getToggle(ViewParameter.SHOW_COMMUTES);
     boolean showPlaces    = this.getToggle(ViewParameter.SHOW_PLACES);
@@ -109,14 +112,14 @@ public class CityView extends EpiView {
     
     // Draw Commutes
     if(showCommutes) {
-      image(commuteLayer, 0, 0);
+      image(this.commuteLayer, 0, 0);
     }
     
     // Draw Places
     if(showPlaces) {
       switch(this.getPlaceMode()) {
         case LANDUSE:
-          image(placeLayer, 0, 0);
+          image(this.placeLayer, 0, 0);
           break;
         case DENSITY:
           for(Environment e : model.getEnvironments()) {
@@ -165,7 +168,6 @@ public class CityView extends EpiView {
       }
     }
     
-    int leftMargin         = (int) this.getValue(ViewParameter.LEFT_MARGIN);
     int generalMargin      = (int) this.getValue(ViewParameter.GENERAL_MARGIN);
     int infoY              = (int) this.getValue(ViewParameter.INFO_Y);
     int pathogenLegendY    = (int) this.getValue(ViewParameter.PATHOGEN_LEGEND_Y);
@@ -173,8 +175,8 @@ public class CityView extends EpiView {
     int placeLegendY       = (int) this.getValue(ViewParameter.PLACE_LEGEND_Y);
     
     // Draw Information
-    this.drawInfo(leftMargin, infoY, textFill);
-    this.drawTime(model, leftMargin, height - generalMargin, textFill);
+    this.drawInfo(generalMargin, infoY, textFill);
+    this.drawTime(model, generalMargin, height - 2*generalMargin, textFill);
     
     String legendName;
     
@@ -182,10 +184,10 @@ public class CityView extends EpiView {
     legendName = this.getName(this.getAgentMode());
     switch(this.getAgentMode()) {
       case PATHOGEN:
-        this.drawPathogenLegend(legendName, leftMargin, pathogenLegendY, textFill, textHeight);
+        this.drawPathogenLegend(legendName, generalMargin, pathogenLegendY, textFill, textHeight);
         break;
       case PATHOGEN_TYPE:
-        this.drawPathogenTypeLegend(legendName, leftMargin, pathogenLegendY, textFill, textHeight);
+        this.drawPathogenTypeLegend(legendName, generalMargin, pathogenLegendY, textFill, textHeight);
         break;
     }
     
@@ -193,10 +195,10 @@ public class CityView extends EpiView {
     legendName = this.getName(this.placeMode);
     switch(this.getPlaceMode()) {
       case LANDUSE:
-        this.drawLandUseLegend(legendName, leftMargin, personLegendY, textFill, textHeight);
+        this.drawLandUseLegend(legendName, generalMargin, personLegendY, textFill, textHeight);
         break;
       case DENSITY:
-        this.drawDensityLegend(legendName, leftMargin, personLegendY, textFill, textHeight);
+        this.drawDensityLegend(legendName, generalMargin, personLegendY, textFill, textHeight);
         break;
     }
     
@@ -204,10 +206,10 @@ public class CityView extends EpiView {
     legendName = this.getName(this.personMode);
     switch(this.getPersonMode()) {
       case DEMOGRAPHIC:
-        this.drawDemographicLegend(legendName, leftMargin, placeLegendY, textFill, textHeight);
+        this.drawDemographicLegend(legendName, generalMargin, placeLegendY, textFill, textHeight);
         break;
       case COMPARTMENT:
-        this.drawCompartmentLegend(legendName, leftMargin, placeLegendY, textFill, textHeight);
+        this.drawCompartmentLegend(legendName, generalMargin, placeLegendY, textFill, textHeight);
         break;
     }
     
@@ -257,6 +259,13 @@ public class CityView extends EpiView {
   }
   
   /**
+   * Check for resize event
+   */
+  private boolean resized(PGraphics p) {
+    return p.width != width || p.height != height;
+  }
+  
+  /**
    * Draw Application Info
    *
    * @param x
@@ -277,8 +286,8 @@ public class CityView extends EpiView {
    * @param l place
    */
   protected void drawLandUse(PGraphics g, Place l) {
-    int x = (int) l.getCoordinate().getX();
-    int y = (int) l.getCoordinate().getY();
+    int x = this.mapXToScreen(l.getCoordinate().getX());
+    int y = this.mapYToScreen(l.getCoordinate().getY());
     double scaler = this.getValue(ViewParameter.ENVIRONMENT_SCALER);
     int w = (int) ( Math.sqrt(l.getSize()) * scaler);
     
@@ -299,8 +308,8 @@ public class CityView extends EpiView {
    * @param l place
    */
   protected void drawLandUse(Place l) {
-    int x = (int) l.getCoordinate().getX();
-    int y = (int) l.getCoordinate().getY();
+    int x = this.mapXToScreen(l.getCoordinate().getX());
+    int y = this.mapYToScreen(l.getCoordinate().getY());
     double scaler = this.getValue(ViewParameter.ENVIRONMENT_SCALER);
     int w = (int) ( Math.sqrt(l.getSize()) * scaler);
     
@@ -325,8 +334,8 @@ public class CityView extends EpiView {
     int framesPerSimulation = (int) this.getValue(ViewParameter.FRAMES_PER_SIMULATION);
     Animated dot = this.getAnimated(p);
     Coordinate location = dot.position(framesPerSimulation, frame, p.getCoordinate());
-    int x = (int) location.getX();
-    int y = (int) location.getY();
+    int x = this.mapXToScreen(location.getX());
+    int y = this.mapYToScreen(location.getY());
     int w = (int) this.getValue(ViewParameter.HOST_DIAMETER);
     Demographic d = p.getDemographic();
     color viewFill = this.getColor(d);
@@ -346,10 +355,10 @@ public class CityView extends EpiView {
    * @param p person
    */
   protected void drawCommute(PGraphics g, Person p) {
-    int x1 = (int) p.getPrimaryPlace().getCoordinate().getX();
-    int y1 = (int) p.getPrimaryPlace().getCoordinate().getY();
-    int x2 = (int) p.getSecondaryPlace().getCoordinate().getX();
-    int y2 = (int) p.getSecondaryPlace().getCoordinate().getY();
+    int x1 = this.mapXToScreen(p.getPrimaryPlace().getCoordinate().getX());
+    int y1 = this.mapYToScreen(p.getPrimaryPlace().getCoordinate().getY());
+    int x2 = this.mapXToScreen(p.getSecondaryPlace().getCoordinate().getX());
+    int y2 = this.mapYToScreen(p.getSecondaryPlace().getCoordinate().getY());
     color viewStroke = this.getColor(ViewParameter.COMMUTE_STROKE);
     
     g.stroke(viewStroke);

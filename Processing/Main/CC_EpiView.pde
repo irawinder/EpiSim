@@ -186,8 +186,8 @@ public class EpiView extends View {
   private void drawEnvironmentAgent(Agent a, color viewStroke, int viewWeight, int alpha) {
     if(a.getVessel() instanceof Environment) {
       Environment e = (Environment) a.getVessel();
-      int x = (int) e.getCoordinate().getX();
-      int y = (int) e.getCoordinate().getY();
+      int x = this.mapXToScreen(e.getCoordinate().getX());
+      int y = this.mapYToScreen(e.getCoordinate().getY());
       double scaler = this.getValue(ViewParameter.ENVIRONMENT_SCALER);
       int w = (int) ( Math.sqrt(e.getSize()) * scaler);
       
@@ -209,8 +209,8 @@ public class EpiView extends View {
   private void drawHostAgent(Agent a, color viewStroke, int viewWeight, int alpha) {
     if(a.getVessel() instanceof Host) {
       Host h = (Host) a.getVessel();
-      int x = (int) h.getCoordinate().getX();
-      int y = (int) h.getCoordinate().getY();
+      int x = this.mapXToScreen(h.getCoordinate().getX());
+      int y = this.mapYToScreen(h.getCoordinate().getY());
       int w = (int) (this.getValue(ViewParameter.AGENT_SCALER) * this.getValue(ViewParameter.HOST_DIAMETER));
       
       stroke(viewStroke, alpha);
@@ -232,8 +232,8 @@ public class EpiView extends View {
     int framesPerSimulation = (int) this.getValue(ViewParameter.FRAMES_PER_SIMULATION);
     Animated dot = this.getAnimated(h);
     Coordinate location = dot.position(framesPerSimulation, frame, h.getCoordinate());
-    int x = (int) location.getX();
-    int y = (int) location.getY();
+    int x = this.mapXToScreen(location.getX());
+    int y = this.mapYToScreen(location.getY());
     int w = (int) this.getValue(ViewParameter.HOST_DIAMETER);
     Compartment c = h.getStatus(pathogen).getCompartment();
     color viewFill = this.getColor(c);
@@ -252,8 +252,8 @@ public class EpiView extends View {
    * @param l place
    */
   protected void drawDensity(Environment e) {
-    int x = (int) e.getCoordinate().getX();
-    int y = (int) e.getCoordinate().getY();
+    int x = this.mapXToScreen(e.getCoordinate().getX());
+    int y = this.mapYToScreen(e.getCoordinate().getY());
     double scaler = this.getValue(ViewParameter.ENVIRONMENT_SCALER);
     int w = (int) ( Math.sqrt(e.getSize()) * scaler);
     
