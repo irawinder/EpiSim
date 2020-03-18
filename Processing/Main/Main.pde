@@ -1,83 +1,164 @@
 /** 
-  * Planetary Insight Center 
-  * Agent Based Simulation of Epidemic
-  * Ira Winder, jiw@mit.edu
-  *
-  * Object Map Legend:
-  *   - Class() dependency
-  *   * Enum dependency
-  *   @ Interface
-  * 
-  * Object Map (Updated 2020.03.13):
-  *
-  * @ Model
-  * @ Simulation
-  *    - Time()
-  *    @ Model()
-  * @ ViewModel
-  *    @Model()
-  * - Processing Main()
-  *    - CityModel()
-  *    - CityView()
-  *    - Sim()
-  * - EpiModel() implements @Model
-  *     - Time()
-  *     - Pathogen()
-  *         * PathogenType
-  *     - Agent() extends Element()
-  *         - Pathogen()
-  *         - Time()
-  *         - Element()
-  *         * Compartment
-  *     - Environment() extends Element()
-  *         - Agent()
-  *         - Host()
-  *     - Host() extends Element()
-  *         - PathogenEffect()
-  *         - Agent()
-  *         - Environment()
-  *         * Compartment 
-  * - CityModel() extends EpiModel()
-  *     - Time()
-  *     - Schedule()
-  *     - ChoiceModel()
-  *     - Person() extends Host()
-  *         - Place()
-  *         * Demographic
-  *     - Place() extends Environment()
-  *         * LandUse
-  *     * Phase
-  * - ChoiceModel()
-  *     - Person()
-  *     - Place()
-  *     * PlaceCategory
-  *     * Demographic
-  *     * LandUse
-  * - Sim() implements @Simulation
-  *    - Time()
-  *    @ Model()
-  * - View() implements @ViewModel
-  *     *ViewParameter
-  * - EpiView() extends View()
-  *     - EpiModel()
-  *     * PersonViewMode
-  *     * PlaceViewMode
-  * - CityView() extends EpiView()
-  *     - CityModel()
-  * - Element()
-  *     - Coordinate()
-  * - Schedule()
-  *     - Time()
-  *     - TimeInterval()
-  *     * TimeUnit
-  *     * Phase
-  * - Coordinate()
-  * - Time()
-  *     * TimeUnit
-  * - TimeInterval()
-  *     - Time()
-  *     * TimeUnit
-  */
+ * Planetary Insight Center 
+ * Agent Based Simulation of Epidemic
+ * Ira Winder, jiw@mit.edu
+ *
+ * Epidemiological Model:
+ *
+ *   Pathogen: 
+ *     The pathogen is the microorganism that actually causes the disease in question. 
+ *     An pathogen could be some form of bacteria, virus, fungus, or parasite.
+ *
+ *   Agent:
+ *     Agents are the vessels by which Pathogens spread. In a models there may be
+ *     numerous Agents referencing the same generic Pathogen definition.
+ *
+ *   Host:  
+ *     The agent infects the host, which is the organism that carries the disease. 
+ *     A host doesn’t necessarily get sick; hosts can act as carriers for an agent 
+ *     without displaying any outward symptoms of the disease. Hosts get sick or 
+ *     carry an agent because some part of their physiology is hospitable or 
+ *     attractive to the agent.
+ *
+ *   Compartment:  
+ *     The Host's compartment with respect to a Pathogen 
+ *     (Suceptible, Incubating, Infectious, Recovered, or Dead)
+ *
+ *     Compartmental models in epidemiology (Susceptible, Infectious, Carrier, Recovered):
+ *       https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology
+ *     Clade X Model (Susceptible, Incubating, Infectious (Mild or sever), Convalescent, Hospitalized, Recovered, Dead):
+ *       http://www.centerforhealthsecurity.org/our-work/events/2018_clade_x_exercise/pdfs/Clade-X-model.pdf
+ *     GLEAMviz Models:
+ *       http://www.gleamviz.org/simulator/models/
+ *
+ *   Environment: 
+ *     Outside factors can affect an epidemiologic outbreak as well; collectively 
+ *     these are referred to as the environment. The environment includes any 
+ *     factors that affect the spread of the disease but are not directly a part of 
+ *     the agent or the host. For example, the temperature in a given location might 
+ *     affect an agent’s ability to thrive, as might the quality of drinking water 
+ *     or the accessibility of adequate medical facilities.
+ *  
+ *   Refer to Model of the Epidemiological Triangle:
+ *   https://www.rivier.edu/academics/blog-posts/what-is-the-epidemiologic-triangle/
+ *
+ * Person Model: A Person is a human Host Element that may carry and/or transmit an Agent
+ *
+ *   Demographic:
+ *     Host's attributes that affect its suceptibility to a Pathogen (e.g. Child, Adult, Senior)
+ *
+ *   Primary Place:
+ *     The host's primary residence when they are not working or shopping. This often
+ *     represents a dwelling with multiple household memebers
+ *
+ *   Secondary Place:  
+ *     The Place where the host usually spends their time during the day. This is
+ *     often at an office or employer for adults, or at school for children.
+ *
+ *   Tertiary Place: 
+ *     All other Places that a host may spend their time throughout the day. This
+ *     includes shopping, walking, commuting, dining, etc.
+ *
+ * Time Flow Model:
+ *                
+ * |     Phase 1     |         Phase 2          |  <- Phase Sequence
+ *
+ * |  1 |  2 |  3 |  4 |  5 |  6 |  7 |  8 |  9 |  <- Time Steps
+ *                ^
+ *                |
+ *                e.g. currentTime  = timeStep*3; 
+ *                e.g. currentPhase = Phase 1
+ *
+ * TimeDistribution Model: 
+ * Utility Class for Generating Time Values within a Gaussian Distribution
+ *
+ *                     1x Std. Dev.
+ *
+ * |                    |     |
+ * |                  .-|-.   |
+ * |                -   |  -  |
+ * |               /    |    \|
+ * |            _ |     |     | _
+ * |         _    |     |     |    _ 
+ * |__._._-_|_____|_____|_____|_____|_-_.__.__
+ *                      ^
+ *                   Average (mean)
+ *
+ * Object Map Legend:
+ *   - Class() dependency
+ *   * Enum dependency
+ *   @ Interface
+ * 
+ * Object Map:
+ *
+ * @ Model
+ * @ Simulation
+ *    - Time()
+ *    @ Model()
+ * @ ViewModel
+ *    @Model()
+ * - Processing Main()
+ *    - CityModel()
+ *    - CityView()
+ *    - Sim()
+ * - EpiModel() implements @Model
+ *     - Time()
+ *     - Pathogen()
+ *         * PathogenType
+ *     - Agent() extends Element()
+ *         - Pathogen()
+ *         - Time()
+ *         - Element()
+ *         * Compartment
+ *     - Environment() extends Element()
+ *         - Agent()
+ *         - Host()
+ *     - Host() extends Element()
+ *         - PathogenEffect()
+ *         - Agent()
+ *         - Environment()
+ *         * Compartment 
+ * - CityModel() extends EpiModel()
+ *     - Time()
+ *     - Schedule()
+ *     - ChoiceModel()
+ *     - Person() extends Host()
+ *         - Place()
+ *         * Demographic
+ *     - Place() extends Environment()
+ *         * LandUse
+ *     * Phase
+ * - ChoiceModel()
+ *     - Person()
+ *     - Place()
+ *     * PlaceCategory
+ *     * Demographic
+ *     * LandUse
+ * - Sim() implements @Simulation
+ *    - Time()
+ *    @ Model()
+ * - View() implements @ViewModel
+ *     * ViewParameter
+ * - EpiView() extends View()
+ *     - EpiModel()
+ *     * PersonViewMode
+ *     * PlaceViewMode
+ * - CityView() extends EpiView()
+ *     - CityModel()
+ * - Element()
+ *     - Coordinate()
+ * - Schedule()
+ *     - Time()
+ *     - TimeInterval()
+ *     * TimeUnit
+ *     * Phase
+ * - Coordinate()
+ * - Time()
+ *     * TimeUnit
+ * - TimeInterval()
+ *     - Time()
+ *     * TimeUnit
+ */
 
 // Object Model of Epidemic
 private CityModel epidemic;
@@ -92,8 +173,7 @@ int frameCounter;
  */
 public void setup() {
   
-  // Windowed Application Size (pixels)
-  size(1200, 1000);
+  // Frame Counter
   frameCounter = 0;
   
   /** 

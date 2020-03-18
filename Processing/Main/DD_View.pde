@@ -190,4 +190,26 @@ public class View implements ViewModel {
     ellipse(x, y, selectionDiameter, selectionDiameter);
     strokeWeight(1); // back to default stroke weight
   }
+  
+  /**
+   * Map Coordinate value to a location on the screen
+   *
+   * @param c coordinate to map to screen
+   * @param xMin
+   * @param xMax
+   * @param yMin
+   * @param yMax
+   *
+   * @param uMin minimum screen u
+   * @param uMax maximum screen u
+   * @param vMin minimum screen v
+   * @param vMax maximum screen v
+   */
+  public Coordinate mapToScreen(Coordinate c, double xMin, double xMax, double yMin, double yMax, int uMin, int uMax, int vMin, int vMax) {
+    double uRatio = c.getX() / (xMax - xMin);
+    double vRatio = c.getY() / (yMax - yMin);
+    int u = (int) (uMin + uRatio * (uMax - uMin));
+    int v = (int) (vMin + vRatio * (vMax - vMin));
+    return new Coordinate(u, v);
+  }
 }

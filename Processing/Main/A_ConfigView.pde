@@ -1,4 +1,14 @@
 /**
+ *  Default Application Window Settings
+ */
+public void settings() {
+  size(1280, 960);
+  surface.setTitle("Planetary Insight Center | Epidemic Simulation");
+  surface.setResizable(true);
+  surface.setLocation(100, 100);
+}
+
+/**
  * Configure City View Model
  *
   (Edit/modify how the simulation looks from here!)
