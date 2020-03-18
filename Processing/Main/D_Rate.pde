@@ -1,3 +1,5 @@
+import java.util.Random;
+
 /**
  * Rate or Probability of Attribute Occurence
  */
@@ -30,7 +32,16 @@ public class Rate {
    * Get the Rate as a decimal numeric value where value of 1.0 is 100%
    */
   public double toDouble() {
-    return rate;
+    return this.rate;
+  }
+  
+  /**
+   * Return true probabilistically at the specified rate
+   *
+   * @return true at rate
+   */
+  public boolean roll() {
+    return Math.random() < this.rate;
   }
   
   /**

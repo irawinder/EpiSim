@@ -143,25 +143,51 @@ public class View implements ViewModel {
   }
   
   /** 
-   * Map a value to a specific hue color along a gradient
+   * Map a value to a specific color between two hues
    *
    * @param value
-   * @param min
-   * @param max
-   * @param minHue
-   * @param maxHue
+   * @param v1
+   * @param v2
+   * @param hue1
+   * @param hue2
    */
-  public color mapToGradient(double value, double v1, double v2, double hue1, double hue2) {
+  public color mapToGradient(double value, double v1, double v2, double hue1, double hue2, double sat1, double sat2) {
     
+    int MIN = 10;
     int FULL = 255;
     double ratio = (value - v1) / (v2 - v1);
+    
     int hue = (int) (hue1 + ratio * (hue2 - hue1));
     hue = (int) Math.max(hue, hue1);
     hue = (int) Math.min(hue, hue2);
     
+    int sat = (int) (sat1 + ratio * (sat2 - sat1));
+    sat = (int) Math.max(sat, MIN);
+    sat = (int) Math.min(sat, FULL);
+    
     colorMode(HSB);
-    color map = color(hue, FULL, FULL, FULL);
+    color map = color(hue, sat, FULL, FULL);
     colorMode(RGB);
     return map;
+  }
+  
+  /**
+   * Draw a circle around a circular object at a specified location to show it's selected
+   *
+   * @param x
+   * @param y
+   * @param selectedDiamter Diameter of object you wish to select, in pixels
+   */
+  protected void drawSelection(int x, int y, int selectedDiameter) {
+    color selectionStroke = (int) this.getValue(ViewParameter.TEXT_FILL);
+    int selectionAlpha = (int) this.getValue(ViewParameter.REDUCED_ALPHA);
+    int selectionWeight = (int) this.getValue(ViewParameter.SELECTION_WEIGHT);
+    int selectionDiameter = (int) (this.getValue(ViewParameter.SELECTION_SCALER) * selectedDiameter);
+    
+    strokeWeight(selectionWeight);
+    stroke(selectionStroke, selectionAlpha);
+    noFill();
+    ellipse(x, y, selectionDiameter, selectionDiameter);
+    strokeWeight(1); // back to default stroke weight
   }
 }

@@ -13,53 +13,33 @@
  */
 public class CityModel extends EpiModel {
   
-  // City Schedule
-  private Schedule phaseSequence;
-  
-  // Current Phase of Person
+  // Current phase of city
   private Phase currentPhase;
   
   // Current Phase duration
-  private Time phaseDuration;
+  private Time currentPhaseDuration;
   
-  // Person-Place Category Association Map
-  private BehaviorMap behavior;
+  // City schedule
+  private Schedule phaseSequence;
   
-  // Dominant Place Category for each Phase
-  private HashMap<Phase, PlaceCategory> phaseDomain;
+  // Person-place category association map
+  private ChoiceModel behavior;
   
-  // Chance that Person will waver from their primary or secondary state (per HOUR)
-  private HashMap<Phase, Rate> phaseAnomoly;
-  
-  // Chance that Person will return to primary or secondary state if pursuing a dalliance (per HOUR)
-  private Rate recoverAnomoly;
-  
-  // Person Dictionary sorted by Demographic
+  // Person dictionary sorted by demographic
   private HashMap<Demographic, ArrayList<Person>> person;
   
-  // Place Dictionary sorted by Land Use
+  // Place dictionary sorted by land use
   private HashMap<LandUse, ArrayList<Place>> place;
-  
-  // Demographic Thresholds
-  private int adultAge;
-  private int seniorAge;
   
   /**
    * Construct Simple Epidemiological Model
    */
   public CityModel() {
     super();
-    this.phaseSequence = new Schedule();
     this.currentPhase = Phase.SLEEP;
-    this.phaseDuration = new Time();
-    this.behavior = new BehaviorMap();
-    
-    this.phaseDomain = new HashMap<Phase, PlaceCategory>();
-    
-    this.phaseAnomoly = new HashMap<Phase, Rate>();
-    for(Phase phase : Phase.values()) {
-      this.phaseAnomoly.put(phase, new Rate(0));
-    }
+    this.currentPhaseDuration = new Time();
+    this.phaseSequence = new Schedule();
+    this.behavior = new ChoiceModel();
     
     person = new HashMap<Demographic, ArrayList<Person>>();
     for(Demographic d : Demographic.values()) {
@@ -70,9 +50,6 @@ public class CityModel extends EpiModel {
     for(LandUse use : LandUse.values()) {
       this.place.put(use, new ArrayList<Place>());
     }
-    
-    this.adultAge = 0;
-    this.seniorAge = 0;
   }
   
   /**
@@ -82,7 +59,7 @@ public class CityModel extends EpiModel {
    */
   public void setSchedule(Schedule s) {
     this.phaseSequence = s;
-    this.setPhase();
+    this.setCurrentPhase();
   }
   
   /**
@@ -97,7 +74,7 @@ public class CityModel extends EpiModel {
    * 
    * @param p Phase
    */
-  public void setPhase(Phase p) {
+  public void setCurrentPhase(Phase p) {
     this.currentPhase = p;
   }
   
@@ -106,25 +83,25 @@ public class CityModel extends EpiModel {
    * 
    * @param duration Time
    */
-  public void setPhaseDuration(Time duration) {
-    this.phaseDuration = duration;
+  public void setCurrentPhaseDuration(Time duration) {
+    this.currentPhaseDuration = duration;
   }
   
   /**
    * Set the behavior of population
    *
-   * @param behavior BehaviorMap
+   * @param behavior ChoiceModel
    */
-  public void setBehavior(BehaviorMap behavior) {
+  public void setBehavior(ChoiceModel behavior) {
     this.behavior = behavior;
   }
   
   /**
-   * Get the BehaviorMap
+   * Get the ChoiceModel
    *
    * @return behavior map
    */
-  public BehaviorMap getBehavior() {
+  public ChoiceModel getBehavior() {
     return this.behavior;
   }
   
@@ -133,21 +110,21 @@ public class CityModel extends EpiModel {
    *
    * @return current phase duration
    */
-  public Time getPhaseDuration() {
-    return this.phaseDuration;
+  public Time getCurrentPhaseDuration() {
+    return this.currentPhaseDuration;
   }
   
   /**
    * Set the Phase via existing schedule and current time
    */
-  public void setPhase() {
+  public void setCurrentPhase() {
     if(this.phaseSequence != null) {
-      Time currentTime = this.getTime();
+      Time currentTime = this.getCurrentTime();
       Schedule s = this.getSchedule();
       Phase currentPhase = s.getPhase(currentTime);
-      Time phaseDuration = s.getInterval(currentTime).getDuration();
-      this.setPhase(currentPhase);
-      this.setPhaseDuration(phaseDuration);
+      Time currentPhaseDuration = s.getInterval(currentTime).getDuration();
+      this.setCurrentPhase(currentPhase);
+      this.setCurrentPhaseDuration(currentPhaseDuration);
     } else {
       println("Must initialize host schedule before setting Phase");
     }
@@ -158,38 +135,8 @@ public class CityModel extends EpiModel {
    *
    * @return current phase
    */
-  public Phase getPhase() {
+  public Phase getCurrentPhase() {
     return this.currentPhase;
-  }
-  
-  /**
-   * Set Chance that Person will waver from their primary or secondary state (per HOUR)
-   *
-   * @param p Phase
-   * @param anomoly Rate
-   */
-  public void setPhaseAnomoly(Phase p, Rate anomoly) {
-    this.phaseAnomoly.put(p, anomoly);
-  }
-  
-  /**
-   * Set Chance that Person will return to primary or secondary state if pursuing a dalliance (per HOUR)
-   *
-   * @param p Phase
-   * @param anomoly Rate
-   */
-  public void setRecoverAnomoly(Rate anomoly) {
-    this.recoverAnomoly = anomoly;
-  }
-  
-  /**
-   * Set Domain Place Category for each Phase
-   *
-   * @param p Phase
-   * @param c PlaceCategory
-   */
-  public void setPhaseDomain(Phase p, PlaceCategory c) {
-    this.phaseDomain.put(p, c);
   }
   
   /**
@@ -268,7 +215,7 @@ public class CityModel extends EpiModel {
       list.add(l);
     }
     
-    // Add to BehaviorMap
+    // Add to ChoiceModel
     this.behavior.addPlace(l);
     
     // Add place element to EpiModel extension
@@ -330,8 +277,6 @@ public class CityModel extends EpiModel {
    * @param maxDwellingSize largest household size of a dwelling unit
    */
   public void populate(int minAge, int maxAge, int adultAge, int seniorAge, Rate childResilience, Rate adultResilience, Rate seniorResilience, int minDwellingSize, int maxDwellingSize) {
-    this.adultAge = adultAge;
-    this.seniorAge = seniorAge;
     
     for(Place l : this.place.get(LandUse.DWELLING)) {
       int numTenants = (int) random(minDwellingSize, maxDwellingSize+1);
@@ -346,7 +291,7 @@ public class CityModel extends EpiModel {
         person.setAge(age);
         
         // Set Demographic
-        person.setDemographic(this.adultAge, this.seniorAge);
+        person.setDemographic(adultAge, seniorAge);
         
         // Set Pathogen Resilience
         switch(person.getDemographic()) {
@@ -441,69 +386,6 @@ public class CityModel extends EpiModel {
   }
   
   /**
-   * Update Person Movements
-   */
-  public void movePersons() {
-    Phase currentPhase = this.getPhase();
-    Time timeStep = this.getTimeStep();
-    PlaceCategory phaseDomain = this.phaseDomain.get(currentPhase);
-    
-    // Anomoly Rates
-    Time oneHour = new Time(1, TimeUnit.HOUR);
-    Time hourPerStep = timeStep.divide(oneHour);
-    Rate anomolyPerHour = this.phaseAnomoly.get(currentPhase);
-    Rate anomolyPerStep = new Rate(hourPerStep.getAmount() * anomolyPerHour.toDouble());
-    Rate recoverPerHour = this.recoverAnomoly;
-    Rate recoverPerStep = new Rate(hourPerStep.getAmount() * recoverPerHour.toDouble());
-    
-    for(Demographic d : Demographic.values()) {
-      for(Person p : this.person.get(d)) {
-        
-        // Are you dead?
-        if(!p.alive()) {
-          p.moveToPrimary();
-        
-        // If you're alive, carry on!
-        } else {
-          // Current Place
-          Place currentPlace = p.getPlace();
-          
-          // Dominant Place
-          Place dominantPlace = currentPlace;
-          switch(phaseDomain) {
-            case PRIMARY:
-              dominantPlace = p.getPrimaryPlace();
-              break;
-            case SECONDARY:
-              dominantPlace = p.getSecondaryPlace();
-              break;
-            case TERTIARY:
-              // Do Nothing
-              break;
-          }
-          
-          // Are you at your dominant place?
-          if(currentPlace == dominantPlace) {
-            // Maybe wander away from domain to tertiary activity
-            boolean goToAnomoly = roll(anomolyPerStep);
-            if(goToAnomoly) {
-              p.moveTo(behavior.getRandomPlace(p, PlaceCategory.TERTIARY));
-            }
-            
-          // Are you at a tertiary place?
-          } else {
-            // Maybe return to domain
-            boolean goToDomain = roll(recoverPerStep);
-            if(goToDomain) {
-              p.moveTo(dominantPlace);
-            }
-          }
-        }
-      }
-    }
-  }
-  
-  /**
    * Updating the Object model moves time forward by one time step 
    * and implements relevent agent behaviors.
    */
@@ -511,18 +393,22 @@ public class CityModel extends EpiModel {
   public void update() {
     
     // Set Time
-    Time current = this.getTime();
+    Time current = this.getCurrentTime();
     Time step = this.getTimeStep();
-    this.setTime(current.add(step));
+    this.setCurrentTime(current.add(step));
     
     // Base Encounters Per Step
     Time hoursPerStep = step.convert(TimeUnit.HOUR);
     
     // Set Phase
-    this.setPhase();
+    this.setCurrentPhase();
     
-    // Move Hosts
-    this.movePersons();
+    // Move People based on Behavior Model
+    for(Demographic d : Demographic.values()) {
+      for(Person p : this.person.get(d)) {
+        behavior.apply(p, this.getCurrentPhase(), step);
+      }
+    }
     
     // Create Infectious Agents
     for(Host h : this.getHosts()) {
@@ -606,15 +492,5 @@ public class CityModel extends EpiModel {
         this.removeAgent(a);
       }
     }
-  }
-  
-  /**
-   * Return true probabilistically at the specified rate
-   *
-   * @param r Rate
-   * @return true at rate r
-   */
-  public boolean roll(Rate r) {
-    return Math.random() < r.toDouble();
   }
 }

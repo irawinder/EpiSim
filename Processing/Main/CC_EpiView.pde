@@ -3,27 +3,57 @@
  */
 public class EpiView extends View {
   
-  // View States
+  // View State
   private AgentMode agentMode;
+  
+  // Current Pathogen Type to Focus On
   private PathogenType pathogenType;
+  
+  // Current Pathogen Index to Focus On
   int pathogenViewIndex;
   
   // List of Pathogens in Model
   ArrayList<Pathogen> pathogenList;
+  
+  // Array of Animated Hosts
+  private HashMap<Host, Animated> animatedHost;
   
   /**
    * Construct EpiView Model
    */
   public EpiView(EpiModel model) {
     super();
-    
-    // View States
     this.agentMode = AgentMode.values()[0];
     this.pathogenType = PathogenType.values()[0];
     this.pathogenViewIndex = 0;
-    
-    // List of Pathogens in Model
     this.pathogenList = model.getPathogens();
+    this.animatedHost = new HashMap<Host, Animated>();
+    for(Host h : model.getHosts()) {
+      this.setAnimated(h);
+    }
+  }
+  
+  /**
+   * Set Animated Host
+   *
+   * @param h Host
+   */
+  public void setAnimated(Host h) {
+    Animated aHost = new Animated();
+    aHost.setCoordinate(h.getCoordinate());
+    this.animatedHost.put(h, aHost);
+  }
+  
+  /**
+   * Get the Animated object associated with a person, creating it if one doesn't already exist
+   *
+   * @param p Person
+   */
+  public Animated getAnimated(Host h) {
+    if(!this.animatedHost.keySet().contains(h)) {
+      this.setAnimated(h);
+    }
+    return animatedHost.get(h);
   }
   
   /**
@@ -68,14 +98,14 @@ public class EpiView extends View {
   /**
    * Set AgentMode in View Model
    */
-  public void setPathogenMode(AgentMode pMode) {
+  public void setAgentMode(AgentMode pMode) {
     this.agentMode = pMode;
   }
   
   /**
    * Get AgentMode in View Model
    */
-  public AgentMode getPathogenMode() {
+  public AgentMode getAgentMode() {
     return this.agentMode;
   }
   
@@ -131,7 +161,7 @@ public class EpiView extends View {
   }
   
   /**
-   * Render a Single Agent
+   * Render a single agent
    *
    * @param a agent
    */
@@ -149,7 +179,7 @@ public class EpiView extends View {
   }
   
   /**
-   * Render a Single Agent
+   * Render a single agent in an environment
    *
    * @param a agent
    */
@@ -158,7 +188,7 @@ public class EpiView extends View {
       Environment e = (Environment) a.getVessel();
       int x = (int) e.getCoordinate().getX();
       int y = (int) e.getCoordinate().getY();
-      double scaler = this.getValue(ViewParameter.PLACE_SCALER);
+      double scaler = this.getValue(ViewParameter.ENVIRONMENT_SCALER);
       int w = (int) ( Math.sqrt(e.getSize()) * scaler);
       
       stroke(viewStroke, alpha);
@@ -172,7 +202,7 @@ public class EpiView extends View {
   }
   
   /**
-   * Render a Single Agent
+   * Render a single agent in a host
    *
    * @param a agent
    */
@@ -181,7 +211,7 @@ public class EpiView extends View {
       Host h = (Host) a.getVessel();
       int x = (int) h.getCoordinate().getX();
       int y = (int) h.getCoordinate().getY();
-      int w = (int) (this.getValue(ViewParameter.AGENT_SCALER) * this.getValue(ViewParameter.PERSON_DIAMETER));
+      int w = (int) (this.getValue(ViewParameter.AGENT_SCALER) * this.getValue(ViewParameter.HOST_DIAMETER));
       
       stroke(viewStroke, alpha);
       noFill();
@@ -193,6 +223,59 @@ public class EpiView extends View {
   }
   
   /**
+   * Render a Single Host and Compartment
+   *
+   * @param p person
+   * @param pathogenson
+   */
+  protected void drawCompartment(Host h, Pathogen pathogen, int frame) {
+    int framesPerSimulation = (int) this.getValue(ViewParameter.FRAMES_PER_SIMULATION);
+    Animated dot = this.getAnimated(h);
+    Coordinate location = dot.position(framesPerSimulation, frame, h.getCoordinate());
+    int x = (int) location.getX();
+    int y = (int) location.getY();
+    int w = (int) this.getValue(ViewParameter.HOST_DIAMETER);
+    Compartment c = h.getStatus(pathogen).getCompartment();
+    color viewFill = this.getColor(c);
+    color viewStroke = this.getColor(ViewParameter.HOST_STROKE);
+    int alpha = (int) this.getValue(ViewParameter.HOST_ALPHA);
+    
+    stroke(viewStroke);
+    fill(viewFill, alpha);
+    ellipseMode(CENTER);
+    ellipse(x, y, w, w);
+  }
+  
+  /**
+   * Render a Single Place's Density
+   *
+   * @param l place
+   */
+  protected void drawDensity(Environment e) {
+    int x = (int) e.getCoordinate().getX();
+    int y = (int) e.getCoordinate().getY();
+    double scaler = this.getValue(ViewParameter.ENVIRONMENT_SCALER);
+    int w = (int) ( Math.sqrt(e.getSize()) * scaler);
+    
+    double density = e.getDensity();
+    double minVal = this.getValue(ViewParameter.MIN_DENSITY);
+    double maxVal = this.getValue(ViewParameter.MAX_DENSITY);
+    double minHue = this.getValue(ViewParameter.MIN_DENSITY_HUE);
+    double maxHue = this.getValue(ViewParameter.MAX_DENSITY_HUE);
+    double minSat = this.getValue(ViewParameter.MIN_DENSITY_SAT);
+    double maxSat = this.getValue(ViewParameter.MAX_DENSITY_SAT);
+    color viewFill = this.mapToGradient(density, minVal, maxVal, minHue, maxHue, minSat, maxSat);
+    color viewStroke = this.getColor(ViewParameter.ENVIRONMENT_STROKE);
+    int alpha = (int) this.getValue(ViewParameter.ENVIRONMENT_ALPHA);
+    
+    stroke(viewStroke);
+    fill(viewFill, alpha);
+    rectMode(CENTER);
+    rect(x, y, w, w);
+    rectMode(CORNER);
+  }
+  
+  /**
    * Render a Legend of Pathogens
    *
    * @param x
@@ -200,9 +283,8 @@ public class EpiView extends View {
    * @param textFill color
    * @praam textHeight int
    */
-  protected void drawPathogenLegend(int x, int y, color textFill, int textHeight) {
-    String legendName = this.getName(this.agentMode);
-    int w = (int) (this.getValue(ViewParameter.AGENT_SCALER) * this.getValue(ViewParameter.PERSON_DIAMETER));
+  protected void drawPathogenLegend(String legendName, int x, int y, color textFill, int textHeight) {
+    int w = (int) (this.getValue(ViewParameter.AGENT_SCALER) * this.getValue(ViewParameter.HOST_DIAMETER));
     
     // Draw Legend Name
     fill(textFill);
@@ -242,9 +324,8 @@ public class EpiView extends View {
    * @param textFill color
    * @praam textHeight int
    */
-  protected void drawPathogenTypeLegend(int x, int y, color textFill, int textHeight) {
-    String legendName = this.getName(this.agentMode);
-    int w = (int) (this.getValue(ViewParameter.AGENT_SCALER) * this.getValue(ViewParameter.PERSON_DIAMETER));
+  protected void drawPathogenTypeLegend(String legendName, int x, int y, color textFill, int textHeight) {
+    int w = (int) (this.getValue(ViewParameter.AGENT_SCALER) * this.getValue(ViewParameter.HOST_DIAMETER));
     
     // Draw Legend Name
     fill(textFill);
@@ -280,16 +361,131 @@ public class EpiView extends View {
     }
   }
   
-  protected void drawSelection(int x, int y, int selectedDiameter) {
-    color selectionStroke = (int) this.getValue(ViewParameter.TEXT_FILL);
-    int selectionAlpha = (int) this.getValue(ViewParameter.REDUCED_ALPHA);
-    int selectionWeight = (int) this.getValue(ViewParameter.SELECTION_WEIGHT);
-    int selectionDiameter = (int) (this.getValue(ViewParameter.SELECTION_SCALER) * selectedDiameter);
+  /**
+   * Render a Legend of Host Compartment Types
+   *
+   * @param x
+   * @param y
+   * @param textFill color
+   * @praam textHeight int
+   */
+  protected void drawCompartmentLegend(String legendName, int x, int y, color textFill, int textHeight) {
+    int w = (int) this.getValue(ViewParameter.HOST_DIAMETER);
+    int yOffset = textHeight/2;
     
-    strokeWeight(selectionWeight);
-    stroke(selectionStroke, selectionAlpha);
-    noFill();
-    ellipse(x, y, selectionDiameter, selectionDiameter);
-    strokeWeight(1); // back to default stroke weight
+    // Draw Legend Name
+    fill(textFill);
+    text(legendName + ":", x, y);
+    
+    for (Compartment c : Compartment.values()) {
+      yOffset += textHeight;
+      
+      // Create and Draw a Straw-man Host for Lengend Item
+      Host h = new Host();
+      Pathogen pathogen = new Pathogen();
+      switch(this.getAgentMode()) {
+          case PATHOGEN:
+            pathogen = this.getCurrentPathogen();
+            break;
+          case PATHOGEN_TYPE:
+            pathogen.setType(getCurrentPathogenType());
+            break;
+        }
+      PathogenEffect pE = new PathogenEffect();
+      pE.setCompartment(c);
+      h.setStatus(pathogen, pE);
+      h.setCoordinate(new Coordinate(x + w, y + yOffset - 0.25*textHeight));
+      
+      // Draw Halo Around Infectious Compartment
+      if(c == Compartment.INFECTIOUS) {
+        Agent a = new Agent();
+        a.setPathogen(pathogen);
+        a.setVessel(h);
+        drawAgent(a);
+      }
+      
+      // Draw Compartment Type
+      drawCompartment(h, pathogen, 0);
+      
+      // Draw Symbol Label
+      String pName = this.getName(c);
+      fill(textFill);
+      text(pName, x + 1.5*textHeight, y + yOffset);
+    }
+  }
+  
+  /**
+   * Render a Legend of Environment Densities
+   *
+   * @param x
+   * @param y
+   * @param textFill color
+   * @praam textHeight int
+   */
+  protected void drawDensityLegend(String legendName, int x, int y, color textFill, int textHeight) {
+    int w = (int) this.getValue(ViewParameter.ENVIRONMENT_DIAMETER);
+    double minDensity = this.getValue(ViewParameter.MIN_DENSITY);
+    double maxDensity = 1.1*this.getValue(ViewParameter.MAX_DENSITY);
+    int numRows = 6;
+    
+    // Draw Legend Name
+    fill(textFill);
+    text(legendName + ":", x, y);
+    
+    // Iterate through all possible place types
+    int yOffset = textHeight/2;
+    for (int i=0; i<numRows; i++) {
+      yOffset += textHeight;
+      int xP = int(x + w);
+      int yP = int(y + yOffset - 0.25*textHeight);
+      double density = minDensity + (maxDensity - minDensity) * i / (numRows - 1.0);
+      double minVal = this.getValue(ViewParameter.MIN_DENSITY);
+      double maxVal = this.getValue(ViewParameter.MAX_DENSITY);
+      double minHue = this.getValue(ViewParameter.MIN_DENSITY_HUE);
+      double maxHue = this.getValue(ViewParameter.MAX_DENSITY_HUE);
+      double minSat = this.getValue(ViewParameter.MIN_DENSITY_SAT);
+      double maxSat = this.getValue(ViewParameter.MAX_DENSITY_SAT);
+      color viewFill = this.mapToGradient(density, minVal, maxVal, minHue, maxHue, minSat, maxSat);
+      color viewStroke = this.getColor(ViewParameter.ENVIRONMENT_STROKE);
+      int alpha = (int) this.getValue(ViewParameter.ENVIRONMENT_ALPHA);
+    
+      stroke(viewStroke);
+      fill(viewFill, alpha);
+      rectMode(CENTER);
+      rect(xP, yP, 2*w, 2*w);
+      rectMode(CORNER);
+      
+      // Draw Symbol Label
+      String suffix = " ppl per 1000sm";
+      if(i == numRows - 1) {
+        suffix = "+ " + suffix;
+      }
+      String dName = "" + (int) (density * 1000) + suffix;
+      fill(textFill);
+      text(dName, x + 1.5*textHeight, y + yOffset);
+    }
+  }
+  
+  /**
+   * Render time info
+   *
+   * @param EpiModel
+   * @param x
+   * @param y
+   * @param textFill color
+   * @praam textHeight int
+   */
+  protected void drawTime(EpiModel model, int x, int y, color textFill) {
+    int day = (int) model.getCurrentTime().convert(TimeUnit.DAY).getAmount();
+    String clock = model.getCurrentTime().toClock();
+    String dayOfWeek = model.getCurrentTime().toDayOfWeek();
+    
+    String text = 
+      "Simulation Day: " + (day+1) + "\n" +
+      "Day of Week: " + dayOfWeek + "\n" +
+      "Simulation Time: " + clock;
+    
+    fill(textFill);
+    text(text, x, y);
   }
 }

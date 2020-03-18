@@ -17,6 +17,7 @@ public class Environment extends Element {
    */
   public Environment() {
     super();
+    this.size = 0;
     this.agentList = new ArrayList<Agent>();
     this.hostList = new ArrayList<Host>();
   }
@@ -99,10 +100,23 @@ public class Environment extends Element {
     return this.size;
   }
   
+  /** 
+   * Get Host Density on Place
+   *
+   * @return hosts per area
+   */
+  public double getDensity() {
+    int numHosts = 0;
+    for(Host h : this.getHosts()) {
+        numHosts++;
+    }
+    return numHosts / this.getSize();
+  }
+  
   @Override
   public String toString() {
     String info = 
-      "Environment UID: " + getUID()
+      "Place UID: " + getUID()
       + "; Size: " + getSize()
       ;
     return info;

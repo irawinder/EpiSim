@@ -31,21 +31,6 @@ public class Place extends Environment {
     return this.type;
   }
   
-  /** 
-   * Get Person Density on Place
-   *
-   * @return people per area
-   */
-  public double getDensity() {
-    int numPeople = 0;
-    for(Host h : this.getHosts()) {
-      if(h instanceof Person) {
-        numPeople++;
-      }
-    }
-    return numPeople / this.getSize();
-  }
-  
   @Override
   public String toString() {
     String info = 

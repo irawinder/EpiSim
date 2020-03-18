@@ -6,31 +6,87 @@
 private void configModel() {
   
   // Time = 0
-  epidemic.setTime(new Time(0, TimeUnit.DAY));
+  epidemic.setCurrentTime(new Time(0, TimeUnit.DAY));
   
   // Time Step
   epidemic.setTimeStep(new Time(1, TimeUnit.HOUR));
   
-  // Behaviors (Demographic, Travel Category, Land Use, Max Distance Willing to Travel)
-  double BASE_DIST = 150;
-  BehaviorMap behavior = new BehaviorMap();
-  behavior.setMap(Demographic.CHILD,  PlaceCategory.PRIMARY,   LandUse.DWELLING,   BASE_DIST*100);
-  behavior.setMap(Demographic.CHILD,  PlaceCategory.SECONDARY, LandUse.SCHOOL,     BASE_DIST*2.0);
-  behavior.setMap(Demographic.CHILD,  PlaceCategory.TERTIARY,  LandUse.PUBLIC,     BASE_DIST*1.0);
-  behavior.setMap(Demographic.CHILD,  PlaceCategory.TERTIARY,  LandUse.RETAIL,     BASE_DIST*1.0);
-  behavior.setMap(Demographic.ADULT,  PlaceCategory.PRIMARY,   LandUse.DWELLING,   BASE_DIST*100);
-  behavior.setMap(Demographic.ADULT,  PlaceCategory.SECONDARY, LandUse.OFFICE,     BASE_DIST*1.0);
-  behavior.setMap(Demographic.ADULT,  PlaceCategory.SECONDARY, LandUse.SCHOOL,     BASE_DIST*1.0);
-  behavior.setMap(Demographic.ADULT,  PlaceCategory.SECONDARY, LandUse.HOSPITAL,   BASE_DIST*1.0);
-  behavior.setMap(Demographic.ADULT,  PlaceCategory.SECONDARY, LandUse.RETAIL,     BASE_DIST*1.0);
-  behavior.setMap(Demographic.ADULT,  PlaceCategory.TERTIARY,  LandUse.PUBLIC,     BASE_DIST*1.0);
-  behavior.setMap(Demographic.ADULT,  PlaceCategory.TERTIARY,  LandUse.RETAIL,     BASE_DIST*1.0);
-  behavior.setMap(Demographic.SENIOR, PlaceCategory.PRIMARY,   LandUse.DWELLING,   BASE_DIST*100);
-  behavior.setMap(Demographic.SENIOR, PlaceCategory.SECONDARY, LandUse.DWELLING,   BASE_DIST*1.0);
-  behavior.setMap(Demographic.SENIOR, PlaceCategory.TERTIARY,  LandUse.PUBLIC,     BASE_DIST*1.0);
-  behavior.setMap(Demographic.SENIOR, PlaceCategory.TERTIARY,  LandUse.RETAIL,     BASE_DIST*1.0);
-  epidemic.setBehavior(behavior);
+  // Configure Broad City Schedule that describes general population activity
+  Schedule nineToFive = new Schedule();
   
+      nineToFive.addPhase(Phase.SLEEP,           new Time( 6, TimeUnit.HOUR)); // 00:00 - 06:00  (Sunday)
+      nineToFive.addPhase(Phase.HOME,            new Time(16, TimeUnit.HOUR)); // 06:00 - 22:00
+      nineToFive.addPhase(Phase.SLEEP,           new Time( 2, TimeUnit.HOUR)); // 22:00 - 24:00
+      for(int i=0; i<5; i++) {
+        nineToFive.addPhase(Phase.SLEEP,         new Time( 6, TimeUnit.HOUR)); // 00:00 - 06:00  (Monday - Friday
+        nineToFive.addPhase(Phase.HOME,          new Time( 1, TimeUnit.HOUR)); // 06:00 - 07:00
+        nineToFive.addPhase(Phase.GO_WORK,       new Time( 2, TimeUnit.HOUR)); // 07:00 - 09:00
+        nineToFive.addPhase(Phase.WORK,          new Time( 3, TimeUnit.HOUR)); // 09:00 - 12:00
+        nineToFive.addPhase(Phase.WORK_LUNCH,    new Time( 1, TimeUnit.HOUR)); // 12:00 - 13:00
+        nineToFive.addPhase(Phase.WORK,          new Time( 4, TimeUnit.HOUR)); // 13:00 - 17:00
+        nineToFive.addPhase(Phase.GO_HOME,       new Time( 2, TimeUnit.HOUR)); // 17:00 - 19:00
+        nineToFive.addPhase(Phase.LEISURE,       new Time( 3, TimeUnit.HOUR)); // 19:00 - 22:00
+        nineToFive.addPhase(Phase.SLEEP,         new Time( 2, TimeUnit.HOUR)); // 22:00 - 24:00
+      }
+      nineToFive.addPhase(Phase.SLEEP,           new Time( 6, TimeUnit.HOUR)); // 00:00 - 06:00  (Saturday)
+      nineToFive.addPhase(Phase.LEISURE,         new Time(16, TimeUnit.HOUR)); // 06:00 - 22:00
+      nineToFive.addPhase(Phase.SLEEP,           new Time( 2, TimeUnit.HOUR)); // 22:00 - 24:00
+  
+  epidemic.setSchedule(nineToFive);
+  
+  // Configure demographic-based probabalistic behaviors that determine how individuals react from moment to moment/
+  // In other words, ChoiceModel describes how much people tend to deviate from a City's Schedule.
+  ChoiceModel behavior = new ChoiceModel();
+  
+      // Phase Domains for each Phase (A person's dominant domain state during a specified phase)
+      behavior.setPhaseDomain(Phase.SLEEP,       PlaceCategory.PRIMARY);   // e.g. home
+      behavior.setPhaseDomain(Phase.HOME,        PlaceCategory.PRIMARY);   // e.g. home
+      behavior.setPhaseDomain(Phase.GO_WORK,     PlaceCategory.SECONDARY); // e.g. work or school
+      behavior.setPhaseDomain(Phase.WORK,        PlaceCategory.SECONDARY); // e.g. work or school
+      behavior.setPhaseDomain(Phase.WORK_LUNCH,  PlaceCategory.SECONDARY); // e.g. work or school
+      behavior.setPhaseDomain(Phase.GO_HOME,     PlaceCategory.PRIMARY);   // e.g. home
+      behavior.setPhaseDomain(Phase.LEISURE,     PlaceCategory.PRIMARY);   // e.g. home
+      
+      //Set Behavior Anomoly Rates
+      behavior.setAnomolyUnit(TimeUnit.HOUR); // anomoly rate per hour
+      
+      //Chance that person will shift state from primary OR secondary state TO a tertiary state
+      behavior.setPhaseAnomoly(Phase.SLEEP,      new Rate(0.01));
+      behavior.setPhaseAnomoly(Phase.HOME,       new Rate(0.20));
+      behavior.setPhaseAnomoly(Phase.GO_WORK,    new Rate(0.00));
+      behavior.setPhaseAnomoly(Phase.WORK,       new Rate(0.10));
+      behavior.setPhaseAnomoly(Phase.WORK_LUNCH, new Rate(0.90));
+      behavior.setPhaseAnomoly(Phase.GO_HOME,    new Rate(0.00));
+      behavior.setPhaseAnomoly(Phase.LEISURE,    new Rate(0.30));
+      
+      // Chance that Person will recover FROM a tertiary anomoly and return to their primary OR secondary state
+      behavior.setRecoverAnomoly(new Rate(0.40));
+      
+      // Land Use Proclivities (Demographic, Travel Category, Land Use, Max Distance Willing to Travel)
+      double BASE_DIST = 150; // base maximum distance that one is willing to travel to a land use
+      
+      //--- Valid Children Locations
+      behavior.setMap(Demographic.CHILD,  PlaceCategory.PRIMARY,   LandUse.DWELLING,   BASE_DIST*100);
+      behavior.setMap(Demographic.CHILD,  PlaceCategory.SECONDARY, LandUse.SCHOOL,     BASE_DIST*2.0);
+      behavior.setMap(Demographic.CHILD,  PlaceCategory.TERTIARY,  LandUse.PUBLIC,     BASE_DIST*1.0);
+      behavior.setMap(Demographic.CHILD,  PlaceCategory.TERTIARY,  LandUse.RETAIL,     BASE_DIST*1.0);
+      
+      //--- Valid Adult Locations
+      behavior.setMap(Demographic.ADULT,  PlaceCategory.PRIMARY,   LandUse.DWELLING,   BASE_DIST*100);
+      behavior.setMap(Demographic.ADULT,  PlaceCategory.SECONDARY, LandUse.OFFICE,     BASE_DIST*1.0);
+      behavior.setMap(Demographic.ADULT,  PlaceCategory.SECONDARY, LandUse.SCHOOL,     BASE_DIST*1.0);
+      behavior.setMap(Demographic.ADULT,  PlaceCategory.SECONDARY, LandUse.HOSPITAL,   BASE_DIST*1.0);
+      behavior.setMap(Demographic.ADULT,  PlaceCategory.SECONDARY, LandUse.RETAIL,     BASE_DIST*1.0);
+      behavior.setMap(Demographic.ADULT,  PlaceCategory.TERTIARY,  LandUse.PUBLIC,     BASE_DIST*1.0);
+      behavior.setMap(Demographic.ADULT,  PlaceCategory.TERTIARY,  LandUse.RETAIL,     BASE_DIST*1.0);
+      
+      //--- Valid Senior Locations
+      behavior.setMap(Demographic.SENIOR, PlaceCategory.PRIMARY,   LandUse.DWELLING,   BASE_DIST*100);
+      behavior.setMap(Demographic.SENIOR, PlaceCategory.SECONDARY, LandUse.DWELLING,   BASE_DIST*1.0);
+      behavior.setMap(Demographic.SENIOR, PlaceCategory.TERTIARY,  LandUse.PUBLIC,     BASE_DIST*1.0);
+      behavior.setMap(Demographic.SENIOR, PlaceCategory.TERTIARY,  LandUse.RETAIL,     BASE_DIST*1.0);
+  
+  epidemic.setBehavior(behavior);
 
   // Add randomly placed Places to Model within a specified rectangle (x1, y1, x2, y2)
   // Parameters (amount, name_prefix, type, x1, y1, x2, y2, minSize, maxSize)
@@ -56,50 +112,8 @@ private void configModel() {
   int minDwellingSize = 1;
   int maxDwellingSize = 5;
   
-  // Add people to Model, initially located at their respective dwellings
+  // Add people to Model assigned to one random primary location (home) and one random secondary location (job or school)
   epidemic.populate(minAge, maxAge, adultAge, seniorAge, childResilience, adultResilience, seniorResilience, minDwellingSize, maxDwellingSize);
-  
-  // Configure City Schedule
-  Schedule nineToFive = new Schedule();
-  nineToFive.addPhase(Phase.SLEEP,              new Time( 6, TimeUnit.HOUR)); // 00:00 - 06:00  (Sunday)
-  nineToFive.addPhase(Phase.HOME,               new Time(16, TimeUnit.HOUR)); // 06:00 - 22:00
-  nineToFive.addPhase(Phase.SLEEP,              new Time( 2, TimeUnit.HOUR)); // 22:00 - 24:00
-  for(int i=0; i<5; i++) {
-    nineToFive.addPhase(Phase.SLEEP,            new Time( 6, TimeUnit.HOUR)); // 00:00 - 06:00  (Monday - Friday
-    nineToFive.addPhase(Phase.HOME,             new Time( 1, TimeUnit.HOUR)); // 06:00 - 07:00
-    nineToFive.addPhase(Phase.GO_WORK,          new Time( 2, TimeUnit.HOUR)); // 07:00 - 09:00
-    nineToFive.addPhase(Phase.WORK,             new Time( 3, TimeUnit.HOUR)); // 09:00 - 12:00
-    nineToFive.addPhase(Phase.WORK_LUNCH,       new Time( 1, TimeUnit.HOUR)); // 12:00 - 13:00
-    nineToFive.addPhase(Phase.WORK,             new Time( 4, TimeUnit.HOUR)); // 13:00 - 17:00
-    nineToFive.addPhase(Phase.GO_HOME,          new Time( 2, TimeUnit.HOUR)); // 17:00 - 19:00
-    nineToFive.addPhase(Phase.LEISURE,          new Time( 3, TimeUnit.HOUR)); // 19:00 - 22:00
-    nineToFive.addPhase(Phase.SLEEP,            new Time( 2, TimeUnit.HOUR)); // 22:00 - 24:00
-  }
-  nineToFive.addPhase(Phase.SLEEP,              new Time( 6, TimeUnit.HOUR)); // 00:00 - 06:00  (Saturday)
-  nineToFive.addPhase(Phase.LEISURE,            new Time(16, TimeUnit.HOUR)); // 06:00 - 22:00
-  nineToFive.addPhase(Phase.SLEEP,              new Time( 2, TimeUnit.HOUR)); // 22:00 - 24:00
-  epidemic.setSchedule(nineToFive);
-  
-  //Chance that person will shift state from dominant state to tertiary state (per HOUR)
-  epidemic.setPhaseAnomoly(Phase.SLEEP,      new Rate(0.05));
-  epidemic.setPhaseAnomoly(Phase.HOME,       new Rate(0.20));
-  epidemic.setPhaseAnomoly(Phase.GO_WORK,    new Rate(0.00));
-  epidemic.setPhaseAnomoly(Phase.WORK,       new Rate(0.10));
-  epidemic.setPhaseAnomoly(Phase.WORK_LUNCH, new Rate(0.90));
-  epidemic.setPhaseAnomoly(Phase.GO_HOME,    new Rate(0.00));
-  epidemic.setPhaseAnomoly(Phase.LEISURE,    new Rate(0.30));
-  
-  // Chance that Person will recover from a tertiary anomoly and return to their primary or secondary state (per HOUR)
-  epidemic.setRecoverAnomoly(new Rate(0.40));
-  
-  // Phase Domains for each Phase (A person's dominant domain state during a specified phase)
-  epidemic.setPhaseDomain(Phase.SLEEP,      PlaceCategory.PRIMARY);   // e.g. home
-  epidemic.setPhaseDomain(Phase.HOME,       PlaceCategory.PRIMARY);   // e.g. home
-  epidemic.setPhaseDomain(Phase.GO_WORK,    PlaceCategory.SECONDARY); // e.g. work or school
-  epidemic.setPhaseDomain(Phase.WORK,       PlaceCategory.SECONDARY); // e.g. work or school
-  epidemic.setPhaseDomain(Phase.WORK_LUNCH, PlaceCategory.SECONDARY); // e.g. work or school
-  epidemic.setPhaseDomain(Phase.GO_HOME,    PlaceCategory.PRIMARY);   // e.g. home
-  epidemic.setPhaseDomain(Phase.LEISURE,    PlaceCategory.PRIMARY);   // e.g. home
   
   // Configure Covid Pathogen
   Pathogen covid19 = new Pathogen();

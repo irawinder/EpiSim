@@ -16,7 +16,7 @@ public void configView() {
   viz.setToggle(ViewParameter.SHOW_AGENTS,      true);
   viz.setToggle(ViewParameter.SHOW_FRAMERATE,   false);
   
-  viz.setPathogenMode(AgentMode.PATHOGEN);
+  viz.setAgentMode(AgentMode.PATHOGEN);
   viz.setPersonMode(PersonMode.COMPARTMENT);
   viz.setPlaceMode(PlaceMode.DENSITY);
   
@@ -119,16 +119,18 @@ public void configView() {
   viz.setValue(ViewParameter.TEXT_FILL,         color(  0,   0,   0, 200)); // Dark Gray
   
   // Generic Place Parameters
-  viz.setValue(ViewParameter.PLACE_SCALER,      1.0);                       // scaler
-  viz.setColor(ViewParameter.PLACE_STROKE,      color(255, 255, 255, 255)); // White
-  viz.setValue(ViewParameter.PLACE_DIAMETER,    7);                         // pixels
-  viz.setValue(ViewParameter.PLACE_ALPHA,       125);                       // 0 - 255
+  viz.setValue(ViewParameter.ENVIRONMENT_SCALER,      1.0);                       // scaler
+  viz.setValue(ViewParameter.ENVIRONMENT_DIAMETER,    7);                         // pixels
+  viz.setColor(ViewParameter.ENVIRONMENT_STROKE,      color(200, 200, 200, 255)); // Light Gray
+  viz.setValue(ViewParameter.ENVIRONMENT_ALPHA,       200);                       // 0 - 255
   
   // Density Heatmap Paramters
   viz.setValue(ViewParameter.MIN_DENSITY,       0);               // people per area
   viz.setValue(ViewParameter.MAX_DENSITY,       1/50.0);          // people per area
   viz.setValue(ViewParameter.MIN_DENSITY_HUE,   90);              // Green (0 - 255)
   viz.setValue(ViewParameter.MAX_DENSITY_HUE,   180);             // Blue  (0 - 255)
+  viz.setValue(ViewParameter.MIN_DENSITY_SAT,   0);               // NONE  (0 - 255)
+  viz.setValue(ViewParameter.MAX_DENSITY_SAT,   255);             // FULL  (0 - 255)
   
   // Generic Agent Parameters
   viz.setValue(ViewParameter.AGENT_WEIGHT,      4);     // pixels
@@ -136,9 +138,9 @@ public void configView() {
   viz.setValue(ViewParameter.AGENT_SCALER,      1.6);   // scaler
   
   // Generic Person Parameters
-  viz.setValue(ViewParameter.PERSON_DIAMETER,   5);                         // pixels
-  viz.setColor(ViewParameter.PERSON_STROKE,     color(200, 200, 200, 255)); // Light Gray
-  viz.setValue(ViewParameter.PERSON_ALPHA,      255);                       // 0 - 255
+  viz.setValue(ViewParameter.HOST_DIAMETER,   5);                         // pixels
+  viz.setColor(ViewParameter.HOST_STROKE,   color(200, 200, 200, 255)); // Light Gray
+  viz.setValue(ViewParameter.HOST_ALPHA,      255);                       // 0 - 255
   
   // Generic Commute Paramters
   viz.setColor(ViewParameter.COMMUTE_STROKE,    color(  0,   0,   0,  20)); // Light Gray

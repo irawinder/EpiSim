@@ -40,13 +40,19 @@
   * - CityModel() extends EpiModel()
   *     - Time()
   *     - Schedule()
-  *     - BehaviorMap()
+  *     - ChoiceModel()
   *     - Person() extends Host()
   *         - Place()
   *         * Demographic
   *     - Place() extends Environment()
   *         * LandUse
   *     * Phase
+  * - ChoiceModel()
+  *     - Person()
+  *     - Place()
+  *     * PlaceCategory
+  *     * Demographic
+  *     * LandUse
   * - Sim() implements @Simulation
   *    - Time()
   *    @ Model()
@@ -65,12 +71,6 @@
   *     - TimeInterval()
   *     * TimeUnit
   *     * Phase
-  * - BehaviorMap()
-  *     - Person()
-  *     - Place()
-  *     * PlaceCategory
-  *     * Demographic
-  *     * LandUse
   * - Coordinate()
   * - Time()
   *     * TimeUnit
@@ -150,7 +150,7 @@ public void keyPressed() {
       viz.switchToggle(ViewParameter.SHOW_AGENTS);
       break;
     case 'n':
-      switch(viz.getPathogenMode()) {
+      switch(viz.getAgentMode()) {
         case PATHOGEN:
           viz.nextPathogen();
           break;

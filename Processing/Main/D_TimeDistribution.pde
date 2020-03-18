@@ -1,91 +1,6 @@
 import java.util.Random;
 
 /**
- * Utility Class for Generating Values within a Gaussian Distribution
- *
- *                     1x Std. Dev.
- *
- * |                    |     |
- * |                  .-|-.   |
- * |                -   |  -  |
- * |               /    |    \|
- * |            _ |     |     | _
- * |         _    |     |     |    _ 
- * |__._._-_|_____|_____|_____|_____|_-_.__.__
- *                      ^
- *                   Average (mean)
- */
-public class GaussianDistribution {
-  
-  private double mean;
-  private double standardDeviation;
-  private Random random; 
-  
-  /**
-   * Default Normal Distribution with Mean = 0 and Standard Deviation = 1
-   */
-  public GaussianDistribution() {
-    this(0, 1);
-  }
-  
-  /**
-   * Construct a potentially non-normal Gaussian Distribution
-   *
-   * @param mean
-   * @param standardDeviation
-   */
-  public GaussianDistribution(double mean, double standardDeviation) {
-    this.mean = mean;
-    this.standardDeviation = standardDeviation;
-    random = new Random();
-  }
-  
-  /**
-   * Set Mean
-   *
-   * @param mean
-   */
-  public void setMean(double mean) {
-    this.mean = mean; 
-  }
-  
-  /**
-   * Get Mean
-   */
-  private double getMean() {
-    return this.mean; 
-  }
-  
-  /**
-   * Set Standard Deviation
-   *
-   * @param sD Standard Deviation
-   */
-  public void setStandardDeviation(double sD) {
-    this.standardDeviation = sD; 
-  }
-  
-  /**
-   * Get Standard Deviation
-   */
-  private double getStandardDeviation() {
-    return this.standardDeviation; 
-  }
-  
-  /**
-   * Pick a value within the Gaussian distribution
-   */
-  public double generateValue() {
-    return this.mean + this.standardDeviation * this.random.nextGaussian(); 
-  }
-  
-  @Override
-  public String toString() {
-    return "Mean: " + this.mean + "; Standard Deviation: " + this.standardDeviation; 
-  }
-}
-
-/**
  * Utility Class for Generating Time Values within a Gaussian Distribution
  *
  *                     1x Std. Dev.
@@ -100,7 +15,7 @@ public class GaussianDistribution {
  *                      ^
  *                   Average (mean)
  */
-public class TimeDistribution{
+public class TimeDistribution {
   
   private Time mean;
   private Time standardDeviation;
@@ -137,7 +52,7 @@ public class TimeDistribution{
   /**
    * Get Mean Time
    */
-  private Time getMean() {
+  public Time getMean() {
     return this.mean; 
   }
   
@@ -153,7 +68,7 @@ public class TimeDistribution{
   /**
    * Get Standard Deviation
    */
-  private Time getStandardDeviation() {
+  public Time getStandardDeviation() {
     return this.standardDeviation; 
   }
   

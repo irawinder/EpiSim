@@ -84,14 +84,14 @@ class EpiModel implements Model, Cloneable {
    *
    * @param t time
    */ 
-  public void setTime(Time t) {
+  public void setCurrentTime(Time t) {
     this.currentTime = t;
   }
   
   /**
    * Get the current time
    */ 
-  public Time getTime() {
+  public Time getCurrentTime() {
     return this.currentTime;
   }
   
