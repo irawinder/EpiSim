@@ -110,6 +110,8 @@ public class CityView extends EpiView {
     int textFill = (int) this.getValue(ViewParameter.TEXT_FILL);
     int textHeight = (int) this.getValue(ViewParameter.TEXT_HEIGHT);
     
+    boolean mapToScreen = true;
+    
     // Draw Commutes
     if(showCommutes) {
       image(this.commuteLayer, 0, 0);
@@ -125,7 +127,7 @@ public class CityView extends EpiView {
           for(Environment e : model.getEnvironments()) {
             if(e instanceof Place) {
               Place p = (Place) e;
-              this.drawDensity(p);
+              this.drawDensity(p, mapToScreen);
             }
           }
           break;
@@ -138,12 +140,12 @@ public class CityView extends EpiView {
         switch(this.getAgentMode()) {
           case PATHOGEN:
             if(a.getPathogen() == this.getCurrentPathogen()) {
-              this.drawAgent(a);
+              this.drawAgent(a, mapToScreen);
             }
             break;
           case PATHOGEN_TYPE:
             if(a.getPathogen().getType() == this.getCurrentPathogenType()) {
-              this.drawAgent(a);
+              this.drawAgent(a, mapToScreen);
             }
             break;
         }
@@ -157,11 +159,11 @@ public class CityView extends EpiView {
           Person p = (Person) h;
           switch(this.getPersonMode()) {
             case DEMOGRAPHIC:
-              this.drawDemographic(p, frame);
+              this.drawDemographic(p, frame, mapToScreen);
               break;
             case COMPARTMENT:
               Pathogen pathogen = this.getCurrentPathogen();
-              this.drawCompartment(p, pathogen, frame);
+              this.drawCompartment(p, pathogen, frame, mapToScreen);
               break;
           }
         }
@@ -294,9 +296,10 @@ public class CityView extends EpiView {
     LandUse use = l.getUse();
     color viewFill = this.getColor(use);
     color viewStroke = this.getColor(ViewParameter.ENVIRONMENT_STROKE);
+    int alpha = (int) this.getValue(ViewParameter.ENVIRONMENT_ALPHA);
     
     g.stroke(viewStroke);
-    g.fill(viewFill);
+    g.fill(viewFill, alpha);
     g.rectMode(CENTER);
     g.rect(x, y, w, w);
     g.rectMode(CORNER);
@@ -307,9 +310,13 @@ public class CityView extends EpiView {
    *
    * @param l place
    */
-  protected void drawLandUse(Place l) {
-    int x = this.mapXToScreen(l.getCoordinate().getX());
-    int y = this.mapYToScreen(l.getCoordinate().getY());
+  protected void drawLandUse(Place l, boolean mapToScreen) {
+    int x = (int) l.getCoordinate().getX();
+    int y = (int) l.getCoordinate().getY();
+    if(mapToScreen) {
+      x = this.mapXToScreen(x);
+      y = this.mapYToScreen(y);
+    }
     double scaler = this.getValue(ViewParameter.ENVIRONMENT_SCALER);
     int w = (int) ( Math.sqrt(l.getSize()) * scaler);
     
@@ -330,12 +337,16 @@ public class CityView extends EpiView {
    * @param p person
    * @param pathogenson
    */
-  protected void drawDemographic(Person p, int frame) {
+  protected void drawDemographic(Person p, int frame, boolean mapToScreen) {
     int framesPerSimulation = (int) this.getValue(ViewParameter.FRAMES_PER_SIMULATION);
     Animated dot = this.getAnimated(p);
     Coordinate location = dot.position(framesPerSimulation, frame, p.getCoordinate());
-    int x = this.mapXToScreen(location.getX());
-    int y = this.mapYToScreen(location.getY());
+    int x = (int) location.getX();
+    int y = (int) location.getY();
+    if(mapToScreen) {
+      x = this.mapXToScreen(x);
+      y = this.mapYToScreen(y);
+    }
     int w = (int) this.getValue(ViewParameter.HOST_DIAMETER);
     Demographic d = p.getDemographic();
     color viewFill = this.getColor(d);
@@ -376,6 +387,7 @@ public class CityView extends EpiView {
   protected void drawDemographicLegend(String legendName, int x, int y, color textFill, int textHeight) {
     int w = (int) this.getValue(ViewParameter.HOST_DIAMETER);
     int yOffset = textHeight/2;
+    boolean mapToScreen = false;
     
     // Draw Legend Name
     fill(textFill);
@@ -388,7 +400,7 @@ public class CityView extends EpiView {
       Person p = new Person();
       p.setDemographic(d);
       p.setCoordinate(new Coordinate(x + w, y + yOffset - 0.25*textHeight));
-      drawDemographic(p, 0);
+      drawDemographic(p, 0, mapToScreen);
       
       // Draw Symbol Label
       String pName = this.getName(d);
@@ -408,6 +420,7 @@ public class CityView extends EpiView {
   protected void drawLandUseLegend(String legendName, int x, int y, color textFill, int textHeight) {
     double scaler = this.getValue(ViewParameter.ENVIRONMENT_SCALER);
     int w = (int) (this.getValue(ViewParameter.ENVIRONMENT_DIAMETER));
+    boolean mapToScreen = false;
     
     // Draw Legend Name
     fill(textFill);
@@ -423,7 +436,7 @@ public class CityView extends EpiView {
       l.setUse(type);
       l.setSize(Math.pow(2*w/scaler, 2));
       l.setCoordinate(new Coordinate(x + w, y + yOffset - 0.25*textHeight));
-      drawLandUse(l);
+      drawLandUse(l, mapToScreen);
       
       // Draw Symbol Label
       String pName = this.getName(l.getUse());

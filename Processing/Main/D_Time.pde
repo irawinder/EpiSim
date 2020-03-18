@@ -244,8 +244,8 @@ public class Time {
    */
   public String toClock() {
     
-    int hour = (int) this.convert(TimeUnit.HOUR).getAmount() % (int) HOURS_IN_DAY;
-    int minute = (int) this.convert(TimeUnit.MINUTE).getAmount() % (int) MINUTES_IN_HOUR;
+    int hour = (int) (this.convert(TimeUnit.HOUR).getAmount() + 0.1) % (int) HOURS_IN_DAY;
+    int minute = (int) (this.convert(TimeUnit.MINUTE).getAmount() + 0.1) % (int) MINUTES_IN_HOUR;
     
     String hourString = "";
     if(hour < 10) hourString += "0";

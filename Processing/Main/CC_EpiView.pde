@@ -165,16 +165,16 @@ public class EpiView extends View {
    *
    * @param a agent
    */
-  protected void drawAgent(Agent a) {
+  protected void drawAgent(Agent a, boolean mapToScreen) {
     int viewWeight = (int) this.getValue(ViewParameter.AGENT_WEIGHT);
     PathogenType aType = a.getPathogen().getType();
     color viewStroke = this.getColor(aType);
     int alpha = (int) this.getValue(ViewParameter.AGENT_ALPHA);
     
     if(a.getVessel() instanceof Environment) {
-      drawEnvironmentAgent(a, viewStroke, viewWeight, alpha);
+      drawEnvironmentAgent(a, viewStroke, viewWeight, alpha, mapToScreen);
     } else if(a.getVessel() instanceof Host) {
-      drawHostAgent(a, viewStroke, viewWeight, alpha);
+      drawHostAgent(a, viewStroke, viewWeight, alpha, mapToScreen);
     }
   }
   
@@ -183,11 +183,15 @@ public class EpiView extends View {
    *
    * @param a agent
    */
-  private void drawEnvironmentAgent(Agent a, color viewStroke, int viewWeight, int alpha) {
+  private void drawEnvironmentAgent(Agent a, color viewStroke, int viewWeight, int alpha, boolean mapToScreen) {
     if(a.getVessel() instanceof Environment) {
       Environment e = (Environment) a.getVessel();
-      int x = this.mapXToScreen(e.getCoordinate().getX());
-      int y = this.mapYToScreen(e.getCoordinate().getY());
+      int x = (int) e.getCoordinate().getX();
+      int y = (int) e.getCoordinate().getY();
+      if(mapToScreen) {
+        x = this.mapXToScreen(x);
+        y = this.mapYToScreen(y);
+      }
       double scaler = this.getValue(ViewParameter.ENVIRONMENT_SCALER);
       int w = (int) ( Math.sqrt(e.getSize()) * scaler);
       
@@ -206,11 +210,15 @@ public class EpiView extends View {
    *
    * @param a agent
    */
-  private void drawHostAgent(Agent a, color viewStroke, int viewWeight, int alpha) {
+  private void drawHostAgent(Agent a, color viewStroke, int viewWeight, int alpha, boolean mapToScreen) {
     if(a.getVessel() instanceof Host) {
       Host h = (Host) a.getVessel();
-      int x = this.mapXToScreen(h.getCoordinate().getX());
-      int y = this.mapYToScreen(h.getCoordinate().getY());
+      int x = (int) h.getCoordinate().getX();
+      int y = (int) h.getCoordinate().getY();
+      if(mapToScreen) {
+        x = this.mapXToScreen(x);
+        y = this.mapYToScreen(y);
+      }
       int w = (int) (this.getValue(ViewParameter.AGENT_SCALER) * this.getValue(ViewParameter.HOST_DIAMETER));
       
       stroke(viewStroke, alpha);
@@ -228,12 +236,16 @@ public class EpiView extends View {
    * @param p person
    * @param pathogenson
    */
-  protected void drawCompartment(Host h, Pathogen pathogen, int frame) {
+  protected void drawCompartment(Host h, Pathogen pathogen, int frame, boolean mapToScreen) {
     int framesPerSimulation = (int) this.getValue(ViewParameter.FRAMES_PER_SIMULATION);
     Animated dot = this.getAnimated(h);
     Coordinate location = dot.position(framesPerSimulation, frame, h.getCoordinate());
-    int x = this.mapXToScreen(location.getX());
-    int y = this.mapYToScreen(location.getY());
+    int x = (int) location.getX();
+    int y = (int) location.getY();
+    if(mapToScreen) {
+      x = this.mapXToScreen(x);
+      y = this.mapYToScreen(y);
+    }
     int w = (int) this.getValue(ViewParameter.HOST_DIAMETER);
     Compartment c = h.getStatus(pathogen).getCompartment();
     color viewFill = this.getColor(c);
@@ -251,9 +263,13 @@ public class EpiView extends View {
    *
    * @param l place
    */
-  protected void drawDensity(Environment e) {
-    int x = this.mapXToScreen(e.getCoordinate().getX());
-    int y = this.mapYToScreen(e.getCoordinate().getY());
+  protected void drawDensity(Environment e, boolean mapToScreen) {
+    int x = (int) e.getCoordinate().getX();
+    int y = (int) e.getCoordinate().getY();
+    if(mapToScreen) {
+      x = this.mapXToScreen(x);
+      y = this.mapYToScreen(y);
+    }
     double scaler = this.getValue(ViewParameter.ENVIRONMENT_SCALER);
     int w = (int) ( Math.sqrt(e.getSize()) * scaler);
     
@@ -285,6 +301,7 @@ public class EpiView extends View {
    */
   protected void drawPathogenLegend(String legendName, int x, int y, color textFill, int textHeight) {
     int w = (int) (this.getValue(ViewParameter.AGENT_SCALER) * this.getValue(ViewParameter.HOST_DIAMETER));
+    boolean mapToScreen = false;
     
     // Draw Legend Name
     fill(textFill);
@@ -303,7 +320,7 @@ public class EpiView extends View {
       Host h = new Host();
       h.setCoordinate(new Coordinate(aX, aY));
       a.setVessel(h);
-      this.drawAgent(a);
+      this.drawAgent(a, mapToScreen);
       
       // Draw Highlight
       if(p == this.getCurrentPathogen()) {
@@ -326,6 +343,7 @@ public class EpiView extends View {
    */
   protected void drawPathogenTypeLegend(String legendName, int x, int y, color textFill, int textHeight) {
     int w = (int) (this.getValue(ViewParameter.AGENT_SCALER) * this.getValue(ViewParameter.HOST_DIAMETER));
+    boolean mapToScreen = false;
     
     // Draw Legend Name
     fill(textFill);
@@ -346,7 +364,7 @@ public class EpiView extends View {
       Host h = new Host();
       h.setCoordinate(new Coordinate(aX, aY));
       a.setVessel(h);
-      drawAgent(a);
+      drawAgent(a, mapToScreen);
       
       // Draw Highlight
       if(pT == this.getCurrentPathogenType()) {
@@ -372,6 +390,7 @@ public class EpiView extends View {
   protected void drawCompartmentLegend(String legendName, int x, int y, color textFill, int textHeight) {
     int w = (int) this.getValue(ViewParameter.HOST_DIAMETER);
     int yOffset = textHeight/2;
+    boolean mapToScreen = false;
     
     // Draw Legend Name
     fill(textFill);
@@ -401,11 +420,11 @@ public class EpiView extends View {
         Agent a = new Agent();
         a.setPathogen(pathogen);
         a.setVessel(h);
-        drawAgent(a);
+        drawAgent(a, mapToScreen);
       }
       
       // Draw Compartment Type
-      drawCompartment(h, pathogen, 0);
+      drawCompartment(h, pathogen, 0, mapToScreen);
       
       // Draw Symbol Label
       String pName = this.getName(c);

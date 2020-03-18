@@ -6,7 +6,7 @@
 public void configView(CityModel model) {
   
   // Simulation Rate
-  viz.setValue(ViewParameter.FRAMES_PER_SIMULATION, 10); // Frames
+  viz.setValue(ViewParameter.FRAMES_PER_SIMULATION, 5); // Frames
   
   // Default Layer Settings
   viz.setToggle(ViewParameter.AUTO_RUN,         false);
@@ -111,12 +111,12 @@ public void configView(CityModel model) {
   viz.setName(LandUse.HOSPITAL,                "Hospital");
   
   // Place Colors
-  viz.setColor(LandUse.DWELLING,                color(150, 150,   0, 100)); // Yellow
-  viz.setColor(LandUse.OFFICE,                  color( 50,  50, 200, 100)); // Blue
-  viz.setColor(LandUse.RETAIL,                  color(200,  50, 200, 100)); // Magenta
-  viz.setColor(LandUse.SCHOOL,                  color(200, 100,  50, 100)); // Brown
-  viz.setColor(LandUse.PUBLIC,                  color( 50, 200,  50,  50)); // Green
-  viz.setColor(LandUse.HOSPITAL,                color(  0, 255, 255, 100)); // Teal
+  viz.setColor(LandUse.DWELLING,                color(150, 150,   0, 150)); // Yellow
+  viz.setColor(LandUse.OFFICE,                  color( 50,  50, 200, 150)); // Blue
+  viz.setColor(LandUse.RETAIL,                  color(200,  50, 200, 150)); // Magenta
+  viz.setColor(LandUse.SCHOOL,                  color(200, 100,  50, 150)); // Brown
+  viz.setColor(LandUse.PUBLIC,                  color( 50, 200,  50, 150)); // Green
+  viz.setColor(LandUse.HOSPITAL,                color(  0, 255, 255, 150)); // Teal
 
   // View Mode Names
   viz.setName(AgentMode.PATHOGEN,               "Infectious Agent");
