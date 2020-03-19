@@ -405,10 +405,9 @@ public class CityModel extends EpiModel {
     int numEncounters = 0;
     int numTrips = 0;
     
-    // Set Time
+    // Current Time
     Time current = this.getCurrentTime();
     Time step = this.getTimeStep();
-    this.setCurrentTime(current.add(step));
     
     // Base Encounters Per Step
     Time hoursPerStep = step.convert(TimeUnit.HOUR);
@@ -520,5 +519,8 @@ public class CityModel extends EpiModel {
         this.removeAgent(a);
       }
     }
+    
+    // Move Time Forward for Next Simulation Run
+    this.setCurrentTime(current.add(step));
   }
 }

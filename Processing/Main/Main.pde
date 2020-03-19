@@ -92,15 +92,12 @@
  * Object Map:
  *
  * @ Model
- * @ Simulation
- *    - Time()
- *    @ Model()
  * @ ViewModel
  *    @Model()
  * - Processing Main()
  *    - CityModel()
  *    - CityView()
- *    - Sim()
+ *    - CitySim()
  * - EpiModel() implements @Model
  *     - Time()
  *     - Pathogen()
@@ -134,9 +131,9 @@
  *     * PlaceCategory
  *     * Demographic
  *     * LandUse
- * - Sim() implements @Simulation
+ * - CitySim()
  *    - Time()
- *    @ Model()
+ *    - CityModel()
  * - View() implements @ViewModel
  *     * ViewParameter
  * - EpiView() extends View()
@@ -163,6 +160,9 @@
 // Object Model of Epidemic
 private CityModel epidemic;
 
+// Sequence of model states comprising a simulation
+private ResultSeries outcome = new ResultSeries();
+
 // Visualization Model for Object Model
 private CityView viz;
 
@@ -187,7 +187,7 @@ public void setup() {
    * Edit/modify the initial city model and epidemic state from "A_ConfigModel" tab
    */
   epidemic = new CityModel();
-  configModel(); 
+  configModel();
   
   /** 
    * Initialize "Front-End" View Model

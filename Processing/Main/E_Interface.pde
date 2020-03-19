@@ -11,28 +11,6 @@ public interface Model {
   public void update();
 }
 
-public interface Simulation {
-  /**
-   * Add time-stamped model states to simulation.
-   *
-   * @param t time
-   * @param model 
-   */
-  public void add(Time t, Model m);
-  
-  /**
-   * Get list of all time-stamp values.
-   */
-  public ArrayList<Time> getSteps();
-  
-  /**
-   * Retrieve a model state for a specific time-stamp.
-   *
-   * @param t time
-   */
-  public Model getState(Time t);
-}
-
 public interface ViewModel {
   
   /**

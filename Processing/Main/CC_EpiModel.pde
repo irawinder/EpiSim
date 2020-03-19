@@ -27,7 +27,7 @@
  *   Refer to Model of the Epidemiological Triangle:
  *   https://www.rivier.edu/academics/blog-posts/what-is-the-epidemiologic-triangle/
  */
-class EpiModel implements Model, Cloneable {
+class EpiModel implements Model {
 
   // The current time of the model (begins at t=0)
   private Time currentTime;
@@ -62,13 +62,6 @@ class EpiModel implements Model, Cloneable {
     this.environmentList = new ArrayList<Environment>();
     this.hostList = new ArrayList<Host>();
     this.agentList = new ArrayList<Agent>();
-  }
-  
-  /**
-   * copies the object to a new in-memory object
-   */
-  public Object clone() throws CloneNotSupportedException {
-    return this.clone();
   }
   
   /**
