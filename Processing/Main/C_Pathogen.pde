@@ -27,6 +27,9 @@ public class Pathogen {
   // Mortality Rate without Treatment
   private Rate mortalityUntreated;
   
+  // Hospitalization Rate
+  private Rate hospitalization;
+  
   // Rate of expression for various Symptoms
   private HashMap<Symptom, Rate> symptomExpression;
   
@@ -48,6 +51,7 @@ public class Pathogen {
     this.infectiousDuration = new TimeDistribution();
     this.mortalityTreated = new Rate();
     this.mortalityUntreated = new Rate();
+    this.hospitalization = new Rate();
     this.symptomExpression = new HashMap<Symptom, Rate>();
     for(Symptom s : Symptom.values()) {
       this.symptomExpression.put(s, new Rate());
@@ -202,6 +206,22 @@ public class Pathogen {
    */
   public Rate getMortalityUntreated() {
     return this.mortalityUntreated;
+  }
+  
+  /** 
+   * Set Hospitalization Rate
+   *
+   * @param r rate
+   */
+  public void setHospitalizationRate(Rate r) {
+    this.hospitalization = r;
+  }
+  
+  /** 
+   * Get Hospitalization Rate
+   */
+  public Rate getHospitalizationRate() {
+    return this.hospitalization;
   }
   
   /** 

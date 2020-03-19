@@ -85,6 +85,7 @@ private void configModel() {
       behavior.setMap(Demographic.SENIOR, PlaceCategory.SECONDARY, LandUse.DWELLING,   BASE_DIST*1.0);
       behavior.setMap(Demographic.SENIOR, PlaceCategory.TERTIARY,  LandUse.PUBLIC,     BASE_DIST*1.0);
       behavior.setMap(Demographic.SENIOR, PlaceCategory.TERTIARY,  LandUse.RETAIL,     BASE_DIST*1.0);
+      behavior.setMap(Demographic.SENIOR, PlaceCategory.TERTIARY,  LandUse.HOSPITAL,   BASE_DIST*1.0);
   
   epidemic.setBehavior(behavior);
 
@@ -165,9 +166,10 @@ void configureCoronavirus(Pathogen p, String name) {
   p.setIncubationDistribution(incubationMean, incubationStandardDeviation);
   p.setInfectiousDistribution(infectiousMean, infectiousStandardDeviation);
   
-  // Mortality Rates
-  p.setMortalityTreated(new Rate(0.020));
-  p.setMortalityUntreated(new Rate(0.080));
+  // Mortality Rates and Hospitalization
+  p.setMortalityTreated(new Rate(0.01));    // Smallest
+  p.setMortalityUntreated(new Rate(0.04)); 
+  p.setHospitalizationRate(new Rate(0.05)); // Largest
   
   // Adult's rate of expression symptoms
   p.setSymptomExpression(Symptom.FEVER,               new Rate(0.50));
@@ -202,9 +204,10 @@ public void configureRhinovirus(Pathogen p, String name) {
   p.setIncubationDistribution(incubationMean, incubationStandardDeviation);
   p.setInfectiousDistribution(infectiousMean, infectiousStandardDeviation);
   
-  // Mortality Rates
-  p.setMortalityTreated(new Rate(0.0));
+  // Mortality Rates and Hospitalization
+  p.setMortalityTreated(new Rate(0.0));      // Smallest
   p.setMortalityUntreated(new Rate(0.001));
+  p.setHospitalizationRate(new Rate(0.002)); // Largest
   
   // Child's rate of expression symptoms
   p.setSymptomExpression(Symptom.COUGH,  new Rate(0.50));
@@ -234,9 +237,10 @@ public void configureInfluenza(Pathogen p, String name) {
   p.setIncubationDistribution(incubationMean, incubationStandardDeviation);
   p.setInfectiousDistribution(infectiousMean, infectiousStandardDeviation);
   
-  // Mortality Rates
-  p.setMortalityTreated(new Rate(0.0));
+  // Mortality Rates and Hospitalization
+  p.setMortalityTreated(new Rate(0.0));      // smallest
   p.setMortalityUntreated(new Rate(0.001));
+  p.setHospitalizationRate(new Rate(0.005)); // largest
   
   // Child's rate of expression symptoms
   p.setSymptomExpression(Symptom.FEVER,               new Rate(0.50));

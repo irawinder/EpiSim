@@ -30,6 +30,9 @@ public class Person extends Host {
   // Secondary Environment (e.g. work, school, daycare)
   private Place secondaryPlace;
   
+  // Closest Hospital
+  private Place closestHospital;
+  
   /**
    * Construct new Person
    */
@@ -39,6 +42,7 @@ public class Person extends Host {
     this.setDemographic(18, 65);
     this.primaryPlace = new Place();
     this.secondaryPlace = new Place();
+    this.closestHospital = new Place();
   }
   
   /**
@@ -138,6 +142,22 @@ public class Person extends Host {
   }
   
   /**
+   * Set the Person's closest Hospital
+   *
+   * @param hospital Place
+   */
+  public void setClosestHospital(Place hospital) {
+    this.closestHospital = hospital;
+  }
+  
+  /**
+   * Get the Person's closest Hospital
+   */
+  public Place getClosestHospital() {
+    return this.closestHospital;
+  }
+  
+  /**
    * Move Person to Primary Place
    */
   public void moveToPrimary() {
@@ -154,6 +174,14 @@ public class Person extends Host {
   }
   
   /**
+   * Move Person to Closest Hospital
+   */
+  public void moveToHospital() {
+    Place destination = this.getClosestHospital();
+    this.move(destination);
+  }
+  
+  /**
    * Move person to a specified destination
    *
    * @param destination Place
@@ -161,6 +189,20 @@ public class Person extends Host {
   public void moveTo(Place destination) {
     // Cast to Environment to call inhereted "public void move(Environment e)" method
     this.move((Environment)destination);
+  }
+  
+  /**
+   * Check if Person is Hospitalized
+   *
+   * @return true if hospitalized
+   */
+  public boolean hospitalized() {
+    for(HashMap.Entry<Pathogen, PathogenEffect> entry : this.getStatusMap().entrySet()) {
+      if(!entry.getValue().hospitalized()) {
+        return true;
+      }
+    }
+    return false;
   }
   
   @Override

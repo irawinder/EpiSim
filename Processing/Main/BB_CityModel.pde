@@ -217,6 +217,9 @@ public class CityModel extends EpiModel {
     
     // Add to ChoiceModel
     this.behavior.addPlace(l);
+    if(l.getUse() == LandUse.HOSPITAL) {
+      behavior.addHospital(l);
+    }
     
     // Add place element to EpiModel extension
     this.addEnvironment(l);
@@ -318,6 +321,10 @@ public class CityModel extends EpiModel {
         Place secondaryPlace = this.behavior.getRandomPlace(person, PlaceCategory.SECONDARY);
         person.setSecondaryPlace(secondaryPlace);
         
+        // Set Closest Hospital
+        Place closestHospital = this.behavior.getClosestHospital(person);
+        person.setClosestHospital(closestHospital);
+        
         // Add Person to EpiModel extension
         this.addPerson(person);
       }
@@ -394,6 +401,10 @@ public class CityModel extends EpiModel {
   @Override
   public void update() {
     
+    // Event Summary
+    int numEncounters = 0;
+    int numTrips = 0;
+    
     // Set Time
     Time current = this.getCurrentTime();
     Time step = this.getTimeStep();
@@ -408,18 +419,46 @@ public class CityModel extends EpiModel {
     // Move People based on Behavior Model
     for(Demographic d : Demographic.values()) {
       for(Person p : this.person.get(d)) {
-        behavior.apply(p, this.getCurrentPhase(), step);
+        boolean tripMade = behavior.apply(p, this.getCurrentPhase(), step);
+        if(tripMade) numTrips++;
       }
     }
     
     // Create Infectious Agents
     for(Host h : this.getHosts()) {
+      
+      // Test for Encounter between all people
+      Environment e = h.getEnvironment();
+      if(e instanceof Place) {
+        Place l = (Place) e;
+        double encounterRate = hoursPerStep.getAmount() * l.getDensity();
+        for(Host h2 : e.getHosts()) {
+          double random = Math.random();
+          if(random < encounterRate) {
+            numEncounters++;
+            
+            // 1. Transmit pathogen from Host to Host if one is infectious
+            //    EncounterRate ~ attackRate * time * people / area
+            //
+           for(Pathogen p : this.getPathogens()) { 
+              if(h.getStatus(p).infectious()) {
+                double contagiousRate = encounterRate * p.getAttackRate().toDouble();
+                if(random < contagiousRate) {
+                  this.infectHost(h2, p);
+                }
+              }
+            }
+          }
+        }
+      }
+      
+      // Test for Non-encounter-based transmission
       for(Pathogen p : this.getPathogens()) {
         
-        // Only add agent pathogens if host is infectious
+        // If host is infectious
         if(h.getStatus(p).infectious()) {
           
-          // 0. Host has Agent Internal To Self
+          // 2. Host has Agent Internal To Self
           //
           boolean hasAgent = false;
           for(Agent a : h.getAgents()) {
@@ -432,32 +471,19 @@ public class CityModel extends EpiModel {
             this.putAgent(h, p);
           }
           
-          // 1. Transmit agent from Host to Environment
+          // 3. Transmit agent from Host to Environment
           //    DepositeRate ~ attackRate * time
           //
-          Environment e = h.getEnvironment();
           double depositRate = p.getAttackRate().toDouble() * hoursPerStep.getAmount();
           if(Math.random() < depositRate) {
             this.putAgent(e, p);
           }
-          
-          // 2. Transmit pathogen from Host to Host
-          //    EncounterRate ~ attackRate * time * people / area
-          //
-          if(e instanceof Place) {
-            Place l = (Place) e;
-            double encounterRate = p.getAttackRate().toDouble() * hoursPerStep.getAmount() * l.getDensity();
-            for(Host h2 : e.getHosts()) {
-              if(Math.random() < encounterRate) {
-                this.infectHost(h2, p);
-              }
-            }
-          }
         }
+        
       }
     }
     
-    // 3. Transmit infectious agents from Environment to Host
+    // 4. Transmit infectious agents from Environment to Host
     //    TransmissionRate ~ attackRate * time / area
     //
     int numAgents = this.getAgents().size();

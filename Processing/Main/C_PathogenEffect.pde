@@ -20,6 +20,9 @@ public class PathogenEffect {
   private boolean fatalTreated;
   private boolean fatalUntreated;
   
+  // Pre-destined: Hospitalization
+  private boolean hospitalized;
+  
   // Pre-destined: Rate of expression for various Symptoms
   private HashMap<Symptom, Boolean> symptomExpression;
   
@@ -35,6 +38,7 @@ public class PathogenEffect {
     this.infectiousDuration = new Time();
     this.fatalTreated = false;
     this.fatalUntreated = false;
+    this.hospitalized = false;
     symptomExpression = new HashMap<Symptom, Boolean>();
   }
   
@@ -78,12 +82,14 @@ public class PathogenEffect {
     this.setIncubationDuration(p.generateIncubationDuration());
     this.setInfectiousDuration(p.generateIncubationDuration());
     
-    // Determine Fatality
+    // Determine Fatality and Hospitalization
     double random = Math.random(); // random number 0.0 - 1.0
     boolean fatalTreated = p.getMortalityTreated().toDouble() / resilience.toDouble() > random;
     this.setFatalTreated(fatalTreated);
     boolean fatalUntreated = p.getMortalityUntreated().toDouble() / resilience.toDouble() > random;
     this.setFatalTreated(fatalUntreated);
+    boolean hospitalized = p.getHospitalizationRate().toDouble() / resilience.toDouble() > random;
+    this.setHospitalized(hospitalized);
     
     // Determine Non-Death Symptoms
     for(Symptom s : Symptom.values()) {
@@ -241,6 +247,22 @@ public class PathogenEffect {
   }
   
   /**
+   * Set Hospitalized
+   *
+   * @param hospitalized boolean
+   */
+  public void setHospitalized(boolean hospitalized) {
+    this.hospitalized = hospitalized;
+  }
+  
+  /**
+   * Get Hospitalized
+   */
+  public boolean getHospitalized() {
+    return this.hospitalized;
+  }
+  
+  /**
    * Set Symptom Status
    */
   public void setSymptom(Symptom s, boolean hasSymptom) {
@@ -257,10 +279,23 @@ public class PathogenEffect {
   /**
    * Check if Alive
    *
-   * @return true if alive
+   * @return true if currently alive
    */
   public boolean alive() {
     if(this.compartment == Compartment.DEAD) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  
+  /**
+   * Check if currently hospitalized
+   *
+   * @return true if hospitalized
+   */
+  public boolean hospitalized() {
+    if(!this.alive() || (this.compartment == Compartment.INFECTIOUS && this.getHospitalized()) ) {
       return false;
     } else {
       return true;

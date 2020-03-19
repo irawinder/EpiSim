@@ -105,6 +105,9 @@ public class Host extends Element {
   
   /**
    * Set the Host's status for a Particular Pathogen
+   *
+   * @param p pathogen
+   * @param status PathogenEffect
    */
   public void setStatus(Pathogen p, PathogenEffect status) {
     this.status.put(p, status);

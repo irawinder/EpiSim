@@ -5,6 +5,9 @@ import java.util.Random;
  */ 
 public class ChoiceModel {
   
+  // Hospitals in Model
+  private ArrayList<Place> hospitalList;
+  
   // List of Place Elements categorized by whether a specific demographic considers it primary, secondary, or tertiary
   private HashMap<Demographic, HashMap<PlaceCategory, ArrayList<Place>>> placeMap;
   
@@ -30,6 +33,7 @@ public class ChoiceModel {
    * Construct Empty Behavior Maps
    */ 
   public ChoiceModel() {
+    this.hospitalList = new ArrayList<Place>();
     this.useMap = new HashMap<Demographic, HashMap<PlaceCategory, ArrayList<LandUse>>>();
     this.placeMap = new HashMap<Demographic, HashMap<PlaceCategory, ArrayList<Place>>>();
     this.distanceMap = new HashMap<Demographic, HashMap<PlaceCategory, HashMap<LandUse, Double>>>();
@@ -53,6 +57,28 @@ public class ChoiceModel {
       this.phaseAnomoly.put(phase, new Rate(0));
     }
     this.anomolyUnit = TimeUnit.HOUR;
+  }
+  
+ /**
+  * Add Hospital
+  *
+  * @param hospital Place
+  */
+  public void addHospital(Place hospital) {
+    if(!hospitalList.contains(hospital)) {
+      this.hospitalList.add(hospital);
+    }
+  }
+  
+  /**
+  * Remove Hospital
+  *
+  * @param hospital Place
+  */
+  public void removeHospital(Place hospital) {
+    if(hospitalList.contains(hospital)) {
+      this.hospitalList.remove(hospital);
+    }
   }
   
  /**
@@ -152,7 +178,6 @@ public class ChoiceModel {
    *
    * @param p Person
    * @param c PlaceCategory
-   * @param d Demographic
    */
   public Place getRandomPlace(Person p, PlaceCategory c) {
     Demographic d = p.getDemographic();
@@ -178,6 +203,35 @@ public class ChoiceModel {
       if(proximate) return randomPlace;
     }
     return current; // stay put if no options found
+  }
+  
+  /**
+   * Get closest hospital tp person
+   *
+   * @param p Person
+   */
+  public Place getClosestHospital(Person p) {
+    Place current = (Place) p.getEnvironment();
+    if(this.hospitalList.size() > 0) {
+      Place closest = hospitalList.get(0);
+      Coordinate iCoord = current.getCoordinate();
+      Coordinate fCoord = closest.getCoordinate();
+      double minDistance = iCoord.distance(fCoord);
+      for(int i=1; i<this.hospitalList.size(); i++) {
+        Place hospital = this.hospitalList.get(i);
+        iCoord = current.getCoordinate();
+        fCoord = hospital.getCoordinate();
+        double thisDistance = iCoord.distance(fCoord);
+        
+        if(thisDistance < minDistance) {
+          minDistance = thisDistance;
+          closest = hospital;
+        }
+      }
+      return closest;
+    } else {
+      return current; // stay put if no options found
+    }
   }
   
   /**
@@ -259,8 +313,9 @@ public class ChoiceModel {
    * @param p Person 
    * @param currentPhase current phase in schedule
    * @param duration of time to apply probabilities
+   * @return true if movement is made
    */
-  public void apply(Person p, Phase currentPhase, Time duration) {
+  public boolean apply(Person p, Phase currentPhase, Time duration) {
     
     // Calculate Anomoly Rates
     Time oneUnit = new Time(1, this.getAnomolyUnit());
@@ -270,10 +325,17 @@ public class ChoiceModel {
     Rate anomolyPerStep = new Rate(rateUnitPerStep.getAmount() * anomolyPerUnit.toDouble());
     Rate recoverPerStep = new Rate(rateUnitPerStep.getAmount() * recoverPerUnit.toDouble());
       
+    // Track whether trip is made
+    boolean tripMade = false;
+      
     // Are you dead?
     if(!p.alive()) {
       p.moveToPrimary();
     
+    // Are you hospitalized?
+    } else if(p.hospitalized()) {
+      p.moveToHospital();
+      
     // If you're alive, carry on!
     } else {
       // Current Place
@@ -300,6 +362,7 @@ public class ChoiceModel {
         boolean goToAnomoly = anomolyPerStep.roll();
         if(goToAnomoly) {
           p.moveTo(this.getRandomPlace(p, PlaceCategory.TERTIARY));
+          tripMade = true;
         }
         
       // Are you at a tertiary place?
@@ -308,8 +371,10 @@ public class ChoiceModel {
         boolean goToDomain = recoverPerStep.roll();
         if(goToDomain) {
           p.moveTo(dominantPlace);
+          tripMade = true;
         }
       }
     }
+    return tripMade;
   }
 }
