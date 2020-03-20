@@ -138,7 +138,7 @@ public class CityView extends EpiView {
     if(showAgents) {
       for(Host h : model.getHosts()) {
         if(h.getAgents().size() > 0){
-          Agent a = h.getAgents().get(0);
+          Agent a = h.getAgents().get(0); // only draw one if multiple in same location
           switch(this.getAgentMode()) {
             case PATHOGEN:
               if(a.getPathogen() == this.getCurrentPathogen()) {
@@ -198,7 +198,10 @@ public class CityView extends EpiView {
     
     // Draw Information
     this.drawInfo(generalMargin, infoY, textFill);
-    this.drawTime(model, generalMargin, height - 2*generalMargin, textFill);
+    
+    textAlign(RIGHT, BOTTOM);
+    this.drawTime(model, width - generalMargin, height - generalMargin, textFill);
+    textAlign(LEFT);
     
     String legendName;
     
@@ -235,7 +238,11 @@ public class CityView extends EpiView {
         break;
     }
     
-    if(showFrameRate) text("Framerate: " + frameRate, width - 2*generalMargin, height - 0.5*generalMargin);
+    if(showFrameRate) {
+      textAlign(RIGHT, BOTTOM);
+      text("Framerate: " + frameRate, width - generalMargin, height - generalMargin/2);
+      textAlign(LEFT);
+    }
   }
   
   /**
