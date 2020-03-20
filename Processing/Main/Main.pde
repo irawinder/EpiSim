@@ -10,7 +10,7 @@
  *     An pathogen could be some form of bacteria, virus, fungus, or parasite.
  *
  *   Agent:
- *     Agents are the vessels by which Pathogens spread. In a models there may be
+ *     Agents are the vessels by which Pathogens spread. In a model there may be
  *     numerous Agents referencing the same generic Pathogen definition.
  *
  *   Host:  
