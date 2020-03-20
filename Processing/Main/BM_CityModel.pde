@@ -31,6 +31,10 @@ public class CityModel extends EpiModel {
   // Place dictionary sorted by land use
   private HashMap<LandUse, ArrayList<Place>> place;
   
+  // How often to record a result to graph
+  private Time timeSinceResult;
+  private Time resultStep;
+  
   /**
    * Construct Simple Epidemiological Model
    */
@@ -50,6 +54,19 @@ public class CityModel extends EpiModel {
     for(LandUse use : LandUse.values()) {
       this.place.put(use, new ArrayList<Place>());
     }
+    
+    // Result Timers
+    this.timeSinceResult = new Time();
+    this.resultStep = new Time();
+  }
+  
+  /**
+   * Set Result Step Time
+   * 
+   * @param t Time
+   */
+  public void setResultStep(Time t) {
+    this.resultStep = t;
   }
   
   /**
@@ -536,6 +553,11 @@ public class CityModel extends EpiModel {
     }
     
     // Add Result to ResultSeries
-    outcome.addResult(stats);
+    if(timeSinceResult.subtract(resultStep).getAmount() > 0) {
+      outcome.addResult(stats);
+      timeSinceResult = new Time(0);
+    } else {
+      timeSinceResult = timeSinceResult.add(step);
+    }
   }
 }

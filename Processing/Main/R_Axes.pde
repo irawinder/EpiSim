@@ -1,13 +1,13 @@
 
 /**
- * GraphAxes is designed for other specific graph classes (e.g. BarGraph) to extend
+ * Axes is designed for other specific graph classes (e.g. BarGraph) to extend
  */
-class GraphAxes {
+class Axes {
   
   // Title and Labels for Axes
   private String title, labelX, labelY;
   
-  public GraphAxes() {
+  public Axes() {
     this.title = "";
     this.labelX = "";
     this.labelY = "";

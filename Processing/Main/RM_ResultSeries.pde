@@ -4,7 +4,7 @@
 public class ResultSeries {
   
   // List of ordered Time Stamps associated with summary data
-  private ArrayList<Time> time;
+  private ArrayList<Time> timeList;
   
   // Duration of Time associated with summary data
   private HashMap<Time, Result> series;
@@ -13,7 +13,7 @@ public class ResultSeries {
    * Constructor for ResultSeries
    */
   public ResultSeries() {
-    this.time = new ArrayList<Time>();
+    this.timeList = new ArrayList<Time>();
     this.series = new HashMap<Time, Result>();
   }
   
@@ -34,8 +34,22 @@ public class ResultSeries {
    * @param t time
    */
   private void addTime(Time t) {
-    if(!time.contains(t)) {
-      this.time.add(t);
+    if(!timeList.contains(t)) {
+      this.timeList.add(t);
     }
+  }
+  
+  /**
+   * Get time value as ordered list
+   */
+  private ArrayList<Time> getTimes() {
+    return this.timeList;
+  }
+  
+  /**
+   * Get Result associated with time
+   */
+  private Result getResult(Time t) {
+    return this.series.get(t);
   }
 }

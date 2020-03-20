@@ -48,9 +48,11 @@ public class PathogenEffect {
    * @param t Time
    */
   public void expose(Time t) {
-    this.initialTime = t;
-    this.exposed = true;
-    this.compartment = Compartment.INCUBATING;
+    if(!exposed) {
+      this.initialTime = t;
+      this.exposed = true;
+      this.compartment = Compartment.INCUBATING;
+    }
   }
   
   /**
@@ -295,7 +297,7 @@ public class PathogenEffect {
    * @return true if hospitalized
    */
   public boolean hospitalized() {
-    if(!this.alive() || (this.compartment == Compartment.INFECTIOUS && this.getHospitalized()) ) {
+    if(this.compartment == Compartment.INFECTIOUS && this.getHospitalized() ) {
       return false;
     } else {
       return true;

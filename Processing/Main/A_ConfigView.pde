@@ -6,7 +6,7 @@
 public void configView(CityModel model) {
   
   // Simulation Rate
-  viz.setValue(ViewParameter.FRAMES_PER_SIMULATION, 5); // Frames
+  viz.setValue(ViewParameter.FRAMES_PER_SIMULATION, 2); // Frames
   
   // Default Layer Settings
   viz.setToggle(ViewParameter.AUTO_RUN,         false);
@@ -36,9 +36,9 @@ public void configView(CityModel model) {
   
   // Vertical Locations of Application Elements (0 is top)
   viz.setValue(ViewParameter.INFO_Y,              50); // pixels
-  viz.setValue(ViewParameter.PATHOGEN_LEGEND_Y,  425); // pixels
-  viz.setValue(ViewParameter.PERSON_LEGEND_Y,    535); // pixels
-  viz.setValue(ViewParameter.PLACE_LEGEND_Y,     685); // pixels
+  viz.setValue(ViewParameter.PATHOGEN_LEGEND_Y,  410); // pixels
+  viz.setValue(ViewParameter.PERSON_LEGEND_Y,    500); // pixels
+  viz.setValue(ViewParameter.PLACE_LEGEND_Y,     650); // pixels
   
   String info = 
     "Epidemic Simulation" + "\n" +
@@ -51,9 +51,9 @@ public void configView(CityModel model) {
     
     "Filters:" + "\n" +
     "Press 'n' for next Infection Type" + "\n" +
-    "Press 'q' to toggle Agent Legend" + "\n" +
-    "Press 'w' to toggle Place Legend" + "\n" +
-    "Press 'e' to toggle Person Legend" + "\n\n" +
+    "Press 'q' to toggle Person Legend" + "\n" +
+    "Press 'w' to toggle Place Legend" + "\n\n" +
+//    "Press 'e' to toggle Agent Legend" + "\n" +
     
     "Simulation:" + "\n" +
     "Press 'r' to regenerate random city" + "\n" +
@@ -76,7 +76,7 @@ public void configView(CityModel model) {
   viz.setName(Compartment.DEAD,                "Dead");
   
   // Compartment Colors
-  viz.setColor(Compartment.SUSCEPTIBLE,        color(255, 255, 255, 255)); // White;
+  viz.setColor(Compartment.SUSCEPTIBLE,        color(230, 230, 230, 255)); // White;
   viz.setColor(Compartment.INCUBATING,         color(255, 150,   0, 255)); // Orange
   viz.setColor(Compartment.INFECTIOUS,         color(255,   0,   0, 255)); // Dark Red
   viz.setColor(Compartment.RECOVERED,          color(  0,   0,   0, 255)); // Black
@@ -101,6 +101,11 @@ public void configView(CityModel model) {
   viz.setColor(Demographic.CHILD,              color(255, 255, 255, 255)); // Light Gray
   viz.setColor(Demographic.ADULT,              color(100, 100, 100, 255)); // Dark Gray
   viz.setColor(Demographic.SENIOR,             color(  0,   0,   0, 255)); // Black
+  
+  // Host Demographic Alphas
+  viz.setValue(Demographic.CHILD,              200); // 0 - 255
+  viz.setValue(Demographic.ADULT,              225); // 0 - 255
+  viz.setValue(Demographic.SENIOR,             255); // 0 - 255
   
   // Place Names
   viz.setName(LandUse.DWELLING,                "Dwelling Unit");
@@ -167,10 +172,15 @@ public void configView(CityModel model) {
   viz.preDraw(model);
   
   //Graph Names and Attributes
-  viz.setValue(ViewParameter.GRAPH_HEIGHT,       200); // pixels
+  viz.setName(TimePlot.HOSPITALIZED,            "Hospitalizations");
+  viz.setColor(TimePlot.HOSPITALIZED,           color(  0, 255, 255, 200));   // Teal
+  viz.setName(TimePlot.ENCOUNTER,               "Social Encounters");
+  viz.setName(TimePlot.COMPARTMENT,             "Pathogen Status");
+  viz.setName(TimePlot.TRIP,                    "Trips Made");
+  viz.setName(TimePlot.SYMPTOM,                 "Symptoms Expressed");
+  viz.setValue(ViewParameter.GRAPH_HEIGHT,       200);                        // pixels
+  viz.setValue(ViewParameter.GRAPH_BAR_WIDTH,    1);                          // pixels
   viz.setName(ViewParameter.GRAPH_LABEL_Y,       "Amount");
-  viz.setName(ViewParameter.HOSPITALIZED,        "Hospitalized");
-  viz.setName(ViewParameter.ENCOUNTER,           "Encounters");
-  viz.setColor(ViewParameter.AXES_STROKE,        color(  0,   0,   0,  50)); // Light Gray
+  viz.setColor(ViewParameter.AXES_STROKE,        color(  0,   0,   0,  50));  // Light Gray
   viz.initGraphs();
 }

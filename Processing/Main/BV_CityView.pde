@@ -136,18 +136,38 @@ public class CityView extends EpiView {
     
     // Draw Pathogen Agents
     if(showAgents) {
-      for(Agent a : model.getAgents()) {
-        switch(this.getAgentMode()) {
-          case PATHOGEN:
-            if(a.getPathogen() == this.getCurrentPathogen()) {
-              this.drawAgent(a, mapToScreen);
-            }
-            break;
-          case PATHOGEN_TYPE:
-            if(a.getPathogen().getType() == this.getCurrentPathogenType()) {
-              this.drawAgent(a, mapToScreen);
-            }
-            break;
+      for(Host h : model.getHosts()) {
+        if(h.getAgents().size() > 0){
+          Agent a = h.getAgents().get(0);
+          switch(this.getAgentMode()) {
+            case PATHOGEN:
+              if(a.getPathogen() == this.getCurrentPathogen()) {
+                this.drawAgent(a, mapToScreen);
+              }
+              break;
+            case PATHOGEN_TYPE:
+              if(a.getPathogen().getType() == this.getCurrentPathogenType()) {
+                this.drawAgent(a, mapToScreen);
+              }
+              break;
+          }
+        }
+      }
+      for(Environment e : model.getEnvironments()) {
+        if(e.getAgents().size() > 0){
+          Agent a = e.getAgents().get(0);
+          switch(this.getAgentMode()) {
+            case PATHOGEN:
+              if(a.getPathogen() == this.getCurrentPathogen()) {
+                this.drawAgent(a, mapToScreen);
+              }
+              break;
+            case PATHOGEN_TYPE:
+              if(a.getPathogen().getType() == this.getCurrentPathogenType()) {
+                this.drawAgent(a, mapToScreen);
+              }
+              break;
+          }
         }
       }
     }

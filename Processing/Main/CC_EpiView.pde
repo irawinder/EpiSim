@@ -167,8 +167,7 @@ public class EpiView extends ViewModel {
    */
   protected void drawAgent(Agent a, boolean mapToScreen) {
     int viewWeight = (int) this.getValue(ViewParameter.AGENT_WEIGHT);
-    PathogenType aType = a.getPathogen().getType();
-    color viewStroke = this.getColor(aType);
+    color viewStroke = this.getColor(Compartment.INFECTIOUS);
     int alpha = (int) this.getValue(ViewParameter.AGENT_ALPHA);
     
     if(a.getVessel() instanceof Environment) {

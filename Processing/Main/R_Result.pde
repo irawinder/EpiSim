@@ -9,14 +9,17 @@ public class Result {
   // Duration of Time associated with summary data
   private Time step;
   
-  // Tally of compartment statuses itemized by pathoge and demographic
+  // Total People
+  private int peopleTally;
+  
+  // Tally of compartment statuses itemized by pathogen and demographic
   private HashMap<Demographic, HashMap<Pathogen, HashMap<Compartment, Integer>>> compartmentTally;
   
   // Tally of symptom statuses itemized by pathogen and demographic
   private HashMap<Demographic, HashMap<Pathogen, HashMap<Symptom, Integer>>> symptomTally;
   
   // Tally of people hospitalizations itemized by pathogen and demographic
-  private HashMap<Demographic, Integer> hospitalized;
+  private HashMap<Demographic, Integer> hospitalizedTally;
   
   // Average Social Encounters Per Demographic
   private HashMap<Demographic, Integer> encounterTally;
@@ -31,11 +34,14 @@ public class Result {
     
     time = new Time();
     step = new Time();
-    compartmentTally = new HashMap<Demographic, HashMap<Pathogen, HashMap<Compartment, Integer>>>();
-    symptomTally     = new HashMap<Demographic, HashMap<Pathogen, HashMap<Symptom, Integer>>>();
-    hospitalized     = new HashMap<Demographic, Integer>();
-    encounterTally   = new HashMap<Demographic, Integer>();
-    tripTally        = new HashMap<Demographic, Integer>();
+    
+    this.peopleTally  = 0;
+    
+    compartmentTally  = new HashMap<Demographic, HashMap<Pathogen, HashMap<Compartment, Integer>>>();
+    symptomTally      = new HashMap<Demographic, HashMap<Pathogen, HashMap<Symptom, Integer>>>();
+    hospitalizedTally = new HashMap<Demographic, Integer>();
+    encounterTally    = new HashMap<Demographic, Integer>();
+    tripTally         = new HashMap<Demographic, Integer>();
     
     // Initialize tallies with values of zero
     for(Demographic d : Demographic.values()) {
@@ -53,7 +59,7 @@ public class Result {
       }
       this.compartmentTally.put(d, cTally);
       this.symptomTally.put(d, sTally);
-      this.hospitalized.put(d, 0);
+      this.hospitalizedTally.put(d, 0);
       this.encounterTally.put(d, 0);
       this.tripTally.put(d, 0);
     }
@@ -97,6 +103,9 @@ public class Result {
    * @param p Person
    */
   public void tallyPerson(Person person) {
+    
+    this.peopleTally++;
+    
     for(HashMap.Entry<Pathogen, PathogenEffect> entry : person.getStatusMap().entrySet()) {
       Pathogen pathogen = entry.getKey();
       PathogenEffect pE = entry.getValue();
@@ -107,13 +116,13 @@ public class Result {
       this.compartmentTally.get(d).get(pathogen).put(c, cTally+1);
       
       if(person.hospitalized()) {
-        int hTally = this.hospitalized.get(d);
-        this.hospitalized.put(d, hTally + 1);
+        int hTally = this.hospitalizedTally.get(d);
+        this.hospitalizedTally.put(d, hTally + 1);
       }
       
       for(Symptom s : pE.getCurrentSymptoms()) {
         int sTally = this.symptomTally.get(d).get(pathogen).get(s);
-        this.compartmentTally.get(d).get(pathogen).put(c, sTally+1);
+        this.symptomTally.get(d).get(pathogen).put(s, sTally+1);
       }
     }
   }
@@ -147,5 +156,61 @@ public class Result {
   @Override
   public String toString() {
     return "Results at " + this.getTime();
+  }
+  
+  /**
+   * Get tally for specified compartment
+   *
+   * @param d Demographic
+   * @param p Pathogen
+   * @param c Compartment
+   */
+  public int getCompartmentTally(Demographic d, Pathogen p, Compartment c) {
+    return this.compartmentTally.get(d).get(p).get(c);
+  }
+  
+  /**
+   * Get tally for specified symptom
+   *
+   * @param d Demographic
+   * @param p Pathogen
+   * @param s Symptom
+   */
+  public int getSymptomTally(Demographic d, Pathogen p, Symptom s) {
+    return this.compartmentTally.get(d).get(p).get(s);
+  }
+  
+  /**
+   * Get tally for specified hospitalizations 
+   *
+   * @param d Demographic
+   */
+  public int getHospitalizedTally(Demographic d) {
+    return this.hospitalizedTally.get(d);
+  }
+  
+  /**
+   * Get tally for specified encounters
+   *
+   * @param d Demographic
+   */
+  public int getEncounterTally(Demographic d) {
+    return this.encounterTally.get(d);
+  }
+  
+  /**
+   * Get tally for specified trips
+   *
+   * @param d Demographic
+   */
+  public int getTripTally(Demographic d) {
+    return this.tripTally.get(d);
+  }
+  
+  /**
+   * Get tally for people
+   */
+  public int getPeopleTally() {
+    return this.peopleTally;
   }
 }

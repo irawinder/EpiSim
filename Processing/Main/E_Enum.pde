@@ -21,10 +21,10 @@ public enum Demographic {
 
 public enum Compartment {
   SUSCEPTIBLE, 
-  INCUBATING, 
-  INFECTIOUS, 
   RECOVERED, 
-  DEAD
+  DEAD,
+  INCUBATING, 
+  INFECTIOUS
 }
 
 public enum Symptom {
@@ -128,7 +128,14 @@ public enum ViewParameter {
   SELECTION_SCALER,
   GRAPH_HEIGHT,
   GRAPH_LABEL_Y,
-  AXES_STROKE,
+  GRAPH_BAR_WIDTH,
+  AXES_STROKE
+}
+
+public enum TimePlot {
+  COMPARTMENT,
   HOSPITALIZED,
-  ENCOUNTER
+  ENCOUNTER,
+  SYMPTOM,
+  TRIP
 }

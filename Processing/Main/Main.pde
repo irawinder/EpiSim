@@ -200,8 +200,14 @@ public void setup() {
    * Initialize "Front-End" View Model
    * Edit/modify how the simulation looks from the "A_ConfigView" tab
    */
-  this.viz = new ResultView(epidemic, outcome);
+  this.viz = new ResultView(epidemic);
   configView(epidemic);
+  
+  // Draw City Model
+  viz.drawCity(epidemic, frameCounter);
+  
+  // Draw Results and Graphs
+  viz.drawResults(outcome);
 }
 
 /**
@@ -209,18 +215,21 @@ public void setup() {
  */
 public void draw() {
   
-  // Update Model Simulation and outcome table
-  if(frameCounter % viz.framesPerSim() == 0 && viz.isRunning()) {
-    epidemic.update(outcome);
+  if(viz.isRunning()) {
+  
+    // Update Model Simulation and outcome table
+    if(frameCounter % viz.framesPerSim() == 0 ) {
+      epidemic.update(outcome);
+    }
+    
+    // Draw City Model
+    viz.drawCity(epidemic, frameCounter);
+    
+    // Draw Results and Graphs
+    viz.drawResults(outcome);
+    
+    frameCounter++;
   }
-  
-  // Draw City Model
-  viz.drawCity(epidemic, frameCounter);
-  
-  // Draw Results and Graphs
-  viz.drawResults(outcome);
-  
-  frameCounter++;
 }
 
 /**
@@ -246,18 +255,20 @@ public void keyPressed() {
       switch(viz.getAgentMode()) {
         case PATHOGEN:
           viz.nextPathogen();
+          viz.initGraphs();
           break;
         case PATHOGEN_TYPE:
           viz.nextPathogenType();
+          viz.initGraphs();
           break;
       }
       break;
     case 'q':
-      viz.nextAgentMode();
-      break;
-    case 'e':
       viz.nextPersonMode();
       break;
+    //case 'e':
+    //  viz.nextAgentMode();
+    //  break;
     case 'w':
       viz.nextPlaceMode();
       viz.preDraw(epidemic);
@@ -267,7 +278,8 @@ public void keyPressed() {
     case 'r':
       epidemic = new CityModel();
       configModel();
-      viz = new ResultView(epidemic, outcome);
+      outcome = new ResultSeries();
+      viz = new ResultView(epidemic);
       configView(epidemic);
       viz.preDraw(epidemic);
       break;

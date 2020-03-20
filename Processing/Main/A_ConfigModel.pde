@@ -11,6 +11,9 @@ private void configModel() {
   // Time Step
   epidemic.setTimeStep(new Time(1, TimeUnit.HOUR));
   
+  // How often to record a model state to graph
+  epidemic.setResultStep(new Time(3, TimeUnit.HOUR));
+  
   // Configure Broad City Schedule that describes general population activity
   Schedule nineToFive = new Schedule();
   
@@ -136,10 +139,10 @@ private void configModel() {
   
   // Deploy Pathogens as Agents into the Host (Person) Population
   // Parameters: pathogen, initial host count
-  epidemic.patientZero(covid19, 1);
-  epidemic.patientZero(coldA, 20);
+  epidemic.patientZero(covid19, 2);
+  epidemic.patientZero(coldA,   2);
   //epidemic.patientZero(coldB, 1);
-  //epidemic.patientZero(flu, 4);
+  //epidemic.patientZero(flu,   4);
 }
 
 /**
@@ -152,14 +155,14 @@ void configureCoronavirus(Pathogen p, String name) {
   // Attributes
   p.setName(name);
   p.setType(PathogenType.CORONAVIRUS);
-  p.setAttackRate(new Rate(0.3));
+  p.setAttackRate(new Rate(0.5));
   
   // Length of time that pathogen can survice outside of host via Agent
   Time agentLife = new Time(24, TimeUnit.HOUR);
   p.setAgentLife(agentLife);
   
   // Host Pathogen Manifestations
-  Time incubationMean              = new Time(  7, TimeUnit.DAY);
+  Time incubationMean              = new Time(  6, TimeUnit.DAY);
   Time incubationStandardDeviation = new Time(  3, TimeUnit.DAY);
   Time infectiousMean              = new Time( 14, TimeUnit.DAY);
   Time infectiousStandardDeviation = new Time(1.5, TimeUnit.DAY);
@@ -190,7 +193,7 @@ public void configureRhinovirus(Pathogen p, String name) {
   // Attributes
   p.setName(name);
   p.setType(PathogenType.RHINOVIRUS);
-  p.setAttackRate(new Rate(0.5));
+  p.setAttackRate(new Rate(0.3));
   
   // Length of time that pathogen can survice outside of host via Agent
   Time agentLife = new Time(8, TimeUnit.HOUR);
@@ -207,7 +210,7 @@ public void configureRhinovirus(Pathogen p, String name) {
   // Mortality Rates and Hospitalization
   p.setMortalityTreated(new Rate(0.0));      // Smallest
   p.setMortalityUntreated(new Rate(0.001));
-  p.setHospitalizationRate(new Rate(0.002)); // Largest
+  p.setHospitalizationRate(new Rate(0.002)); // Largest 
   
   // Child's rate of expression symptoms
   p.setSymptomExpression(Symptom.COUGH,  new Rate(0.50));
