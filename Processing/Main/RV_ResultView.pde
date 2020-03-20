@@ -3,8 +3,11 @@
  */
 public class ResultView extends CityView {
   
-  HashMap<TimePlot, Axes> plotLabels;
-  HashMap<TimePlot, PGraphics> plotAxes;
+  private HashMap<TimePlot, Axes> plotLabels;
+  private HashMap<TimePlot, PGraphics> plotAxes;
+  
+  // Is there enough data to fill a whole graph?
+  private boolean fullSet;
   
   public ResultView(CityModel model) {
     super(model);
@@ -13,6 +16,8 @@ public class ResultView extends CityView {
     for(TimePlot tP : TimePlot.values()) {
       plotLabels.put(tP, new Axes());
     }
+    
+    this.fullSet = false;
   }
   
   public void initGraphs() {
@@ -65,6 +70,10 @@ public class ResultView extends CityView {
     translate(0, hAxes.height + generalMargin);
     
     popMatrix();
+    
+    if(this.fullSet && this.isRunning()) {
+      this.toggleAutoRun();
+    }
   }
   
   /**
@@ -120,8 +129,11 @@ public class ResultView extends CityView {
     noStroke();
     
     // Cycle through last n fields
+    if (outcome.getTimes().size() > numFields) {
+      fullSet = true;
+    }
     int initialIndex = Math.max(0, outcome.getTimes().size() - numFields);
-    int xPos = 0;
+    int xPos = 1;
     for(int i = initialIndex; i<outcome.getTimes().size(); i++) {
       Time time = outcome.getTimes().get(i);
       Result r = outcome.getResult(time);
@@ -233,5 +245,12 @@ public class ResultView extends CityView {
     stroke(textFill);
     point(xPos, h - dotHeight);
     noStroke(); 
+  }
+  
+  /**
+   * Check of the result set has filled the graph
+   */
+  public boolean fullSet() {
+    return this.fullSet;
   }
 }
