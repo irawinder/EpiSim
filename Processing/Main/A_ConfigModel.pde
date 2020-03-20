@@ -145,8 +145,8 @@ private void configModel() {
   
   // Deploy Pathogens as Agents into the Host (Person) Population
   // Parameters: pathogen, initial host count
-  epidemic.patientZero(covid19, 2);
-  epidemic.patientZero(coldA,   2);
+  epidemic.patientZero(covid19, 4);
+  epidemic.patientZero(coldA,   4);
   //epidemic.patientZero(coldB, 1);
   //epidemic.patientZero(flu,   4);
 }
@@ -177,8 +177,8 @@ void configureCoronavirus(Pathogen p, String name) {
   
   // Mortality Rates and Hospitalization
   p.setMortalityTreated(new Rate(0.01));    // Smallest
-  p.setMortalityUntreated(new Rate(0.04)); 
-  p.setHospitalizationRate(new Rate(0.05)); // Largest
+  p.setMortalityUntreated(new Rate(0.05)); 
+  p.setHospitalizationRate(new Rate(0.08)); // Largest
   
   // Adult's rate of expression symptoms
   p.setSymptomExpression(Symptom.FEVER,               new Rate(0.50));

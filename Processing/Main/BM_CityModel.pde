@@ -551,10 +551,23 @@ public class CityModel extends EpiModel {
       }
     }
     
-    // Update Host Compartment status
+    // Update Person Compartment status
+    int numHospitalized = 0;
     for(Host h : this.getHosts()) {
-      boolean treated = true;
-      h.update(current, treated);
+      Person p = (Person) h;
+      if(h instanceof Person) {
+        boolean isHospitalized = p.hospitalized();
+        if(isHospitalized) numHospitalized++;
+        
+        boolean treated;
+        if(numHospitalized <= this.hospitalBeds) {
+          treated = true;
+        } else {
+          treated = false;
+        }
+        
+        h.update(current, treated);
+      }
     }
     
     // Update and clean infectious agents from model

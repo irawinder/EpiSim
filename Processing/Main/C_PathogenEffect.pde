@@ -89,7 +89,7 @@ public class PathogenEffect {
     boolean fatalTreated = p.getMortalityTreated().toDouble() / resilience.toDouble() > random;
     this.setFatalTreated(fatalTreated);
     boolean fatalUntreated = p.getMortalityUntreated().toDouble() / resilience.toDouble() > random;
-    this.setFatalTreated(fatalUntreated);
+    this.setFatalUntreated(fatalUntreated);
     boolean hospitalized = p.getHospitalizationRate().toDouble() / resilience.toDouble() > random;
     this.setHospitalized(hospitalized);
     
@@ -114,22 +114,29 @@ public class PathogenEffect {
       Time infectious = this.infectiousDuration;
       
       // Check if has become DEAD or RECOVERED
-      if(compartment == Compartment.INFECTIOUS) {
-        if(incubating.add(infectious).subtract(ellapsed).getAmount() < 0) {
-          if(fatalTreated && treated) {
-            compartment = Compartment.DEAD;
+      if(this.compartment == Compartment.INFECTIOUS) {
+        
+        // Check if fatal halfway through infection
+        Time unitTime = new Time(2, infectious.getUnit());
+        Time halfInfectious = infectious.divide(unitTime);
+        if(incubating.add(halfInfectious).subtract(ellapsed).getAmount() < 0) {
+          if(fatalTreated) {
+            this.compartment = Compartment.DEAD_TREATED;
           } else if(fatalUntreated && !treated) {
-            compartment = Compartment.DEAD;
-          } else {
-            compartment = Compartment.RECOVERED;
+            this.compartment = Compartment.DEAD_UNTREATED;
           }
+        }
+        
+        // If not fatal, recover
+        if(incubating.add(infectious).subtract(ellapsed).getAmount() < 0) {
+          this.compartment = Compartment.RECOVERED;
         } 
       }
       
       // Check if has become INFECTIOUS
-      else if(compartment == Compartment.INCUBATING) {
+      else if(this.compartment == Compartment.INCUBATING) {
         if(incubating.subtract(ellapsed).getAmount() < 0) {
-          compartment = Compartment.INFECTIOUS;
+          this.compartment = Compartment.INFECTIOUS;
         }
       }
     }
@@ -284,7 +291,7 @@ public class PathogenEffect {
    * @return true if currently alive
    */
   public boolean alive() {
-    if(this.compartment == Compartment.DEAD) {
+    if(this.compartment == Compartment.DEAD_TREATED || this.compartment == Compartment.DEAD_UNTREATED) {
       return false;
     } else {
       return true;

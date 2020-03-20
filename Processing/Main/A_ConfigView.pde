@@ -22,8 +22,8 @@ public void configView(CityModel model) {
   viz.setPlaceMode(PlaceMode.DENSITY);
   
   // General Graphics Location Parameters
-  viz.setValue(ViewParameter.LEFT_PANEL_WIDTH,   300); // pixels
-  viz.setValue(ViewParameter.RIGHT_PANEL_WIDTH,  500); // pixels
+  viz.setValue(ViewParameter.LEFT_PANEL_WIDTH,   350); // pixels
+  viz.setValue(ViewParameter.RIGHT_PANEL_WIDTH,  450); // pixels
   viz.setValue(ViewParameter.GENERAL_MARGIN,      50); // pixels
   viz.setModelLocation();                              // Set Screen location of model
   
@@ -74,14 +74,16 @@ public void configView(CityModel model) {
   viz.setName(Compartment.INCUBATING,          "Incubating");
   viz.setName(Compartment.INFECTIOUS,          "Infectious");
   viz.setName(Compartment.RECOVERED,           "Recovered");
-  viz.setName(Compartment.DEAD,                "Dead");
+  viz.setName(Compartment.DEAD_TREATED,        "Dead");
+  viz.setName(Compartment.DEAD_UNTREATED,      "Dead (Survivable)");
   
   // Compartment Colors
-  viz.setColor(Compartment.SUSCEPTIBLE,        color(255, 255, 255, 255)); // White;
+  viz.setColor(Compartment.SUSCEPTIBLE,        color(250, 250, 250, 255)); // White;
   viz.setColor(Compartment.INCUBATING,         color(255, 150,   0, 255)); // Orange
   viz.setColor(Compartment.INFECTIOUS,         color(255,   0,   0, 255)); // Dark Red
-  viz.setColor(Compartment.RECOVERED,          color(  0,   0,   0, 255)); // Black
-  viz.setColor(Compartment.DEAD,               color(255,   0, 255, 255)); // Magenta
+  viz.setColor(Compartment.RECOVERED,          color(100, 100, 100, 255)); // Black
+  viz.setColor(Compartment.DEAD_TREATED,       color(150,   0, 150, 255)); // Magenta
+  viz.setColor(Compartment.DEAD_UNTREATED,     color(  0, 150, 150, 255)); // Teal
   
   // Pathogen Names
   viz.setName(PathogenType.CORONAVIRUS,       "Coronavirus");
@@ -104,8 +106,8 @@ public void configView(CityModel model) {
   viz.setColor(Demographic.SENIOR,             color(  0,   0,   0, 255)); // Black
   
   // Host Demographic Alphas
-  viz.setValue(Demographic.CHILD,              200); // 0 - 255
-  viz.setValue(Demographic.ADULT,              225); // 0 - 255
+  viz.setValue(Demographic.CHILD,              255); // 0 - 255
+  viz.setValue(Demographic.ADULT,              255); // 0 - 255
   viz.setValue(Demographic.SENIOR,             255); // 0 - 255
   
   // Place Names
@@ -174,15 +176,15 @@ public void configView(CityModel model) {
   
   //Graph Names and Attributes
   viz.setName(TimePlot.HOSPITALIZED,            "Hospitalizations");
-  viz.setColor(TimePlot.HOSPITALIZED,           color(  0, 200, 200, 200));   // Teal
+  viz.setColor(TimePlot.HOSPITALIZED,           color(  0,   0,   0,  50));   // Light Gray
   viz.setValue(TimePlot.HOSPITALIZED,           40);                          // Scaler for Hospitalization counts
   viz.setName(TimePlot.ENCOUNTER,               "Social Encounters");
   viz.setName(TimePlot.COMPARTMENT,             "Pathogen Status");
   viz.setName(TimePlot.TRIP,                    "Trips Made");
   viz.setName(TimePlot.SYMPTOM,                 "Symptoms Expressed");
-  viz.setValue(ViewParameter.GRAPH_HEIGHT,      250);                        // pixels
+  viz.setValue(ViewParameter.GRAPH_HEIGHT,      300);                        // pixels
   viz.setValue(ViewParameter.GRAPH_BAR_WIDTH,   1);                          // pixels
   viz.setName(ViewParameter.GRAPH_LABEL_Y,      "Amount");
-  viz.setColor(ViewParameter.AXES_STROKE,       color(  0,   0,   0,  50));  // Light Gray
+  viz.setColor(ViewParameter.AXES_STROKE,       color(  0,   0,   0,  80)); // Light Gray
   viz.initGraphs();
 }
