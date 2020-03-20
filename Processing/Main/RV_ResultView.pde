@@ -110,8 +110,8 @@ public class ResultView extends CityView {
     
     // Calculate Number of events in series to show in graph
     int textHeight = (int) this.getValue(ViewParameter.TEXT_HEIGHT);
-    int w = plotAxes.get(plotType).width;
     int margin = 2*textHeight;
+    int w = plotAxes.get(plotType).width;
     int barWidth = (int) this.getValue(ViewParameter.GRAPH_BAR_WIDTH);
     int numFields = (w - margin) / barWidth;
     
@@ -143,8 +143,29 @@ public class ResultView extends CityView {
           break;
       }
       xPos += barWidth;
+      
+      // Draw Indicator of last moment of time
+      if(i == outcome.getTimes().size() - 1) {
+        
+        int h = plotAxes.get(TimePlot.COMPARTMENT).height - 2*margin;
+        color textFill = (int) this.getColor(ViewParameter.TEXT_FILL);
+        color axesStroke = (int) this.getColor(ViewParameter.AXES_STROKE);
+        
+        Time lastTime = r.getTime();
+        String day = "Day " + (int)lastTime.convert(TimeUnit.DAY).getAmount();
+        String clock = lastTime.toClock();
+        int timeX = xPos;
+        int timeY = h + textHeight/2;
+        
+        fill(textFill);
+        textAlign(RIGHT, TOP);
+        text(day + "\n" + clock, timeX, timeY);
+        textAlign(LEFT);
+        
+        stroke(axesStroke);
+        line(timeX, 0, timeX, timeY);
+      }
     }
-    
     popMatrix();
   }
   
@@ -177,14 +198,15 @@ public class ResultView extends CityView {
     int barWidth = (int) this.getValue(ViewParameter.GRAPH_BAR_WIDTH);
     int textHeight = (int) this.getValue(ViewParameter.TEXT_HEIGHT);
     int margin = 2*textHeight;
-    int h = plotAxes.get(TimePlot.COMPARTMENT).height - 2*margin;
+    int h = plotAxes.get(TimePlot.HOSPITALIZED).height - 2*margin;
+    int scaler = (int) this.getValue(TimePlot.HOSPITALIZED);
     
     float yPos = h;
     for(Demographic d : Demographic.values()) {
       color barFill = this.getColor(TimePlot.HOSPITALIZED);
       int barAlpha = (int) this.getValue(d);
       int amount = r.getHospitalizedTally(d);
-      float barHeight = 20 * (float) h * (float) amount / (float) r.getPeopleTally();
+      float barHeight = scaler * (float) h * (float) amount / (float) r.getPeopleTally();
       yPos -= barHeight;
       
       fill(barFill, barAlpha);
