@@ -1,7 +1,7 @@
 /**
  * Visualization Model for Epidemiological Object Model
  */
-public class EpiView extends View {
+public class EpiView extends ViewModel {
   
   // View State
   private AgentMode agentMode;

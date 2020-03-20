@@ -162,4 +162,7 @@ public void configView(CityModel model) {
   viz.setValue(ViewParameter.REDUCED_ALPHA,     75);  // 0 - 255
   viz.setValue(ViewParameter.SELECTION_WEIGHT,  2);   // pixels
   viz.setValue(ViewParameter.SELECTION_SCALER,  2.1); // scaler
+  
+  // Predraw Static Layers
+  viz.preDraw(model);
 }

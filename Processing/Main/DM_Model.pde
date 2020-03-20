@@ -6,15 +6,7 @@
 public interface Model {
   
   /**
-   * Update the model's state over time
+   * Update the model's state over time and add result to series
    */
-  public void update();
-}
-
-public interface ViewModel {
-  
-  /**
-   * Render ViewModel to GUI
-   */
-  public void draw(Model model);
+  public void update(ResultSeries outcome);
 }

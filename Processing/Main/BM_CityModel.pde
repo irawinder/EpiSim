@@ -12,9 +12,6 @@
  *                e.g. currentPhase = Phase 1
  */
 public class CityModel extends EpiModel {
-  
-  // Sequence of model results comprising a simulation over time
-  private ResultSeries outcome;
 
   // Current phase of city
   private Phase currentPhase;
@@ -39,7 +36,6 @@ public class CityModel extends EpiModel {
    */
   public CityModel() {
     super();
-    this.outcome = new ResultSeries();
     this.currentPhase = Phase.SLEEP;
     this.currentPhaseDuration = new Time();
     this.phaseSequence = new Schedule();
@@ -54,13 +50,6 @@ public class CityModel extends EpiModel {
     for(LandUse use : LandUse.values()) {
       this.place.put(use, new ArrayList<Place>());
     }
-  }
-  
-  /**
-   * Get the Series of Results associated with the entire run of this model (i.e. outcome)
-   */
-  public ResultSeries getOutcome() {
-    return this.outcome;
   }
   
   /**
@@ -410,7 +399,7 @@ public class CityModel extends EpiModel {
    * and implements relevent agent behaviors.
    */
   @Override
-  public void update() {
+  public void update(ResultSeries outcome) {
     
     // Current Time
     Time current = this.getCurrentTime();
@@ -547,6 +536,6 @@ public class CityModel extends EpiModel {
     }
     
     // Add Result to ResultSeries
-    this.outcome.addResult(stats);
+    outcome.addResult(stats);
   }
 }

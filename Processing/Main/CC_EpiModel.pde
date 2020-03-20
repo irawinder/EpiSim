@@ -419,7 +419,7 @@ class EpiModel implements Model {
    *
    * !!! This is currently overridden in CityModel.update() !!!
    */
-  public void update() {
+  public void update(ResultSeries outcome) {
     this.currentTime = currentTime.add(this.timeStep);
   }
   

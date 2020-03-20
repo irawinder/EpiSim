@@ -95,7 +95,7 @@ public class CityView extends EpiView {
    *
    * @param mode CityModel
    */
-  public void draw(CityModel model, int frame) {
+  public void drawCity(CityModel model, int frame) {
     background(255);
     this.setScreen();
     

@@ -160,8 +160,11 @@
 // Object Model of Epidemic
 private CityModel epidemic;
 
-// Visualization Model for Object Model
-private CityView viz;
+// Sequence of model results comprising a simulation over time
+private ResultSeries outcome;
+
+// Visualization Model for Epidemic MOdel, City Model, and Results
+private ResultView viz;
 
 int frameCounter;
 
@@ -177,24 +180,26 @@ public void setup() {
   surface.setLocation(100, 100);
   
   // Frame Counter
-  frameCounter = 0;
+  this.frameCounter = 0;
   
   /** 
    * Initialize "Back-End" Object Model
    * Edit/modify the initial city model and epidemic state from "A_ConfigModel" tab
    */
-  epidemic = new CityModel();
+  this.epidemic = new CityModel();
   configModel();
+  
+  /** 
+   * Initialize "Back-End" Result Model
+   */
+  this.outcome = new ResultSeries();
   
   /** 
    * Initialize "Front-End" View Model
    * Edit/modify how the simulation looks from the "A_ConfigView" tab
    */
-  viz = new CityView(epidemic);
+  this.viz = new ResultView(epidemic, outcome);
   configView(epidemic);
-  
-  // Pre-Draw Static Images
-  viz.preDraw(epidemic);
 }
 
 /**
@@ -202,13 +207,14 @@ public void setup() {
  */
 public void draw() {
   
-  // Update Model Simulation
+  // Update Model Simulation and outcome table
   if(frameCounter % viz.framesPerSim() == 0 && viz.isRunning()) {
-    epidemic.update();
+    epidemic.update(outcome);
   }
   
   // Update Graphics every frame
-  viz.draw(epidemic, frameCounter);
+  viz.drawCity(epidemic, frameCounter);
+  viz.drawResults(outcome);
   
   frameCounter++;
 }
@@ -257,7 +263,7 @@ public void keyPressed() {
     case 'r':
       epidemic = new CityModel();
       configModel();
-      viz = new CityView(epidemic);
+      viz = new ResultView(epidemic, outcome);
       configView(epidemic);
       viz.preDraw(epidemic);
       break;
@@ -277,7 +283,7 @@ public void keyPressed() {
       viz.toggleAutoRun();
       break;
     case 's': // step model forward by one tick
-      epidemic.update();
+      epidemic.update(outcome);
       frameCounter = 0;
       break;
     case 'f':
@@ -285,6 +291,7 @@ public void keyPressed() {
       break;
   }
   
-  // Update Graphics every frame
-  viz.draw(epidemic, frameCounter);
+  // Update Graphics every keystroke
+  viz.drawCity(epidemic, frameCounter);
+  viz.drawResults(outcome);
 }
