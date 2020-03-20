@@ -71,6 +71,53 @@ public class ResultView extends CityView {
     
     popMatrix();
     
+    // Draw Other Numerical Stats
+    if(outcome.getTimes().size() > 0 && height > 850) {
+      Time lastTime = outcome.getTimes().get(outcome.getTimes().size()-1);
+      Result r = outcome.getResult(lastTime);
+      Pathogen p = getCurrentPathogen();
+      
+      int hospitalized = 0;
+      int hospitalCapacity = r.getHospitalBeds();
+      int infected = 0;
+      int deaths = 0;
+      int deathsSurvivable = 0;
+      int recovered = 0;
+      for(Demographic d : Demographic.values()) {
+        hospitalized     += r.getHospitalizedTally(d);
+        infected         += r.getCompartmentTally(d, p, Compartment.INCUBATING);
+        infected         += r.getCompartmentTally(d, p, Compartment.INFECTIOUS);
+        infected         += r.getCompartmentTally(d, p, Compartment.RECOVERED);
+        infected         += r.getCompartmentTally(d, p, Compartment.DEAD_TREATED);
+        infected         += r.getCompartmentTally(d, p, Compartment.DEAD_UNTREATED);
+        recovered        += r.getCompartmentTally(d, p, Compartment.RECOVERED);
+        deaths           += r.getCompartmentTally(d, p, Compartment.DEAD_TREATED);
+        deaths           += r.getCompartmentTally(d, p, Compartment.DEAD_UNTREATED);
+        deathsSurvivable += r.getCompartmentTally(d, p, Compartment.DEAD_UNTREATED);
+      }
+      
+      Rate deathRate = new Rate((double) deaths / (recovered + deaths));
+      
+      String otherStats = "";
+      otherStats += "Hospital Capacity: " + hospitalCapacity + "\n";
+      otherStats += "Currently Hospitalized: " + hospitalized + "\n\n";
+      otherStats += "Pathogen: " + p.getName() + "\n";
+      otherStats += "Total Infected: " + infected + "\n";
+      otherStats += "Total Recovered: " + recovered + "\n";
+      otherStats += "Total Deaths: " + deaths + "\n";
+      otherStats += "Death Rate: " + deathRate + "\n\n";
+      otherStats += "Survivable* Deaths: " + deathsSurvivable + "\n\n";
+      otherStats += "*Survivable deaths are deaths that could have been\n prevented if hospitals had not been overburdened.";
+      
+      int textHeight = (int) this.getValue(ViewParameter.TEXT_HEIGHT);
+      color textFill = (int) this.getColor(ViewParameter.TEXT_FILL);
+      
+      fill(textFill);
+      textAlign(LEFT, BOTTOM);
+      text(otherStats, x + 2*textHeight, height - generalMargin);
+      textAlign(LEFT);
+    }
+    
     if(this.fullSet && this.isRunning()) {
       this.toggleAutoRun();
     }

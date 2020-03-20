@@ -182,7 +182,7 @@ public void configView(CityModel model) {
   viz.setName(TimePlot.COMPARTMENT,             "Pathogen Status");
   viz.setName(TimePlot.TRIP,                    "Trips Made");
   viz.setName(TimePlot.SYMPTOM,                 "Symptoms Expressed");
-  viz.setValue(ViewParameter.GRAPH_HEIGHT,      300);                        // pixels
+  viz.setValue(ViewParameter.GRAPH_HEIGHT,      250);                        // pixels
   viz.setValue(ViewParameter.GRAPH_BAR_WIDTH,   1);                          // pixels
   viz.setName(ViewParameter.GRAPH_LABEL_Y,      "Amount");
   viz.setColor(ViewParameter.AXES_STROKE,       color(  0,   0,   0,  80)); // Light Gray

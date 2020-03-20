@@ -32,7 +32,6 @@ public class CityModel extends EpiModel {
   private HashMap<LandUse, ArrayList<Place>> place;
   
   // Rate of ICU beds available to population per capita;
-  private Rate bedsPerCapita;
   private int hospitalBeds;
   
   // How often to record a result to graph
@@ -59,21 +58,19 @@ public class CityModel extends EpiModel {
       this.place.put(use, new ArrayList<Place>());
     }
     
-    this.bedsPerCapita = new Rate();
     this.hospitalBeds = 0;
     
     // Result Timers
-    this.timeSinceResult = new Time();
     this.resultStep = new Time();
+    this.timeSinceResult = new Time();
   }
   
   /**
    * Set Rate of ICU Beds Per Capita
    * 
-   * @param r Rate
+   * @param r Rate per capita
    */
   public void setBedsPerCapita(Rate r) {
-    this.bedsPerCapita = r;
     this.hospitalBeds = (int) (r.toDouble() * this.getHosts().size());
   }
   
@@ -91,6 +88,7 @@ public class CityModel extends EpiModel {
    */
   public void setResultStep(Time t) {
     this.resultStep = t;
+    this.timeSinceResult = resultStep.add(new Time(1));
   }
   
   /**

@@ -195,6 +195,7 @@ public void setup() {
    * Initialize "Back-End" Result Model
    */
   this.outcome = new ResultSeries();
+  epidemic.update(outcome);
   
   /** 
    * Initialize "Front-End" View Model

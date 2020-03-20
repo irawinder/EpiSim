@@ -199,8 +199,8 @@ public class CityView extends EpiView {
     // Draw Information
     this.drawInfo(generalMargin, infoY, textFill);
     
-    textAlign(RIGHT, BOTTOM);
-    this.drawTime(model, width - generalMargin, height - generalMargin, textFill);
+    textAlign(LEFT, BOTTOM);
+    if(height > 850) this.drawTime(model, generalMargin, height - generalMargin, textFill);
     textAlign(LEFT);
     
     String legendName;
