@@ -286,14 +286,17 @@ public void keyPressed() {
     case 'z':
       epidemic.allToPrimary();
       frameCounter = 0;
+      if(viz.isRunning()) viz.toggleAutoRun();
       break;
     case 'x':
       epidemic.allToSecondary();
       frameCounter = 0;
+      if(viz.isRunning()) viz.toggleAutoRun();
       break;
     case 'c':
       epidemic.allToTertiary();
       frameCounter = 0;
+      if(viz.isRunning()) viz.toggleAutoRun();
       break;
     case 'a': // autoplay
       viz.toggleAutoRun();
@@ -301,6 +304,7 @@ public void keyPressed() {
     case 's': // step model forward by one tick
       epidemic.update(outcome);
       frameCounter = 0;
+      if(viz.isRunning()) viz.toggleAutoRun();
       break;
     case 'f':
       viz.toggleFrameRate();
