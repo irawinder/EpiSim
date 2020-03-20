@@ -37,13 +37,14 @@ public void configView(CityModel model) {
   
   // Vertical Locations of Application Elements (0 is top)
   viz.setValue(ViewParameter.INFO_Y,              50); // pixels
-  viz.setValue(ViewParameter.PATHOGEN_LEGEND_Y,  410); // pixels
-  viz.setValue(ViewParameter.PERSON_LEGEND_Y,    500); // pixels
-  viz.setValue(ViewParameter.PLACE_LEGEND_Y,     650); // pixels
+  viz.setValue(ViewParameter.PATHOGEN_LEGEND_Y,  425); // pixels
+  viz.setValue(ViewParameter.PLACE_LEGEND_Y,     515); // pixels
+  viz.setValue(ViewParameter.PERSON_LEGEND_Y,    665); // pixels
   
   String info = 
     "Epidemic Simulation" + "\n" +
-    "EDGEof Planetary Insight Center" + "\n\n" +
+    "EDGEof Planetary Insight Center" + "\n" +
+    "by Ira Winder, F. Calalang, D. Goldman" + "\n\n" +
     "Layers:" + "\n" +
     "Press '1' to hide/show Places" + "\n" +
     "Press '2' to hide/show Persons" + "\n" +

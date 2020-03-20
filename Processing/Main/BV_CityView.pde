@@ -231,10 +231,10 @@ public class CityView extends EpiView {
     legendName = this.getName(this.placeMode);
     switch(this.getPlaceMode()) {
       case LANDUSE:
-        this.drawLandUseLegend(legendName, generalMargin, personLegendY, textFill, textHeight);
+        this.drawLandUseLegend(legendName, generalMargin, placeLegendY, textFill, textHeight);
         break;
       case DENSITY:
-        this.drawDensityLegend(legendName, generalMargin, personLegendY, textFill, textHeight);
+        this.drawDensityLegend(legendName, generalMargin, placeLegendY, textFill, textHeight);
         break;
     }
     
@@ -242,10 +242,10 @@ public class CityView extends EpiView {
     legendName = this.getName(this.personMode);
     switch(this.getPersonMode()) {
       case DEMOGRAPHIC:
-        this.drawDemographicLegend(legendName, generalMargin, placeLegendY, textFill, textHeight);
+        this.drawDemographicLegend(legendName, generalMargin, personLegendY, textFill, textHeight);
         break;
       case COMPARTMENT:
-        this.drawCompartmentLegend(legendName, generalMargin, placeLegendY, textFill, textHeight);
+        this.drawCompartmentLegend(legendName, generalMargin, personLegendY, textFill, textHeight);
         break;
     }
     

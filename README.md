@@ -1,6 +1,8 @@
 # EpiSim
 Epidemic Simulation for Planetary Insight Center
 
+![Epidemic Simulation by Ira Winder](screenshots/screenshot.png?raw=true "Epidemic Simulation by Ira Winder")
+
 ## How to open and run .PDE files (i.e. Processing scripts):
 
 	1. Make sure you have installed the latest version of Java
