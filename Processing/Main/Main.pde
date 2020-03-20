@@ -216,20 +216,19 @@ public void setup() {
 public void draw() {
   
   if(viz.isRunning()) {
-  
     // Update Model Simulation and outcome table
     if(frameCounter % viz.framesPerSim() == 0 ) {
       epidemic.update(outcome);
     }
-    
-    // Draw City Model
-    viz.drawCity(epidemic, frameCounter);
-    
-    // Draw Results and Graphs
-    viz.drawResults(outcome);
-    
-    frameCounter++;
   }
+  
+  // Draw City Model
+  viz.drawCity(epidemic, frameCounter);
+  
+  // Draw Results and Graphs
+  viz.drawResults(outcome);
+  
+  frameCounter++;
 }
 
 /**
