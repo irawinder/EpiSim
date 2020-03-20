@@ -20,7 +20,7 @@ public class ViewModel extends ViewAttributes{
    */
   public ViewModel() {
     this.setModelExtents(0, 0, 100, 100);
-    this.setScreen();
+    this.setModelLocation();
   }
   
   /**
@@ -36,7 +36,7 @@ public class ViewModel extends ViewAttributes{
   /**
    * Set View Extents for Model Visualization to exclude margins and panels in pixels
    */
-  protected void setScreen() {
+  protected void setModelLocation() {
     int generalMargin      = (int) this.getValue(ViewParameter.GENERAL_MARGIN);
     int leftPanelWidth     = (int) this.getValue(ViewParameter.LEFT_PANEL_WIDTH);
     int rightPanelWidth    = (int) this.getValue(ViewParameter.RIGHT_PANEL_WIDTH);

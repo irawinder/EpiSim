@@ -25,7 +25,7 @@ public void configView(CityModel model) {
   viz.setValue(ViewParameter.LEFT_PANEL_WIDTH,   300); // pixels
   viz.setValue(ViewParameter.RIGHT_PANEL_WIDTH,  500); // pixels
   viz.setValue(ViewParameter.GENERAL_MARGIN,      50); // pixels
-  viz.setScreen();                                     // Set Screen location of model
+  viz.setModelLocation();                              // Set Screen location of model
   
   // Set extents of model to view in "real" units
   double xMin = model.xMin();
@@ -150,9 +150,9 @@ public void configView(CityModel model) {
   viz.setValue(ViewParameter.AGENT_SCALER,      1.6);   // scaler
   
   // Generic Person Parameters
-  viz.setValue(ViewParameter.HOST_DIAMETER,   5);                         // pixels
-  viz.setColor(ViewParameter.HOST_STROKE,     color(200, 200, 200, 255)); // Light Gray
-  viz.setValue(ViewParameter.HOST_ALPHA,      255);                       // 0 - 255
+  viz.setValue(ViewParameter.HOST_DIAMETER,     5);                         // pixels
+  viz.setColor(ViewParameter.HOST_STROKE,       color(200, 200, 200, 255)); // Light Gray
+  viz.setValue(ViewParameter.HOST_ALPHA,        255);                       // 0 - 255
   
   // Generic Commute Paramters
   viz.setColor(ViewParameter.COMMUTE_STROKE,    color(  0,   0,   0,  20)); // Light Gray
@@ -165,4 +165,12 @@ public void configView(CityModel model) {
   
   // Predraw Static Layers
   viz.preDraw(model);
+  
+  //Graph Names and Attributes
+  viz.setValue(ViewParameter.GRAPH_HEIGHT,       200); // pixels
+  viz.setName(ViewParameter.GRAPH_LABEL_Y,       "Amount");
+  viz.setName(ViewParameter.HOSPITALIZED,        "Hospitalized");
+  viz.setName(ViewParameter.ENCOUNTER,           "Encounters");
+  viz.setColor(ViewParameter.AXES_STROKE,        color(  0,   0,   0,  50)); // Light Gray
+  viz.initGraphs();
 }

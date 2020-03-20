@@ -97,7 +97,7 @@ public class CityView extends EpiView {
    */
   public void drawCity(CityModel model, int frame) {
     background(255);
-    this.setScreen();
+    this.setModelLocation();
     
     if(this.resized(this.placeLayer)) preDraw(model);
     
