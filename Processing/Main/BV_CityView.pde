@@ -191,11 +191,22 @@ public class CityView extends EpiView {
     }
     
     int generalMargin      = (int) this.getValue(ViewParameter.GENERAL_MARGIN);
+    int leftPanelWidth     = (int) this.getValue(ViewParameter.LEFT_PANEL_WIDTH);
+    int rightPanelWidth    = (int) this.getValue(ViewParameter.RIGHT_PANEL_WIDTH);
     int infoY              = (int) this.getValue(ViewParameter.INFO_Y);
     int pathogenLegendY    = (int) this.getValue(ViewParameter.PATHOGEN_LEGEND_Y);
     int personLegendY      = (int) this.getValue(ViewParameter.PERSON_LEGEND_Y);
     int placeLegendY       = (int) this.getValue(ViewParameter.PLACE_LEGEND_Y);
     
+    // Draw Panel Rectangles
+    noStroke();
+    fill(0, 50);
+    rect(generalMargin/2, generalMargin/2, leftPanelWidth - generalMargin, height - generalMargin, 10);
+    rect(width - rightPanelWidth + generalMargin/2, generalMargin/2, rightPanelWidth - generalMargin, height - generalMargin, 10);
+    fill(255, 200);
+    rect(generalMargin/2 - 2, generalMargin/2 - 2, leftPanelWidth - generalMargin, height - generalMargin, 10);
+    rect(width - rightPanelWidth + generalMargin/2 - 2, generalMargin/2 - 2, rightPanelWidth - generalMargin, height - generalMargin, 10);
+      
     // Draw Information
     this.drawInfo(generalMargin, infoY, textFill);
     
@@ -241,6 +252,25 @@ public class CityView extends EpiView {
     if(showFrameRate) {
       textAlign(RIGHT, BOTTOM);
       text("Framerate: " + frameRate, width - generalMargin, height - generalMargin/2);
+      textAlign(LEFT);
+    }
+    
+    // Draw Pause Notification
+    if(!this.isRunning()) {
+      rectMode(CENTER);
+      textAlign(CENTER, CENTER);
+      noStroke();
+      
+      fill(0, 50);
+      rect(width/2 + (leftPanelWidth - rightPanelWidth)/2, height/2, 200, 50, 10);
+      
+      fill(255, 200);
+      rect(width/2 + (leftPanelWidth - rightPanelWidth)/2 - 2, height/2 - 2, 200, 50, 10);
+      
+      fill(textFill);
+      text("Simulation Paused\nPress 'a' to play", width/2 + (leftPanelWidth - rightPanelWidth)/2, height/2);
+      
+      rectMode(CORNER);
       textAlign(LEFT);
     }
   }
