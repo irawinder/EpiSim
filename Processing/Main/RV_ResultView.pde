@@ -77,8 +77,10 @@ public class ResultView extends CityView {
       Result r = outcome.getResult(lastTime);
       Pathogen p = getCurrentPathogen();
       
+      int population = r.getPeopleTally();
       int hospitalized = 0;
       int hospitalCapacity = r.getHospitalBeds();
+      Rate hospitalPerCapita = new Rate((float) hospitalCapacity / population);
       int infected = 0;
       int deaths = 0;
       int deathsSurvivable = 0;
@@ -99,7 +101,8 @@ public class ResultView extends CityView {
       Rate deathRate = new Rate((double) deaths / (recovered + deaths));
       
       String otherStats = "";
-      otherStats += "Hospital Capacity: " + hospitalCapacity + "\n";
+      otherStats += "Total Population: " + population + "\n";
+      otherStats += "Hospital Capacity: " + hospitalPerCapita + " of population (" + hospitalCapacity + " beds)\n";
       otherStats += "Currently Hospitalized: " + hospitalized + "\n\n";
       otherStats += "Pathogen: " + p.getName() + "\n";
       otherStats += "Total Infected: " + infected + "\n";
