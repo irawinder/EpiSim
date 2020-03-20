@@ -31,6 +31,10 @@ public class CityModel extends EpiModel {
   // Place dictionary sorted by land use
   private HashMap<LandUse, ArrayList<Place>> place;
   
+  // Rate of ICU beds available to population per capita;
+  private Rate bedsPerCapita;
+  private int hospitalBeds;
+  
   // How often to record a result to graph
   private Time timeSinceResult;
   private Time resultStep;
@@ -55,9 +59,29 @@ public class CityModel extends EpiModel {
       this.place.put(use, new ArrayList<Place>());
     }
     
+    this.bedsPerCapita = new Rate();
+    this.hospitalBeds = 0;
+    
     // Result Timers
     this.timeSinceResult = new Time();
     this.resultStep = new Time();
+  }
+  
+  /**
+   * Set Rate of ICU Beds Per Capita
+   * 
+   * @param r Rate
+   */
+  public void setBedsPerCapita(Rate r) {
+    this.bedsPerCapita = r;
+    this.hospitalBeds = (int) (r.toDouble() * this.getHosts().size());
+  }
+  
+  /**
+   * Get Number of ICU Beds in City
+   */
+  public int getHospitalBeds() {
+    return this.hospitalBeds;
   }
   
   /**
@@ -279,9 +303,9 @@ public class CityModel extends EpiModel {
     for(int i=0; i<amount; i++) {
       Place l = this.makePlace();
       l.setName(name_prefix + " " + l.getUID());
-      l.setCoordinate(new Coordinate(random(centerX - rangeX, centerX + rangeX), random(centerY - rangeY, centerY + rangeY)));
+      l.setCoordinate(new Coordinate(centerX - rangeX + Math.random() * 2 * rangeX, centerY - rangeY + Math.random() * 2 * rangeY));
       l.setUse(type);
-      l.setSize(random(minSize, maxSize));
+      l.setSize(minSize + Math.random() * (maxSize - minSize));
       
       // Add Place to EpiModel extension
       this.addPlace(l);
@@ -551,6 +575,9 @@ public class CityModel extends EpiModel {
         stats.tallyPerson(p);
       }
     }
+    
+    // Add Number of Hospital Beds to Results Table
+    stats.setHospitalBeds(this.hospitalBeds);
     
     // Add Result to ResultSeries
     if(timeSinceResult.subtract(resultStep).getAmount() > 0) {

@@ -164,8 +164,21 @@ public class ResultView extends CityView {
         
         stroke(axesStroke);
         line(timeX, 0, timeX, timeY);
+        
+        // Draw Hospital Legend
+        if(plotType == TimePlot.HOSPITALIZED) {
+          int amount = r.getHospitalBeds();
+          int scaler = (int) this.getValue(TimePlot.HOSPITALIZED);
+          float dotHeight = scaler * (float) h * (float) amount / (float) r.getPeopleTally();
+          
+          fill(textFill);
+          textAlign(LEFT, BOTTOM);
+          text("Capacity", textHeight/4, h - dotHeight - textHeight/4);
+          textAlign(LEFT);
+        }
       }
     }
+      
     popMatrix();
   }
   
@@ -211,7 +224,14 @@ public class ResultView extends CityView {
       
       fill(barFill, barAlpha);
       rect(xPos, yPos, barWidth, barHeight);
-      
     }
+    
+    // Hospital Capacity
+    color textFill = (int) this.getColor(ViewParameter.TEXT_FILL);
+    int amount = r.getHospitalBeds();
+    float dotHeight = scaler * (float) h * (float) amount / (float) r.getPeopleTally();
+    stroke(textFill);
+    point(xPos, h - dotHeight);
+    noStroke(); 
   }
 }

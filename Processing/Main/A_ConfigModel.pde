@@ -94,9 +94,9 @@ private void configModel() {
 
   // Add randomly placed Places to Model within a specified rectangle (centerX, centerY, rangeX, rangeY)
   // Parameters (amount, name_prefix, type, x1, y1, x2, y2, minSize, maxSize)
-  int N = 2;
-  int CENTER_X = 500;
-  int CENTER_Y = 500;
+  int N          = 2;
+  int CENTER_X   = 500;
+  int CENTER_Y   = 500;
   int BASE_RANGE = 100;
   epidemic.randomPlaces(N*25,       "Public Space",    LandUse.PUBLIC,    CENTER_X, CENTER_Y, 5*BASE_RANGE, 5*BASE_RANGE, 500,  2000);
   epidemic.randomPlaces(N*250,      "Dwelling Unit",   LandUse.DWELLING,  CENTER_X, CENTER_Y, 5*BASE_RANGE, 5*BASE_RANGE, 50,   200);
@@ -116,10 +116,16 @@ private void configModel() {
   int minAge          = 5;
   int maxAge          = 85;
   int minDwellingSize = 1;
-  int maxDwellingSize = 5;
+  int maxDwellingSize = 4;
   
   // Add people to Model assigned to one random primary location (home) and one random secondary location (job or school)
   epidemic.populate(minAge, maxAge, adultAge, seniorAge, childResilience, adultResilience, seniorResilience, minDwellingSize, maxDwellingSize);
+  
+  // Number of Ventilator ICU Beds Per Capita:
+  // In actuality, this rate is only about 0.04% in the United States according to NYTimes!!!
+  // https://www.nytimes.com/2020/03/18/business/coronavirus-ventilator-shortage.html
+  Rate bedsPerCapita = new Rate(0.004);
+  epidemic.setBedsPerCapita(bedsPerCapita);
   
   // Configure Covid Pathogen
   Pathogen covid19 = new Pathogen();

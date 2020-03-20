@@ -12,6 +12,9 @@ public class Result {
   // Total People
   private int peopleTally;
   
+  // Number of HospitalBeds
+  private int numHospitalBeds;
+  
   // Tally of compartment statuses itemized by pathogen and demographic
   private HashMap<Demographic, HashMap<Pathogen, HashMap<Compartment, Integer>>> compartmentTally;
   
@@ -103,22 +106,22 @@ public class Result {
    * @param p Person
    */
   public void tallyPerson(Person person) {
+    Demographic d = person.getDemographic();
     
     this.peopleTally++;
     
+    if(person.hospitalized()) {
+      int hTally = this.hospitalizedTally.get(d);
+      this.hospitalizedTally.put(d, hTally + 1);
+    }
+      
     for(HashMap.Entry<Pathogen, PathogenEffect> entry : person.getStatusMap().entrySet()) {
       Pathogen pathogen = entry.getKey();
       PathogenEffect pE = entry.getValue();
-      Demographic d = person.getDemographic();
       
       Compartment c = pE.getCompartment();
       int cTally = this.compartmentTally.get(d).get(pathogen).get(c);
       this.compartmentTally.get(d).get(pathogen).put(c, cTally+1);
-      
-      if(person.hospitalized()) {
-        int hTally = this.hospitalizedTally.get(d);
-        this.hospitalizedTally.put(d, hTally + 1);
-      }
       
       for(Symptom s : pE.getCurrentSymptoms()) {
         int sTally = this.symptomTally.get(d).get(pathogen).get(s);
@@ -212,5 +215,21 @@ public class Result {
    */
   public int getPeopleTally() {
     return this.peopleTally;
+  }
+  
+  /**
+   * Set number of Hospital Beds
+   *
+   * @param num
+   */
+  public void setHospitalBeds(int num) {
+    this.numHospitalBeds = num;
+  }
+  
+  /**
+   * Get number of Hospital Beds
+   */
+  public int getHospitalBeds() {
+    return this.numHospitalBeds;
   }
 }

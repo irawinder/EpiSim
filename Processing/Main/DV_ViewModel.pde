@@ -80,7 +80,7 @@ public class ViewModel extends ViewAttributes{
    * @param uMax maximum screen u (right extent)
    */
   protected int mapXToScreen(double x) {
-    double uRatio = x / (this.xMax - this.xMin);
+    double uRatio = (x - this.xMin) / (this.xMax - this.xMin);
     return (int) (this.uMin + uRatio * (this.uMax - this.uMin));
   }
   
@@ -94,7 +94,7 @@ public class ViewModel extends ViewAttributes{
    * @param vMax maximum screen v (bottom extent)
    */
   protected int mapYToScreen(double y) {
-    double vRatio = y / (this.yMax - this.yMin);
+    double vRatio = (y - this.yMin) / (this.yMax - this.yMin);
     return (int) (this.vMin + vRatio * (this.vMax - this.vMin));
   }
   

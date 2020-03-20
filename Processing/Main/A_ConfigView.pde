@@ -28,10 +28,11 @@ public void configView(CityModel model) {
   viz.setModelLocation();                              // Set Screen location of model
   
   // Set extents of model to view in "real" units
-  double xMin = model.xMin();
-  double xMax = model.xMax();
-  double yMin = model.yMin();
-  double yMax = model.yMax();
+  double buffer = 25;
+  double xMin = model.xMin() - buffer;
+  double xMax = model.xMax() + buffer;
+  double yMin = model.yMin() - buffer;
+  double yMax = model.yMax() + buffer;
   viz.setModelExtents(xMin, yMin, xMax, yMax);
   
   // Vertical Locations of Application Elements (0 is top)
@@ -76,7 +77,7 @@ public void configView(CityModel model) {
   viz.setName(Compartment.DEAD,                "Dead");
   
   // Compartment Colors
-  viz.setColor(Compartment.SUSCEPTIBLE,        color(230, 230, 230, 255)); // White;
+  viz.setColor(Compartment.SUSCEPTIBLE,        color(255, 255, 255, 255)); // White;
   viz.setColor(Compartment.INCUBATING,         color(255, 150,   0, 255)); // Orange
   viz.setColor(Compartment.INFECTIOUS,         color(255,   0,   0, 255)); // Dark Red
   viz.setColor(Compartment.RECOVERED,          color(  0,   0,   0, 255)); // Black
@@ -174,7 +175,7 @@ public void configView(CityModel model) {
   //Graph Names and Attributes
   viz.setName(TimePlot.HOSPITALIZED,            "Hospitalizations");
   viz.setColor(TimePlot.HOSPITALIZED,           color(  0, 200, 200, 200));   // Teal
-  viz.setValue(TimePlot.HOSPITALIZED,           20);                          // Scaler for Hospitalization counts
+  viz.setValue(TimePlot.HOSPITALIZED,           40);                          // Scaler for Hospitalization counts
   viz.setName(TimePlot.ENCOUNTER,               "Social Encounters");
   viz.setName(TimePlot.COMPARTMENT,             "Pathogen Status");
   viz.setName(TimePlot.TRIP,                    "Trips Made");
