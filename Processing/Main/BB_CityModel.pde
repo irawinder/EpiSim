@@ -13,6 +13,9 @@
  */
 public class CityModel extends EpiModel {
   
+  // Sequence of model results comprising a simulation over time
+  private ResultSeries outcome;
+
   // Current phase of city
   private Phase currentPhase;
   
@@ -36,6 +39,7 @@ public class CityModel extends EpiModel {
    */
   public CityModel() {
     super();
+    this.outcome = new ResultSeries();
     this.currentPhase = Phase.SLEEP;
     this.currentPhaseDuration = new Time();
     this.phaseSequence = new Schedule();
@@ -50,6 +54,13 @@ public class CityModel extends EpiModel {
     for(LandUse use : LandUse.values()) {
       this.place.put(use, new ArrayList<Place>());
     }
+  }
+  
+  /**
+   * Get the Series of Results associated with the entire run of this model (i.e. outcome)
+   */
+  public ResultSeries getOutcome() {
+    return this.outcome;
   }
   
   /**
@@ -401,13 +412,14 @@ public class CityModel extends EpiModel {
   @Override
   public void update() {
     
-    // Event Summary
-    int numEncounters = 0;
-    int numTrips = 0;
-    
     // Current Time
     Time current = this.getCurrentTime();
     Time step = this.getTimeStep();
+    
+    // Outcome Table
+    Result stats = new Result(this);
+    stats.setTime(current);
+    stats.setTimeStep(step);
     
     // Base Encounters Per Step
     Time hoursPerStep = step.convert(TimeUnit.HOUR);
@@ -418,15 +430,17 @@ public class CityModel extends EpiModel {
     // Move People based on Behavior Model
     for(Demographic d : Demographic.values()) {
       for(Person p : this.person.get(d)) {
+        
+        // Apply Movement and Add trip to results
         boolean tripMade = behavior.apply(p, this.getCurrentPhase(), step);
-        if(tripMade) numTrips++;
+        if(tripMade) stats.tallyTrip(p);
       }
     }
     
     // Create Infectious Agents
     for(Host h : this.getHosts()) {
       
-      // Test for Encounter between all people
+      // Test for Encounter between all hosts
       Environment e = h.getEnvironment();
       if(e instanceof Place) {
         Place l = (Place) e;
@@ -434,7 +448,11 @@ public class CityModel extends EpiModel {
         for(Host h2 : e.getHosts()) {
           double random = Math.random();
           if(random < encounterRate) {
-            numEncounters++;
+            
+            // Add Person encounter to results
+            if(h instanceof Person && h2 instanceof Person) {
+              stats.tallyEncounter((Person)h, (Person)h2);
+            }
             
             // 1. Transmit pathogen from Host to Host if one is infectious
             //    EncounterRate ~ attackRate * time * people / area
@@ -451,13 +469,11 @@ public class CityModel extends EpiModel {
         }
       }
       
-      // Test for Non-encounter-based transmission
+      // Test for Non-encounter-based transmission if host is infectious
       for(Pathogen p : this.getPathogens()) {
-        
-        // If host is infectious
         if(h.getStatus(p).infectious()) {
           
-          // 2. Host has Agent Internal To Self
+          // 2. Ensure agent internal To host present
           //
           boolean hasAgent = false;
           for(Agent a : h.getAgents()) {
@@ -470,7 +486,7 @@ public class CityModel extends EpiModel {
             this.putAgent(h, p);
           }
           
-          // 3. Transmit agent from Host to Environment
+          // 3. Transmit infectious agent from Host to Environment
           //    DepositeRate ~ attackRate * time
           //
           double depositRate = p.getAttackRate().toDouble() * hoursPerStep.getAmount();
@@ -511,7 +527,7 @@ public class CityModel extends EpiModel {
       h.update(current, treated);
     }
     
-    // Update and Clean
+    // Update and clean infectious agents from model
     for(int i=this.getAgents().size()-1; i>=0; i--) {
       Agent a = this.getAgents().get(i);
       a.update(step);
@@ -522,5 +538,15 @@ public class CityModel extends EpiModel {
     
     // Move Time Forward for Next Simulation Run
     this.setCurrentTime(current.add(step));
+    
+    // Add person statuses to results table
+    for(Demographic d : Demographic.values()) {
+      for(Person p : this.person.get(d)) {
+        stats.tallyPerson(p);
+      }
+    }
+    
+    // Add Result to ResultSeries
+    this.outcome.addResult(stats);
   }
 }

@@ -92,7 +92,7 @@ public class Result {
   }
   
   /**
-   * Add to Tallies
+   * Add Person Stats to Tallies
    *
    * @param p Person
    */
@@ -118,12 +118,22 @@ public class Result {
     }
   }
   
+  /**
+   * Tally a single encounter
+   *
+   * @param p Person
+   */
   public void tallyTrip(Person p) {
     Demographic d = p.getDemographic();
     int tTally = tripTally.get(d);
     tripTally.put(d, tTally + 1);
   }
   
+  /**
+   * Tally a single trip
+   *
+   * @param p Person
+   */
   public void tallyEncounter(Person p1, Person p2) {
     Demographic d1 = p1.getDemographic();
     int p1Tally = tripTally.get(d1);
@@ -132,5 +142,10 @@ public class Result {
     Demographic d2 = p2.getDemographic();
     int p2Tally = tripTally.get(d1);
     tripTally.put(d2, p2Tally + 1);
+  }
+  
+  @Override
+  public String toString() {
+    return "Results at " + this.getTime();
   }
 }

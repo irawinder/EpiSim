@@ -160,9 +160,6 @@
 // Object Model of Epidemic
 private CityModel epidemic;
 
-// Sequence of model states comprising a simulation
-private ResultSeries outcome = new ResultSeries();
-
 // Visualization Model for Object Model
 private CityView viz;
 
