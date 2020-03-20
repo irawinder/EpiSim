@@ -92,12 +92,17 @@
  * Object Map:
  *
  * @ Model
- * @ ViewModel
- *    @Model()
  * - Processing Main()
  *    - CityModel()
- *    - CityView()
- *    - CitySim()
+ *    - ResultSeries()
+ *         - Time()
+ *         - Result()
+ *    - ResultView()
+ *         - CityModel()
+ *         - ResultSeries()
+ *         - ResultSeries()
+ *         - BarGraph()
+ *         - GraphAxes()
  * - EpiModel() implements @Model
  *     - Time()
  *     - Pathogen()
@@ -131,12 +136,9 @@
  *     * PlaceCategory
  *     * Demographic
  *     * LandUse
- * - CitySim()
- *    - Time()
- *    - CityModel()
- * - View() implements @ViewModel
+ * - ViewModel() extends ViewAttributes()
  *     * ViewParameter
- * - EpiView() extends View()
+ * - EpiView() extends ViewModel()
  *     - EpiModel()
  *     * PersonViewMode
  *     * PlaceViewMode
@@ -157,13 +159,13 @@
  *     * TimeUnit
  */
 
-// Object Model of Epidemic
+// In-memory Object Model of Epidemic in a City
 private CityModel epidemic;
 
 // Sequence of model results comprising a simulation over time
 private ResultSeries outcome;
 
-// Visualization Model for Epidemic MOdel, City Model, and Results
+// Visualization Model for Epidemic Model, City Model, and Results
 private ResultView viz;
 
 int frameCounter;
@@ -212,8 +214,10 @@ public void draw() {
     epidemic.update(outcome);
   }
   
-  // Update Graphics every frame
+  // Draw City Model
   viz.drawCity(epidemic, frameCounter);
+  
+  // Draw Results and Graphs
   viz.drawResults(outcome);
   
   frameCounter++;
