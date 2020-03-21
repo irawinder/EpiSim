@@ -278,6 +278,260 @@ function test() {
 	thing.setCoordinate(point2);
 	console.log(thing.toString())
 
+	let pathogen = new Pathogen();
+	pathogen.setName("Common Cold");
+	pathogen.setType(PathogenType.RHINOVIRUS);
+	pathogen.setAttackRate(new Rate(0.3));
+	let agentLife = new Time(8, TimeUnit.HOUR);
+	pathogen.setAgentLife(agentLife);
+	let incubationMean              = new Time(  2, TimeUnit.DAY);
+	let incubationStandardDeviation = new Time(0.5, TimeUnit.DAY);
+	let infectiousMean              = new Time(  5, TimeUnit.DAY);
+	let infectiousStandardDeviation = new Time(1.5, TimeUnit.DAY);
+	pathogen.setIncubationDistribution(incubationMean, incubationStandardDeviation);
+	pathogen.setInfectiousDistribution(infectiousMean, infectiousStandardDeviation);
+	pathogen.setMortalityTreated(new Rate(0.0));      // Smallest
+	pathogen.setMortalityUntreated(new Rate(0.001));
+	pathogen.setHospitalizationRate(new Rate(0.002)); // Largest 
+  	pathogen.setSymptomExpression(Symptom.COUGH,  new Rate(0.50));
+  	console.log(pathogen.toString());
+
+}
+
+/**
+* Generic attributes of an Infectious Pathogen that can infect Hosts and Environments
+*/
+function Pathogen() {
+	// The specific variety of this pathogen (e.g. COMMON_COLD)
+
+	// Name of Pathogen
+	this.name = "";
+
+	// Transmission Rate (probabily of transmission per contact between infected and susceptible)
+	this.agentLife = new Time(0, TimeUnit.HOUR);
+
+	// Agent life span (i.e. how long it can live outside of host)
+	this.attackRate = new Rate(0);
+
+	// Duration of Incubation (days)
+	this.incubationDuration = new TimeDistribution(new Time(0, TimeUnit.DAY), new Time(0, TimeUnit.DAY));
+
+	// Duration of Infectiousness (days)
+	this.infectiousDuration = new TimeDistribution(new Time(0, TimeUnit.DAY), new Time(0, TimeUnit.DAY));
+
+	// Mortality Rate with Treatment
+	this.mortalityTreated = new Rate(0);
+
+	// Mortality Rate without Treatment
+	this.mortalityUntreated = new Rate(0);
+
+	// Hospitalization Rate
+	this.hospitalization = new Rate(0);
+
+	// Rate of expression for various Symptoms
+	this.symptomExpression = new Map();
+	for(var key in Symptom) {
+		this.symptomExpression.set(key, new Rate(0));
+	}
+
+	/**
+	* Set the Name of the Pathogen
+	*
+	* @param name
+	*/
+	this.setName = function(name) {
+		this.name = name;
+	}
+
+	/**
+	* Get the Name of the Pathogen
+	*/
+	this.getName = function() {
+		return this.name;
+	}
+
+	/**
+	* Set Pathogen Type
+	*
+	* @param type Pathogen
+	*/
+	this.setType = function(type) {
+		this.type = type;
+	}
+
+	/**
+	* Get Pathogen Type
+	*/
+	this.getType = function() {
+		return this.type;
+	}
+
+	/**
+	* Set the Attack Rate (probabily of transmission per contact between infected and susceptible)
+	*
+	* @param r rate
+	*/
+	this.setAttackRate = function(r) {
+		this.attackRate = r;
+	}
+
+	/**
+	* Get the Attack Rate (probabily of transmission per contact between infected and susceptible)
+	*/
+	this.getAttackRate = function() {
+		return this.attackRate;
+	}
+
+	/**
+	* Set the agentLife of the Pathogen
+	*
+	* @param agentLife Time
+	*/
+	this.setAgentLife = function(agentLife) {
+		this.agentLife = agentLife;
+	}
+
+	/**
+	* Get the agentLife of the Pathogen
+	*/
+	this.getAgentLife = function() {
+		return this.agentLife;
+	}
+
+	/** 
+	* Set the probablity distribution for incubation duration
+	*
+	* @param mean days
+	* @param standardDeviation days
+	*/
+	this.setIncubationDistribution = function(mean, standardDeviation) {
+		this.incubationDuration = new TimeDistribution(mean, standardDeviation);
+	}
+
+	/** 
+	* Get the probablity distribution for incubation duration
+	*/
+	this.getIncubationDistribution = function() {
+		return this.incubationDuration;
+	}
+
+	/** 
+	* Get a value for incubation duration [days]
+	*/
+	this.generateIncubationDuration = function() {
+		let value = this.incubationDuration.sample();
+		value.setAmount(Math.max(0, value.getAmount())); // no negative values allowed
+		return value;
+	}
+
+	/** 
+	* Set the probablity distribution for infectious duration
+	*
+	* @param mean days
+	* @param standardDeviation days
+	*/
+	this.setInfectiousDistribution = function(mean, standardDeviation) {
+		this.infectiousDuration = new TimeDistribution(mean, standardDeviation);
+	}
+
+	/** 
+	* Get the probablity distribution for infectious duration
+	*/
+	this.getInfectiousDistribution = function() {
+		return this.infectiousDuration;
+	}
+
+	/** 
+	* Get a value for infectious duration [days]
+	*/
+	this.generateInfectiousDuration = function() {
+		let value = this.infectiousDuration.sample();
+		value.setAmount(Math.max(0, value.getAmount())); // no negative values allowed
+		return value;
+	}
+
+	/** 
+	* Set mortality rate for treated
+	*
+	* @param r rate
+	*/
+	this.setMortalityTreated = function(r) {
+		this.mortalityTreated = r;
+	}
+
+	/** 
+	* Get mortality rate for treated
+	*/
+	this.getMortalityTreated = function() {
+		return this.mortalityTreated;
+	}
+
+	/** 
+	* Set mortality rate for untreated
+	*
+	* @param r rate
+	*/
+	this.setMortalityUntreated = function(r) {
+		this.mortalityUntreated = r;
+	}
+
+	/** 
+	* Get mortality rate for untreated
+	*
+	* @param d demographic
+	*/
+	this.getMortalityUntreated = function() {
+		return this.mortalityUntreated;
+	}
+
+	/** 
+	* Set Hospitalization Rate
+	*
+	* @param r rate
+	*/
+	this.setHospitalizationRate = function(r) {
+		this.hospitalization = r;
+	}
+
+	/** 
+	* Get Hospitalization Rate
+	*/
+	this.getHospitalizationRate = function() {
+		return this.hospitalization;
+	}
+
+	/** 
+	* Set symptom expression rate
+	*
+	* @param s Symptom
+	* @param r rate
+	*/
+	this.setSymptomExpression = function(s, r) {
+		this.symptomExpression.set(s, r);
+	}
+
+	/** 
+	* Get symptom expression rate
+	*
+	* @param s Symptom
+	*/
+	this.getSymptomExpression = function(s) {
+		return this.symptomExpression.get(s);
+	}
+
+	this.toString = function() {
+		let info =
+			this.getName() + "\n" +
+			"Attack Rate: " + this.getAttackRate() + "\n" +
+			"Incubation[days]: " + this.getIncubationDistribution() + "\n" +
+			"Infectious[days]: " + this.getInfectiousDistribution() + "\n";
+		info += "Mortality (Treated): " + this.mortalityTreated + "\n";
+		info += "Mortality (Untreated): " + this.mortalityUntreated + "\n";
+		for(var key in Symptom) {
+			info += key + " Expression: " + this.getSymptomExpression(key) + "\n"
+		}
+		return info;
+	}
 }
 
 /**
