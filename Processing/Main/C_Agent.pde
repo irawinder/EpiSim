@@ -97,9 +97,6 @@ public class Agent extends Element {
   
   @Override
   public String toString() {
-    return 
-      "Agent UID: " + getUID() 
-      + "; Name: " + getName()
-      ;
+    return "Agent UID: " + this.getUID() + "; Name: " + this.getName();
   }
 }
