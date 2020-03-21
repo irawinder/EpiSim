@@ -177,15 +177,16 @@ public void configView(CityModel model) {
   
   //Graph Names and Attributes
   viz.setName(TimePlot.HOSPITALIZED,            "Hospitalizations");
-  viz.setColor(TimePlot.HOSPITALIZED,           color(  0,   0,   0,  50));   // Light Gray
-  viz.setValue(TimePlot.HOSPITALIZED,           40);                          // Scaler for Hospitalization counts
+  viz.setColor(TimePlot.HOSPITALIZED,           color(  0,   0,   0,  100));  // Light Gray
+  viz.setValue(TimePlot.HOSPITALIZED,           40);                         // Scaler for Hospitalization counts
   viz.setName(TimePlot.ENCOUNTER,               "Social Encounters");
   viz.setName(TimePlot.COMPARTMENT,             "Pathogen Status");
   viz.setName(TimePlot.TRIP,                    "Trips Made");
   viz.setName(TimePlot.SYMPTOM,                 "Symptoms Expressed");
   viz.setValue(ViewParameter.GRAPH_HEIGHT,      250);                        // pixels
-  viz.setValue(ViewParameter.GRAPH_BAR_WIDTH,   1);                          // pixels
+  viz.setValue(ViewParameter.GRAPH_BAR_WIDTH,   1);        
+  viz.setValue(ViewParameter.GRAPH_ALPHA,       150);                        // 0 - 255
   viz.setName(ViewParameter.GRAPH_LABEL_Y,      "Amount");
-  viz.setColor(ViewParameter.AXES_STROKE,       color(  0,   0,   0,  80)); // Light Gray
+  viz.setColor(ViewParameter.AXES_STROKE,       color(  0,   0,   0,  80));  // Light Gray
   viz.initGraphs();
 }

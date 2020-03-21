@@ -251,20 +251,22 @@ public class ResultView extends CityView {
     int textHeight = (int) this.getValue(ViewParameter.TEXT_HEIGHT);
     int margin = 2*textHeight;
     int h = plotAxes.get(TimePlot.COMPARTMENT).height - 2*margin;
+    int barAlpha = (int) this.getValue(ViewParameter.GRAPH_ALPHA);
     
     float yPos = 0;
     for(Compartment c : Compartment.values()) {
+      
+      color barFill = this.getColor(c);
+      float barHeight = 0;
       for(Demographic d : Demographic.values()) {
-        color barFill = this.getColor(c);
-        int barAlpha = (int) this.getValue(d);
         int amount = r.getCompartmentTally(d, p, c);
-        float barHeight = (float) h * (float) amount / (float) r.getPeopleTally();
-        
-        fill(barFill, barAlpha);
-        rect(xPos, yPos, barWidth, barHeight);
-        
-        yPos += barHeight;
+        barHeight += (float) h * (float) amount / (float) r.getPeopleTally();
       }
+      
+      fill(barFill, barAlpha);
+      rect(xPos, yPos, barWidth, barHeight);
+      
+      yPos += barHeight;
     }
   }
   
@@ -275,11 +277,11 @@ public class ResultView extends CityView {
     int margin = 2*textHeight;
     int h = plotAxes.get(TimePlot.HOSPITALIZED).height - 2*margin;
     int scaler = (int) this.getValue(TimePlot.HOSPITALIZED);
+    int barAlpha = (int) this.getValue(ViewParameter.GRAPH_ALPHA);
     
     float yPos = h;
     for(Demographic d : Demographic.values()) {
       color barFill = this.getColor(TimePlot.HOSPITALIZED);
-      int barAlpha = (int) this.getValue(d);
       int amount = r.getHospitalizedTally(d);
       float barHeight = scaler * (float) h * (float) amount / (float) r.getPeopleTally();
       yPos -= barHeight;

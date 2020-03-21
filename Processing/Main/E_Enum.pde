@@ -130,6 +130,7 @@ public enum ViewParameter {
   GRAPH_HEIGHT,
   GRAPH_LABEL_Y,
   GRAPH_BAR_WIDTH,
+  GRAPH_ALPHA,
   AXES_STROKE
 }
 
