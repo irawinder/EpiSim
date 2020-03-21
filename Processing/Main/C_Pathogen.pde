@@ -143,7 +143,7 @@ public class Pathogen {
    * Get a value for incubation duration [days]
    */
   public Time generateIncubationDuration() {
-    Time value = this.incubationDuration.generateValue();
+    Time value = this.incubationDuration.sample();
     value.setAmount(Math.max(0, value.getAmount())); // no negative values allowed
     return value;
   }
@@ -169,7 +169,7 @@ public class Pathogen {
    * Get a value for infectious duration [days]
    */
   public Time generateInfectiousDuration() {
-    Time value = this.infectiousDuration.generateValue();
+    Time value = this.infectiousDuration.sample();
     value.setAmount(Math.max(0, value.getAmount())); // no negative values allowed
     return value;
   }

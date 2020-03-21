@@ -75,7 +75,7 @@ public class Distribution {
   /**
    * Pick a value within the Gaussian distribution
    */
-  public double generateValue() {
+  public double sample() {
     return this.mean + this.standardDeviation * this.random.nextGaussian(); 
   }
   
