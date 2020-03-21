@@ -52,7 +52,7 @@ public class Host extends Element {
    * Get the Host's current environment
    */
   public Environment getEnvironment() {
-    return environment;
+    return this.environment;
   }
   
   /**
@@ -172,9 +172,6 @@ public class Host extends Element {
   
   @Override
   public String toString() {
-    return 
-      "Host UID: " + getUID() 
-      + "; Name: " + getName()
-      ;
+    return "Host UID: " + this.getUID() + "; Name: " + this.getName();
   }
 }
