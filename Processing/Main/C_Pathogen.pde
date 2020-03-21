@@ -253,7 +253,7 @@ public class Pathogen {
     info += "Mortality (Treated): " + this.mortalityTreated + "\n";
     info += " Mortality (Untreated): " + this.mortalityUntreated + "\n";
     for (Symptom s : Symptom.values()) {
-      info += s + " Expression: " + getSymptomExpression(s) + "\n";
+      info += s + " Expression: " + this.getSymptomExpression(s) + "\n";
     }
     return info;
   }
