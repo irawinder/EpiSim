@@ -26,14 +26,14 @@ public class Element {
    *
    * @param name
    */
-  void setName(String name) {
+  public void setName(String name) {
     this.name = name;
   }
   
   /**
    * Get the Name of the Element
    */
-  String getName() {
+  public String getName() {
     return this.name;
   }
   
@@ -42,14 +42,14 @@ public class Element {
    *
    * @param UID unique ID
    */
-  void setUID(int UID) {
+  public void setUID(int UID) {
     this.UID = UID;
   }
   
   /**
    * Get the Unique ID of the Element
    */
-  int getUID() {
+  public int getUID() {
     return this.UID;
   }
   
@@ -58,14 +58,20 @@ public class Element {
    *
    * @param location Coordinate
    */
-  void setCoordinate(Coordinate location) {
+  public void setCoordinate(Coordinate location) {
     this.location = location;
   }
   
   /**
    * Get the Location of the Element
    */
-  Coordinate getCoordinate() {
+  public Coordinate getCoordinate() {
     return this.location;
   }
+  
+  @Override
+  public String toString() {
+    return this.UID + ": " + this.name + ", " + this.location;
+  }
+  
 }

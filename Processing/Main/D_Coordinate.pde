@@ -105,7 +105,7 @@
    *
    * @param jitter amount of jitter
    */
-  public Coordinate jitter(double amount) {
+  public Coordinate jitterXY(double amount) {
     Coordinate jittered = new Coordinate();
     double jitterX = amount*(2*Math.random() - 1);
     double jitterY = amount*(2*Math.random() - 1);
@@ -113,5 +113,9 @@
     jittered.setY(this.getY() + jitterY);
     jittered.setZ(this.getZ());
     return jittered;
+  }
+  
+  public String toString() {
+    return "[" + this.x + ", " + this.y + ", " + this.z + "]";
   }
 }
