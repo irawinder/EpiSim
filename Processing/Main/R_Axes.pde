@@ -41,7 +41,7 @@ class Axes {
   /**
    * Get X-Axis Labal of bar graph
    */
-  public String setLabelX() {
+  public String getLabelX() {
     return this.labelX;
   }
   

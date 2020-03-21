@@ -173,7 +173,6 @@ var SCROLL_BAR_WIDTH = 15;
 
 // // Visualization Model for Epidemic Model, City Model, and Results
 // var viz = new ResultView();
-var viz;
 
 var frameCounter;
 
@@ -205,7 +204,7 @@ function windowResized() {
 
 // Test Functions as I move them here:
 function test() {
-	viz = new ViewAttributes();
+	let viz = new ViewAttributes();
 
 	viz.drawSelection(mouseX, mouseY, 10);
 
@@ -233,6 +232,72 @@ function test() {
 	viz.setValue(Demographic.CHILD, 22.2);
 	let value = viz.getValue(Demographic.CHILD);
 	console.log(value);
+
+	let axes = new Axes();
+	axes.setTitle("Title");
+	axes.setLabelX("X-axis");
+	axes.setLabelY("Y-axis");
+	console.log(axes.getTitle(),  axes.getLabelX(),  axes.getLabelY());
+}
+
+
+/**
+ * Axes is designed for other specific graph classes (e.g. BarGraph) to extend
+ */
+function Axes() {
+  
+	// Title and Labels for Axes
+	this.title = "";
+	this.labelX = "";
+	this.labelY = "";
+
+	/**
+	* Set title of bar graph
+	*
+	* @param title
+	*/
+	this.setTitle = function(title) {
+		this.title = title;
+	}
+
+	/**
+	* Get title of bar graph
+	*/
+	this.getTitle = function() {
+		return this.title;
+	}
+
+	/**
+	* Set X-Axis Labal of bar graph
+	*
+	* @param labelX
+	*/
+	this.setLabelX = function(labelX) {
+		this.labelX = labelX;
+	}
+
+	/**
+	* Get X-Axis Labal of bar graph
+	*/
+	this.getLabelX = function() {
+		return this.labelX;
+	}
+
+	/**
+	* Set Y-Axis Labal of bar graph
+	*
+	* @param labelY
+	*/
+	this.setLabelY = function(labelY) {
+		this.labelY = labelY;
+	}
+
+	/**
+	* Get Y-Axis Labal of bar graph
+	*/
+	this.getLabelY = function() {
+		return this.labelY;
+	}
 }
 
 /**
