@@ -54,7 +54,7 @@ public class TimeInterval {
    * Get the length of time represented by this interval
    */
   public Time getDuration() {
-    return timeFinal.subtract(timeInitial);
+    return this.timeFinal.subtract(this.timeInitial);
   }
   
   @Override

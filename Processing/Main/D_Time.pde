@@ -224,7 +224,7 @@ public class Time {
   public Time reconcile(Time dominant) {
     TimeUnit dominantUnit = dominant.getUnit();
     if(dominantUnit != this.getUnit()) {
-      return convert(dominantUnit);
+      return this.convert(dominantUnit);
     } else {
       return this;
     }
