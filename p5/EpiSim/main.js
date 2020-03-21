@@ -255,6 +255,60 @@ function test() {
 	console.log("Distribution Sample: " + distribution.sample().toString());
 	console.log("Distribution Sample: " + distribution.sample().toString());
 	console.log("Distribution Sample: " + distribution.sample().toString());
+
+	let rate = new Rate(0.25);
+	console.log(rate.toString());
+	console.log(rate.roll());
+	console.log(rate.roll());
+	console.log(rate.roll());
+	console.log(rate.roll());
+}
+
+/**
+* Rate or Probability of Attribute Occurence
+*/
+function Rate(rate) {
+
+	// Numerical Rate Value
+	this.rate = rate;
+
+	/**
+	* Set the Rate as a decimal numeric value where value of 1.0 is 100%
+	*
+	* @param rate double
+	*/
+	this.set = function(rate) {
+		this.rate = rate;
+	}
+
+	/**
+	* Get the Rate as a decimal numeric value where value of 1.0 is 100%
+	*/
+	this.toDouble = function() {
+		return this.rate;
+	}
+
+	/**
+	* Return true probabilistically at the specified rate
+	*
+	* @return true at rate
+	*/
+	this.roll = function() {
+		return Math.random() < this.rate;
+	}
+
+	/**
+	* Get the percent value as a String (0-100%)
+	*
+	* @param decimal Places
+	*/
+	this.toString = function() {
+		let decimalPlaces = 2;
+		let multiplier = 100 * rate * int(Math.pow(10, decimalPlaces));
+		let truncate = int(multiplier);
+		let percent = truncate / Math.pow(10, decimalPlaces);
+		return percent + "%";
+	}
 }
 
 /**
@@ -535,9 +589,9 @@ function Time(amount, unit) {
 
 	this.toString = function() {
 		let decimalPlaces = 2;
-		let multiplier = this.amount * int(pow(10, decimalPlaces));
+		let multiplier = this.amount * int(Math.pow(10, decimalPlaces));
 		let truncate = int(multiplier);
-		let time = truncate / pow(10, decimalPlaces);
+		let time = truncate / Math.pow(10, decimalPlaces);
 		return time + " " + this.getUnit();
 	}
 
