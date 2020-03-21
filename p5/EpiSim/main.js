@@ -205,21 +205,22 @@ function windowResized() {
 
 // Test Functions as I move them here:
 function test() {
-	console.log("test!");
-
-
 	viz = new ViewAttributes();
+
+	viz.drawSelection(mouseX, mouseY, 10);
+
+	let mappedColor = viz.mapToGradient(25, 0, 100, 0, 90, 100, 255);
+	fill(mappedColor);
+	ellipse(50, 50, 50, 50);
 
 	viz.setName(Demographic.CHILD, "Childish Gambino");
 	let name = viz.getName(Demographic.CHILD);
-	console.log(Demographic.CHILD, name);
+	console.log(name);
 
 	let colorIn = color(100);
 	viz.setColor(Demographic.CHILD, colorIn);
 	let colorOut = viz.getColor(Demographic.CHILD);
 	console.log(colorOut);
-	fill(colorOut);
-	ellipse(100, 50, 50, 50);
 
 	viz.setToggle(Demographic.CHILD, true);
 	let toggle = viz.getToggle(Demographic.CHILD);
@@ -232,20 +233,12 @@ function test() {
 	viz.setValue(Demographic.CHILD, 22.2);
 	let value = viz.getValue(Demographic.CHILD);
 	console.log(value);
-
-	let mappedColor = viz.mapToGradient(25, 0, 100, 0, 90, 100, 255);
-	fill(mappedColor);
-	ellipse(50, 50, 50, 50);
 }
 
 /**
  * Structured list of view parameters such as colors, lables, values, etc
  */
 function ViewAttributes() {
-	// this.viewColor  = new HashMap<Enum, Integer>();
-	// this.viewName   = new HashMap<Enum, String>();
-	// this.viewValue  = new HashMap<Enum, Double>();
-	// this.viewToggle = new HashMap<Enum, Boolean>();
 	this.viewColor  = new Map();
 	this.viewName   = new Map();
 	this.viewValue  = new Map();
