@@ -238,12 +238,317 @@ function test() {
 	axes.setLabelX("X-axis");
 	axes.setLabelY("Y-axis");
 	console.log(axes.getTitle(),  axes.getLabelX(),  axes.getLabelY());
+
+	let t1 = new Time(1, TimeUnit.HOUR);
+	let t2 = new Time(15, TimeUnit.MINUTE);
+	console.log(t1.toString());
+	console.log(t2.toString());
+	console.log(t2.add(t1).toString());
+	console.log(t1.toClock());
+	console.log(t1.toDayOfWeek());
+
+	let interval = new TimeInterval(t1, t2);
+	console.log(interval.toString());
 }
 
+/**
+* Time represents a unitized quantity of time
+*/
+function Time(amount, unit) {
+
+	this.MONTHS_IN_YEAR = 12;
+	this.WEEKS_IN_MONTH = 4.34524;
+	this.DAYS_IN_WEEK = 7;
+	this.HOURS_IN_DAY = 24;
+	this.MINUTES_IN_HOUR = 60;
+	this.SECONDS_IN_MINUTE = 60;
+	this.MILLISECONDS_IN_SECOND = 1000;
+
+	this.unit = unit;
+	this.amount = amount;
+
+	/**
+	* Set the amount of time
+	*
+	* @param time amount
+	*/ 
+	this.setAmount = function(amount) {
+		this.amount = amount;
+	}
+
+	/**
+	* Get the amount of time as a double
+	*/ 
+	this.getAmount = function() {
+		return this.amount;
+	}
+
+	/**
+	* Set the unit of time
+	*
+	* @param unit TimeUnit
+	*/ 
+	this.setUnit = function(unit) {
+		this.unit = unit;
+	}
+
+	/**
+	* Get the unit of time
+	*/ 
+	this.getUnit = function() {
+		return this.unit;
+	}
+
+	/**
+	* Returns a copy of the specified value added to this time.
+	*
+	* @param b time
+	*/
+	this.add = function(b) {
+
+		// Check and convert mismatched units
+		let bClean = b.reconcile(this); 
+
+		let result = this.getAmount() + bClean.getAmount();
+		return new Time(result, this.getUnit());
+	}
+
+	/**
+	* Returns a copy of the specified value subtracted from this time.
+	*
+	* @param b time
+	*/
+	this.subtract = function(b) {
+
+		// Check and convert mismatched units
+		let bClean = b.reconcile(this); 
+
+		let result = this.getAmount() - bClean.getAmount();
+		return new Time(result, this.getUnit());
+	}
+
+	/**
+	* Returns a copy of the specified value multiplied by this time.
+	*
+	* @param b time
+	*/
+	this.multiply = function(b) {
+
+		// Check and convert mismatched units
+		let bClean = b.reconcile(this); 
+
+		let result = this.getAmount() * bClean.getAmount();
+		return new Time(result, this.getUnit());
+	}
+
+	/**
+	* Returns a copy of the specified value divided by this time.
+	*
+	* @param b time
+	*/
+	this.divide = function(b) {
+
+		// Check and convert mismatched units
+		let bClean = b.reconcile(this); 
+
+		let result = this.getAmount() / bClean.getAmount();
+		return new Time(result, this.getUnit());
+	}
+
+	/**
+	* Returns a copy of the specified value modulo'd by this time.
+	*
+	* @param b time
+	*/
+	this.modulo = function(b) {
+
+		// Check and convert mismatched units
+		let bClean = b.reconcile(this); 
+
+		let result = this.getAmount() % bClean.getAmount();
+		return new Time(result, this.getUnit());
+	}
+
+	/**
+	* Return a copy of Time converted to new units.
+	*
+	* @param unit TimeUnits to convert to
+	*/
+	this.convert = function(newUnit) {
+
+		let converted = new Time(this.getAmount(), newUnit);;
+
+		// Return current time if new units already equal current units
+		if(this.getUnit() == newUnit) {
+			converted.setAmount(this.getAmount());
+			return this;
+
+		// Otherwise carry on with conversion
+		} else {
+
+			// Step 1: Convert current time to Milliseconds
+			switch(this.getUnit()) {
+				case TimeUnit.YEAR:
+					converted.setAmount(converted.getAmount() * this.MONTHS_IN_YEAR);
+				case TimeUnit.MONTH:
+					converted.setAmount(converted.getAmount() * this.WEEKS_IN_MONTH);
+				case TimeUnit.WEEK:
+					converted.setAmount(converted.getAmount() * this.DAYS_IN_WEEK);
+				case TimeUnit.DAY:
+					converted.setAmount(converted.getAmount() * this.HOURS_IN_DAY);
+				case TimeUnit.HOUR:
+					converted.setAmount(converted.getAmount() * this.MINUTES_IN_HOUR);
+				case TimeUnit.MINUTE:
+					converted.setAmount(converted.getAmount() * this.SECONDS_IN_MINUTE);
+				case TimeUnit.SECOND:
+					converted.setAmount(converted.getAmount() * this.MILLISECONDS_IN_SECOND);
+				case TimeUnit.MILLISECOND:
+					// Do Nothing
+					break;
+			}
+
+			// Step 2: Convert time to new units
+			switch(newUnit) {
+				case TimeUnit.YEAR:
+					converted.setAmount(converted.getAmount() / this.MONTHS_IN_YEAR);
+				case TimeUnit.MONTH:
+					converted.setAmount(converted.getAmount() / this.WEEKS_IN_MONTH);
+				case TimeUnit.WEEK:
+					converted.setAmount(converted.getAmount() / this.DAYS_IN_WEEK);
+				case TimeUnit.DAY:
+					converted.setAmount(converted.getAmount() / this.HOURS_IN_DAY);
+				case TimeUnit.HOUR:
+					converted.setAmount(converted.getAmount() / this.MINUTES_IN_HOUR);
+				case TimeUnit.MINUTE:
+					converted.setAmount(converted.getAmount() / this.SECONDS_IN_MINUTE);
+				case TimeUnit.SECOND:
+					converted.setAmount(converted.getAmount() / this.MILLISECONDS_IN_SECOND);
+				case TimeUnit.MILLISECOND:
+					// Do Nothing
+					break;
+			}
+
+			return converted;
+		}
+	}
+
+	/** 
+	* Return copy of time that is reconciled to have same units as specified dominant time
+	*
+	* @param dominant Time value whose existing units you would like to respect in reconciliation
+	*/
+	this.reconcile = function(dominant) {
+		dominantUnit = dominant.getUnit();
+		if(dominantUnit != this.getUnit()) {
+			return this.convert(dominantUnit);
+		} else {
+			return this;
+		}
+	}
+
+	this.toString = function() {
+		let decimalPlaces = 2;
+		let multiplier = this.amount * int(pow(10, decimalPlaces));
+		let truncate = int(multiplier);
+		let time = truncate / pow(10, decimalPlaces);
+		return time + " " + this.getUnit();
+	}
+
+	/**
+	* Return Time formatted as a digital clock (e.g. military time)
+	*/
+	this.toClock = function() {
+
+		let hour = int(this.convert(TimeUnit.HOUR).getAmount() + 0.1) % int(this.HOURS_IN_DAY);
+		let minute = int(this.convert(TimeUnit.MINUTE).getAmount() + 0.1) % int(this.MINUTES_IN_HOUR);
+
+		let hourString = "";
+		if(hour < 10) hourString += "0";
+		hourString += hour;
+
+		let minuteString = "";
+		if(minute < 10) minuteString += "0";
+		minuteString += minute;
+
+		return hourString + ":" + minuteString;
+	}
+
+	/**
+	* Return Time formatted as day of week
+	*/
+	this.toDayOfWeek = function() {
+
+		let day = int(this.convert(TimeUnit.DAY).getAmount());
+
+		if(day % this.DAYS_IN_WEEK == 0) {
+			return "Sunday";
+		} else if(day % this.DAYS_IN_WEEK == 1) {
+			return "Monday";
+		} else if(day % this.DAYS_IN_WEEK == 2) {
+			return "Tuesday";
+		} else if(day % this.DAYS_IN_WEEK == 3) {
+			return "Wednesay";
+		} else if(day % this.DAYS_IN_WEEK == 4) {
+			return "Thursday";
+		} else if(day % this.DAYS_IN_WEEK == 5) {
+			return "Friday";
+		} else {
+			return "Saturday";
+		}
+	}
+}
 
 /**
- * Axes is designed for other specific graph classes (e.g. BarGraph) to extend
- */
+* TimeInterval defines a unitized duration of time
+*/ 
+function TimeInterval(i, f) {
+
+	/**
+	* Construct Default Interval of 1 second from t=0 to t=1
+	*/
+	this.timeInitial = i;
+	this.timeFinal   = f;
+
+	/**
+	* Set time interval. Units of initial time are used in case of mismatch with final.
+	*
+	* @param i initial time
+	* @param f final time
+	*/
+	this.setInterval = function(i, f) {
+		this.timeInitial = i;
+		this.timeFinal = f.reconcile(i);;
+	}
+
+	/**
+	* Get the initial time
+	*/ 
+	this.getInitialTime = function() {
+		return this.timeInitial;
+	}
+
+	/**
+	* Get the final time
+	*/ 
+	this.getFinalTime = function() {
+		return this.timeFinal;
+	}
+
+	/**
+	* Get the length of time represented by this interval
+	*/
+	this.getDuration = function() {
+		return this.timeFinal.subtract(this.timeInitial);
+	}
+
+	this.toString = function() {
+		return "Initial Time: " + this.getInitialTime() + "\nFinal Time: " + this.getFinalTime() + "\nDuration: " + this.getDuration();
+	}
+}
+
+/**
+* Axes is designed for other specific graph classes (e.g. BarGraph) to extend
+*/
 function Axes() {
   
 	// Title and Labels for Axes
@@ -301,8 +606,8 @@ function Axes() {
 }
 
 /**
- * Structured list of view parameters such as colors, lables, values, etc
- */
+* Structured list of view parameters such as colors, lables, values, etc
+*/
 function ViewAttributes() {
 	this.viewColor  = new Map();
 	this.viewName   = new Map();
@@ -377,12 +682,12 @@ function ViewAttributes() {
   		}
 	}
 
-  	/**
-   	 * Get Value Associated with Enum
-   	 *
-   	 * @param e Enum
-   	 * @return size
-   	 */
+	/**
+	* Get Value Associated with Enum
+	*
+	* @param e Enum
+	* @return size
+	*/
    	this.getValue = function(e) {
    		if(this.viewValue.has(e)) {
    			return this.viewValue.get(e);
