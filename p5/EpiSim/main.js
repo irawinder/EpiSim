@@ -1,11 +1,13 @@
-// Main drawing canvas
+// Main canvas for drawing
 var canvas;
 
-//Best guess at typical scroll bar width (in pixels)
+// Best guess at typical scroll bar width (in pixels)
 var SCROLL_BAR_WIDTH = 15;
 
+/**
+ * setup() runs once at the very beginning
+ */
 function setup() {
-
   // Set canvas to fill web browser window
   let x = windowWidth - SCROLL_BAR_WIDTH;
   let y = windowHeight - SCROLL_BAR_WIDTH;
@@ -19,6 +21,9 @@ function windowResized() {
   resizeCanvas(x, y);
 }
 
+/**
+ * draw() runs on an infinite loop after setup() is finished
+ */
 function draw() {
-
+	
 }
