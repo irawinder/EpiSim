@@ -298,40 +298,122 @@ function test() {
 
 }
 
+// /** 
+// * Instance of an Infectious Agent that can exist in Host or Environment
+// */
+// function Agent(pathogen) extends Element {
+
+// 	// Pathogen carried by this agent
+// 	private Pathogen pathogen;
+
+// 	// How long the agent will survive
+// 	private Time life;
+
+// 	// Environment or Host that this Agent is within
+// 	private Element vessel;
+
+// 	/**
+// 	* Get pathogen
+// 	*/
+// 	public Pathogen getPathogen() {
+// 		return this.pathogen;
+// 	}
+
+// 	/**
+// 	* Set remaining life span of agent
+// 	*
+// 	* @param lifeSpan
+// 	*/
+// 	public void setLifeSpan(Time lifeSpan) {
+// 		this.life = lifeSpan;
+// 	}
+
+// 	/**
+// 	* Get remaining life span of agent
+// 	*/
+// 	public Time getLifeSpan() {
+// 		return this.life;
+// 	}
+
+// 	/**
+// 	* Set Agent vessel (Environment or Host)
+// 	*
+// 	* @param vessel Element
+// 	*/
+// 	public void setVessel(Element v) {
+// 		this.vessel = v;
+// 	}
+
+// 	/**
+// 	* Get Agent vessel (Environment or Host)
+// 	*/
+// 	public Element getVessel() {
+// 		return this.vessel;
+// 	}
+
+// 	/**
+// 	* Returns true if agent is alive
+// 	*/
+// 	public boolean alive() {
+// 		return life.getAmount() > 0;
+// 	}
+
+// 	/**
+// 	* Update agent attributes 
+// 	*
+// 	* @param timeStep Time
+// 	*/
+// 	public void update(Time timeStep) {
+// 		this.life = this.life.subtract(timeStep);
+// 	}
+
+// 	@Override
+// 	public String toString() {
+// 		return 
+// 		"Agent UID: " + getUID() 
+// 		+ "; Name: " + getName()
+// 		;
+// 	}
+// }
+
 /**
 * Generic attributes of an Infectious Pathogen that can infect Hosts and Environments
 */
-function Pathogen() {
-	// The specific variety of this pathogen (e.g. COMMON_COLD)
+class Pathogen {
 
-	// Name of Pathogen
-	this.name = "";
+	constructor() {
+		// The specific variety of this pathogen (e.g. COMMON_COLD)
+		this.type;
 
-	// Transmission Rate (probabily of transmission per contact between infected and susceptible)
-	this.agentLife = new Time(0, TimeUnit.HOUR);
+		// Name of Pathogen
+		this.name = "";
 
-	// Agent life span (i.e. how long it can live outside of host)
-	this.attackRate = new Rate(0);
+		// Transmission Rate (probabily of transmission per contact between infected and susceptible)
+		this.agentLife = new Time(0, TimeUnit.HOUR);
 
-	// Duration of Incubation (days)
-	this.incubationDuration = new TimeDistribution(new Time(0, TimeUnit.DAY), new Time(0, TimeUnit.DAY));
+		// Agent life span (i.e. how long it can live outside of host)
+		this.attackRate = new Rate(0);
 
-	// Duration of Infectiousness (days)
-	this.infectiousDuration = new TimeDistribution(new Time(0, TimeUnit.DAY), new Time(0, TimeUnit.DAY));
+		// Duration of Incubation (days)
+		this.incubationDuration = new TimeDistribution(new Time(0, TimeUnit.DAY), new Time(0, TimeUnit.DAY));
 
-	// Mortality Rate with Treatment
-	this.mortalityTreated = new Rate(0);
+		// Duration of Infectiousness (days)
+		this.infectiousDuration = new TimeDistribution(new Time(0, TimeUnit.DAY), new Time(0, TimeUnit.DAY));
 
-	// Mortality Rate without Treatment
-	this.mortalityUntreated = new Rate(0);
+		// Mortality Rate with Treatment
+		this.mortalityTreated = new Rate(0);
 
-	// Hospitalization Rate
-	this.hospitalization = new Rate(0);
+		// Mortality Rate without Treatment
+		this.mortalityUntreated = new Rate(0);
 
-	// Rate of expression for various Symptoms
-	this.symptomExpression = new Map();
-	for(var key in Symptom) {
-		this.symptomExpression.set(key, new Rate(0));
+		// Hospitalization Rate
+		this.hospitalization = new Rate(0);
+
+		// Rate of expression for various Symptoms
+		this.symptomExpression = new Map();
+		for(var key in Symptom) {
+			this.symptomExpression.set(key, new Rate(0));
+		}
 	}
 
 	/**
@@ -339,14 +421,14 @@ function Pathogen() {
 	*
 	* @param name
 	*/
-	this.setName = function(name) {
+	setName(name) {
 		this.name = name;
 	}
 
 	/**
 	* Get the Name of the Pathogen
 	*/
-	this.getName = function() {
+	getName() {
 		return this.name;
 	}
 
@@ -355,14 +437,14 @@ function Pathogen() {
 	*
 	* @param type Pathogen
 	*/
-	this.setType = function(type) {
+	setType(type) {
 		this.type = type;
 	}
 
 	/**
 	* Get Pathogen Type
 	*/
-	this.getType = function() {
+	getType() {
 		return this.type;
 	}
 
@@ -371,14 +453,14 @@ function Pathogen() {
 	*
 	* @param r rate
 	*/
-	this.setAttackRate = function(r) {
+	setAttackRate(r) {
 		this.attackRate = r;
 	}
 
 	/**
 	* Get the Attack Rate (probabily of transmission per contact between infected and susceptible)
 	*/
-	this.getAttackRate = function() {
+	getAttackRate() {
 		return this.attackRate;
 	}
 
@@ -387,14 +469,14 @@ function Pathogen() {
 	*
 	* @param agentLife Time
 	*/
-	this.setAgentLife = function(agentLife) {
+	setAgentLife(agentLife) {
 		this.agentLife = agentLife;
 	}
 
 	/**
 	* Get the agentLife of the Pathogen
 	*/
-	this.getAgentLife = function() {
+	getAgentLife() {
 		return this.agentLife;
 	}
 
@@ -404,21 +486,21 @@ function Pathogen() {
 	* @param mean days
 	* @param standardDeviation days
 	*/
-	this.setIncubationDistribution = function(mean, standardDeviation) {
+	setIncubationDistribution(mean, standardDeviation) {
 		this.incubationDuration = new TimeDistribution(mean, standardDeviation);
 	}
 
 	/** 
 	* Get the probablity distribution for incubation duration
 	*/
-	this.getIncubationDistribution = function() {
+	getIncubationDistribution() {
 		return this.incubationDuration;
 	}
 
 	/** 
 	* Get a value for incubation duration [days]
 	*/
-	this.generateIncubationDuration = function() {
+	generateIncubationDuration() {
 		let value = this.incubationDuration.sample();
 		value.setAmount(Math.max(0, value.getAmount())); // no negative values allowed
 		return value;
@@ -430,21 +512,21 @@ function Pathogen() {
 	* @param mean days
 	* @param standardDeviation days
 	*/
-	this.setInfectiousDistribution = function(mean, standardDeviation) {
+	setInfectiousDistribution(mean, standardDeviation) {
 		this.infectiousDuration = new TimeDistribution(mean, standardDeviation);
 	}
 
 	/** 
 	* Get the probablity distribution for infectious duration
 	*/
-	this.getInfectiousDistribution = function() {
+	getInfectiousDistribution() {
 		return this.infectiousDuration;
 	}
 
 	/** 
 	* Get a value for infectious duration [days]
 	*/
-	this.generateInfectiousDuration = function() {
+	generateInfectiousDuration() {
 		let value = this.infectiousDuration.sample();
 		value.setAmount(Math.max(0, value.getAmount())); // no negative values allowed
 		return value;
@@ -455,14 +537,14 @@ function Pathogen() {
 	*
 	* @param r rate
 	*/
-	this.setMortalityTreated = function(r) {
+	setMortalityTreated(r) {
 		this.mortalityTreated = r;
 	}
 
 	/** 
 	* Get mortality rate for treated
 	*/
-	this.getMortalityTreated = function() {
+	getMortalityTreated() {
 		return this.mortalityTreated;
 	}
 
@@ -471,7 +553,7 @@ function Pathogen() {
 	*
 	* @param r rate
 	*/
-	this.setMortalityUntreated = function(r) {
+	setMortalityUntreated(r) {
 		this.mortalityUntreated = r;
 	}
 
@@ -480,7 +562,7 @@ function Pathogen() {
 	*
 	* @param d demographic
 	*/
-	this.getMortalityUntreated = function() {
+	getMortalityUntreated() {
 		return this.mortalityUntreated;
 	}
 
@@ -489,14 +571,14 @@ function Pathogen() {
 	*
 	* @param r rate
 	*/
-	this.setHospitalizationRate = function(r) {
+	setHospitalizationRate(r) {
 		this.hospitalization = r;
 	}
 
 	/** 
 	* Get Hospitalization Rate
 	*/
-	this.getHospitalizationRate = function() {
+	getHospitalizationRate() {
 		return this.hospitalization;
 	}
 
@@ -506,7 +588,7 @@ function Pathogen() {
 	* @param s Symptom
 	* @param r rate
 	*/
-	this.setSymptomExpression = function(s, r) {
+	setSymptomExpression(s, r) {
 		this.symptomExpression.set(s, r);
 	}
 
@@ -515,11 +597,11 @@ function Pathogen() {
 	*
 	* @param s Symptom
 	*/
-	this.getSymptomExpression = function(s) {
+	getSymptomExpression(s) {
 		return this.symptomExpression.get(s);
 	}
 
-	this.toString = function() {
+	toString() {
 		let info =
 			this.getName() + "\n" +
 			"Attack Rate: " + this.getAttackRate() + "\n" +
@@ -537,18 +619,20 @@ function Pathogen() {
 /**
 * 3D coordinate object
 */
-function Coordinate(x, y, z) {
+class Coordinate {
 
-	this.x = x;
-	this.y = y;
-	this.z = z;
+	constructor(x, y, z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
 
 	/**
 	* Set X Coordinate
 	*
 	* @param x
 	*/
-	this.setX = function(x) {
+	setX(x) {
 		this.x = x;
 	}
 
@@ -557,7 +641,7 @@ function Coordinate(x, y, z) {
 	*
 	* @param y
 	*/
-	this.setY = function(y) {
+	setY(y) {
 		this.y = y;
 	}
 
@@ -566,28 +650,28 @@ function Coordinate(x, y, z) {
 	*
 	* @param z
 	*/
-	this.setZ = function(z) {
+	setZ(z) {
 		this.z = z;
 	}
 
 	/**
 	* Get X Coordinate
 	*/
-	this.getX = function() {
+	getX() {
 		return this.x;
 	}
 
 	/**
 	* Get Y Coordinate
 	*/
-	this.getY = function() {
+	getY() {
 		return this.y;
 	}
 
 	/**
 	* Get Z Coordinate
 	*/
-	this.getZ = function() {
+	getZ() {
 		return this.z;
 	}
 
@@ -596,7 +680,7 @@ function Coordinate(x, y, z) {
 	*
 	* @param other
 	*/
-	this.distance = function(other) {
+	distance(other) {
 		let dX2 = Math.pow(this.x - other.x, 2);
 		let dY2 = Math.pow(this.y - other.y, 2);
 		let dZ2 = Math.pow(this.z - other.z, 2);
@@ -608,7 +692,7 @@ function Coordinate(x, y, z) {
 	*
 	* @param jitter amount of jitter
 	*/
-	this.jitterXY = function(amount) {
+	jitterXY(amount) {
 		let jittered = new Coordinate();
 		let jitterX = amount*(2*Math.random() - 1);
 		let jitterY = amount*(2*Math.random() - 1);
@@ -618,7 +702,7 @@ function Coordinate(x, y, z) {
 		return jittered;
 	}
 
-	this.toString = function() {
+	toString() {
     	return "[" + this.x + ", " + this.y + ", " + this.z + "]";
   	}
 }
@@ -626,25 +710,27 @@ function Coordinate(x, y, z) {
 /**
 * Abstraction of an individual element in our system
 */
-function Element() {
+class Element {
 
-	this.UID 	  = -1;
-	this.name     = "";
-	this.location = new Coordinate();
+	constructor() {
+		this.UID 	  = -1;
+		this.name     = "";
+		this.location = new Coordinate();
+	}
 
 	/**
 	* Set the Name of the Element
 	*
 	* @param name
 	*/
-	this.setName = function(name) {
+	setName(name) {
 		this.name = name;
 	}
 
 	/**
 	* Get the Name of the Element
 	*/
-	this.getName = function() {
+	getName() {
 		return this.name;
 	}
 
@@ -653,14 +739,14 @@ function Element() {
 	*
 	* @param UID unique ID
 	*/
-	this.setUID = function(UID) {
+	setUID(UID) {
 		this.UID = UID;
 	}
 
 	/**
 	* Get the Unique ID of the Element
 	*/
-	this.getUID = function() {
+	getUID() {
 		return this.UID;
 	}
 
@@ -669,18 +755,18 @@ function Element() {
 	*
 	* @param location Coordinate
 	*/
-	this.setCoordinate = function(location) {
+	setCoordinate(location) {
 		this.location = location;
 	}
 
 	/**
 	* Get the Location of the Element
 	*/
-	this.getCoordinate = function() {
+	getCoordinate() {
 		return this.location;
 	}
 
-  	this.toString = function() {
+  	toString() {
     	return this.UID + ": " + this.name + ", " + this.location.toString();
   	}
 }
@@ -688,24 +774,26 @@ function Element() {
 /**
 * Rate or Probability of Attribute Occurence
 */
-function Rate(rate) {
+class Rate {
 
-	// Numerical Rate Value
-	this.rate = rate;
+	constructor(rate) {
+		// Numerical Rate Value
+		this.rate = rate;
+	}
 
 	/**
 	* Set the Rate as a decimal numeric value where value of 1.0 is 100%
 	*
 	* @param rate double
 	*/
-	this.set = function(rate) {
+	set(rate) {
 		this.rate = rate;
 	}
 
 	/**
 	* Get the Rate as a decimal numeric value where value of 1.0 is 100%
 	*/
-	this.toDouble = function() {
+	toDouble() {
 		return this.rate;
 	}
 
@@ -714,7 +802,7 @@ function Rate(rate) {
 	*
 	* @return true at rate
 	*/
-	this.roll = function() {
+	roll() {
 		return Math.random() < this.rate;
 	}
 
@@ -723,9 +811,9 @@ function Rate(rate) {
 	*
 	* @param decimal Places
 	*/
-	this.toString = function() {
+	toString() {
 		let decimalPlaces = 2;
-		let multiplier = 100 * rate * int(Math.pow(10, decimalPlaces));
+		let multiplier = 100 * this.rate * int(Math.pow(10, decimalPlaces));
 		let truncate = int(multiplier);
 		let percent = truncate / Math.pow(10, decimalPlaces);
 		return percent + "%";
@@ -747,24 +835,26 @@ function Rate(rate) {
 *                      ^
 *                   Average (mean)
 */
-function TimeDistribution(mean, standardDeviation) {
+class TimeDistribution {
 
-	this.mean 			   = mean;
-	this.standardDeviation = standardDeviation;
+	constructor(mean, standardDeviation) {
+		this.mean 			   = mean;
+		this.standardDeviation = standardDeviation;
+	}
 
 	/**
 	* Set Mean Time
 	*
 	* @param mean Time
 	*/
-	this.setMean = function(mean) {
+	setMean(mean) {
 		this.mean = mean; 
 	}
 
 	/**
 	* Get Mean Time
 	*/
-	this.getMean = function() {
+	getMean() {
 		return this.mean; 
 	}
 
@@ -773,21 +863,21 @@ function TimeDistribution(mean, standardDeviation) {
 	*
 	* @param sD Standard Deviation
 	*/
-	this.setStandardDeviation = function(sD) {
+	setStandardDeviation(sD) {
 		this.standardDeviation = sD; 
 	}
 
 	/**
 	* Get Standard Deviation
 	*/
-	this.getStandardDeviation = function() {
+	getStandardDeviation() {
 		return this.standardDeviation; 
 	}
 
 	/**
 	* Pick a Time value within the Gaussian distribution, using units of mean value
 	*/
-	this.sample = function() {
+	sample() {
 		let variance = this.normal();
 		let unit = this.mean.getUnit();
 		let value = new Time(variance, unit);
@@ -800,7 +890,7 @@ function TimeDistribution(mean, standardDeviation) {
 	* Generate number in a normal distribution
 	* https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
 	*/
-	this.normal = function() {
+	normal() {
 	    let u = 0, v = 0;
 	    while(u === 0) u = Math.random(); //Converting [0,1) to (0,1)
 	    while(v === 0) v = Math.random();
@@ -808,7 +898,7 @@ function TimeDistribution(mean, standardDeviation) {
 	    return num;
 	}
 
-	this.toString = function() {
+	toString() {
 		return "Mean: " + this.mean + "; Standard Deviation: " + this.standardDeviation; 
 	}
 }
@@ -816,32 +906,34 @@ function TimeDistribution(mean, standardDeviation) {
 /**
 * Time represents a unitized quantity of time
 */
-function Time(amount, unit) {
+class Time {
 
-	this.MONTHS_IN_YEAR = 12;
-	this.WEEKS_IN_MONTH = 4.34524;
-	this.DAYS_IN_WEEK = 7;
-	this.HOURS_IN_DAY = 24;
-	this.MINUTES_IN_HOUR = 60;
-	this.SECONDS_IN_MINUTE = 60;
-	this.MILLISECONDS_IN_SECOND = 1000;
+	constructor(amount, unit) {
+		this.MONTHS_IN_YEAR = 12;
+		this.WEEKS_IN_MONTH = 4.34524;
+		this.DAYS_IN_WEEK = 7;
+		this.HOURS_IN_DAY = 24;
+		this.MINUTES_IN_HOUR = 60;
+		this.SECONDS_IN_MINUTE = 60;
+		this.MILLISECONDS_IN_SECOND = 1000;
 
-	this.unit = unit;
-	this.amount = amount;
+		this.unit = unit;
+		this.amount = amount;	
+	}
 
 	/**
 	* Set the amount of time
 	*
 	* @param time amount
 	*/ 
-	this.setAmount = function(amount) {
+	setAmount(amount) {
 		this.amount = amount;
 	}
 
 	/**
 	* Get the amount of time as a double
 	*/ 
-	this.getAmount = function() {
+	getAmount() {
 		return this.amount;
 	}
 
@@ -850,14 +942,14 @@ function Time(amount, unit) {
 	*
 	* @param unit TimeUnit
 	*/ 
-	this.setUnit = function(unit) {
+	setUnit(unit) {
 		this.unit = unit;
 	}
 
 	/**
 	* Get the unit of time
 	*/ 
-	this.getUnit = function() {
+	getUnit() {
 		return this.unit;
 	}
 
@@ -866,7 +958,7 @@ function Time(amount, unit) {
 	*
 	* @param b time
 	*/
-	this.add = function(b) {
+	add(b) {
 
 		// Check and convert mismatched units
 		let bClean = b.reconcile(this); 
@@ -880,7 +972,7 @@ function Time(amount, unit) {
 	*
 	* @param b time
 	*/
-	this.subtract = function(b) {
+	subtract(b) {
 
 		// Check and convert mismatched units
 		let bClean = b.reconcile(this); 
@@ -894,7 +986,7 @@ function Time(amount, unit) {
 	*
 	* @param b time
 	*/
-	this.multiply = function(b) {
+	multiply(b) {
 
 		// Check and convert mismatched units
 		let bClean = b.reconcile(this); 
@@ -908,7 +1000,7 @@ function Time(amount, unit) {
 	*
 	* @param b time
 	*/
-	this.divide = function(b) {
+	divide(b) {
 
 		// Check and convert mismatched units
 		let bClean = b.reconcile(this); 
@@ -922,7 +1014,7 @@ function Time(amount, unit) {
 	*
 	* @param b time
 	*/
-	this.modulo = function(b) {
+	modulo(b) {
 
 		// Check and convert mismatched units
 		let bClean = b.reconcile(this); 
@@ -936,7 +1028,7 @@ function Time(amount, unit) {
 	*
 	* @param unit TimeUnits to convert to
 	*/
-	this.convert = function(newUnit) {
+	convert(newUnit) {
 
 		let converted = new Time(this.getAmount(), newUnit);;
 
@@ -999,8 +1091,8 @@ function Time(amount, unit) {
 	*
 	* @param dominant Time value whose existing units you would like to respect in reconciliation
 	*/
-	this.reconcile = function(dominant) {
-		dominantUnit = dominant.getUnit();
+	reconcile(dominant) {
+		let dominantUnit = dominant.getUnit();
 		if(dominantUnit != this.getUnit()) {
 			return this.convert(dominantUnit);
 		} else {
@@ -1008,7 +1100,7 @@ function Time(amount, unit) {
 		}
 	}
 
-	this.toString = function() {
+	toString() {
 		let decimalPlaces = 2;
 		let multiplier = this.amount * int(Math.pow(10, decimalPlaces));
 		let truncate = int(multiplier);
@@ -1019,7 +1111,7 @@ function Time(amount, unit) {
 	/**
 	* Return Time formatted as a digital clock (e.g. military time)
 	*/
-	this.toClock = function() {
+	toClock() {
 
 		let hour = int(this.convert(TimeUnit.HOUR).getAmount() + 0.1) % int(this.HOURS_IN_DAY);
 		let minute = int(this.convert(TimeUnit.MINUTE).getAmount() + 0.1) % int(this.MINUTES_IN_HOUR);
@@ -1038,7 +1130,7 @@ function Time(amount, unit) {
 	/**
 	* Return Time formatted as day of week
 	*/
-	this.toDayOfWeek = function() {
+	toDayOfWeek() {
 
 		let day = int(this.convert(TimeUnit.DAY).getAmount());
 
@@ -1063,13 +1155,12 @@ function Time(amount, unit) {
 /**
 * TimeInterval defines a unitized duration of time
 */ 
-function TimeInterval(i, f) {
+class TimeInterval {
 
-	/**
-	* Construct Default Interval of 1 second from t=0 to t=1
-	*/
-	this.timeInitial = i;
-	this.timeFinal   = f;
+	constructor(i, f) {
+		this.timeInitial = i;
+		this.timeFinal   = f;
+	}
 
 	/**
 	* Set time interval. Units of initial time are used in case of mismatch with final.
@@ -1077,7 +1168,7 @@ function TimeInterval(i, f) {
 	* @param i initial time
 	* @param f final time
 	*/
-	this.setInterval = function(i, f) {
+	setInterval(i, f) {
 		this.timeInitial = i;
 		this.timeFinal = f.reconcile(i);;
 	}
@@ -1085,25 +1176,25 @@ function TimeInterval(i, f) {
 	/**
 	* Get the initial time
 	*/ 
-	this.getInitialTime = function() {
+	getInitialTime() {
 		return this.timeInitial;
 	}
 
 	/**
 	* Get the final time
 	*/ 
-	this.getFinalTime = function() {
+	getFinalTime() {
 		return this.timeFinal;
 	}
 
 	/**
 	* Get the length of time represented by this interval
 	*/
-	this.getDuration = function() {
+	getDuration() {
 		return this.timeFinal.subtract(this.timeInitial);
 	}
 
-	this.toString = function() {
+	toString() {
 		return "Initial Time: " + this.getInitialTime() + "\nFinal Time: " + this.getFinalTime() + "\nDuration: " + this.getDuration();
 	}
 }
@@ -1111,26 +1202,28 @@ function TimeInterval(i, f) {
 /**
 * Axes is designed for other specific graph classes (e.g. BarGraph) to extend
 */
-function Axes() {
-  
-	// Title and Labels for Axes
-	this.title = "";
-	this.labelX = "";
-	this.labelY = "";
+class Axes {
+  	
+  	constructor() {
+		// Title and Labels for Axes
+		this.title = "";
+		this.labelX = "";
+		this.labelY = "";
+	}
 
 	/**
 	* Set title of bar graph
 	*
 	* @param title
 	*/
-	this.setTitle = function(title) {
+	setTitle(title) {
 		this.title = title;
 	}
 
 	/**
 	* Get title of bar graph
 	*/
-	this.getTitle = function() {
+	getTitle() {
 		return this.title;
 	}
 
@@ -1139,14 +1232,14 @@ function Axes() {
 	*
 	* @param labelX
 	*/
-	this.setLabelX = function(labelX) {
+	setLabelX(labelX) {
 		this.labelX = labelX;
 	}
 
 	/**
 	* Get X-Axis Labal of bar graph
 	*/
-	this.getLabelX = function() {
+	getLabelX() {
 		return this.labelX;
 	}
 
@@ -1155,14 +1248,14 @@ function Axes() {
 	*
 	* @param labelY
 	*/
-	this.setLabelY = function(labelY) {
+	setLabelY(labelY) {
 		this.labelY = labelY;
 	}
 
 	/**
 	* Get Y-Axis Labal of bar graph
 	*/
-	this.getLabelY = function() {
+	getLabelY() {
 		return this.labelY;
 	}
 }
@@ -1170,11 +1263,14 @@ function Axes() {
 /**
 * Structured list of view parameters such as colors, lables, values, etc
 */
-function ViewAttributes() {
-	this.viewColor  = new Map();
-	this.viewName   = new Map();
-	this.viewValue  = new Map();
-	this.viewToggle = new Map();
+class ViewAttributes {
+
+	constructor() {
+		this.viewColor  = new Map();
+		this.viewName   = new Map();
+		this.viewValue  = new Map();
+		this.viewToggle = new Map();
+	}
 
 	/**
 	* Add a color association to a specified Enum
@@ -1182,7 +1278,7 @@ function ViewAttributes() {
 	* @param e Enum
 	* @param col color
 	*/
-	this.setColor = function(e, col) {
+	setColor(e, col) {
 		this.viewColor.set(e, col);
 	}
 
@@ -1192,7 +1288,7 @@ function ViewAttributes() {
 	* @param e Enum
 	* @param name String
 	*/
-	this.setName = function(e, name) {
+	setName(e, name) {
 		this.viewName.set(e, name);
 	}
 
@@ -1202,7 +1298,7 @@ function ViewAttributes() {
 	* @param e Enum
 	* @param size double
 	*/
-	this.setValue = function(e, size) {
+	setValue(e, size) {
 		this.viewValue.set(e, size);
 	}
 
@@ -1212,7 +1308,7 @@ function ViewAttributes() {
 	* @param e Enum
 	* @param toggle double
 	*/
-	this.setToggle = function(e, toggle) {
+	setToggle(e, toggle) {
 		this.viewToggle.set(e, toggle);
 	}
 
@@ -1222,7 +1318,7 @@ function ViewAttributes() {
 	* @param e Enum
 	* @return color
 	*/
-	this.getColor = function(e) {
+	getColor(e) {
 		if(this.viewColor.has(e)) {
 			return this.viewColor.get(e);
 		} else {
@@ -1236,7 +1332,7 @@ function ViewAttributes() {
 	* @param e Enum
 	* @return name
 	*/
-    this.getName = function(e) {
+    getName(e) {
    		if(this.viewName.has(e)) {
    			return this.viewName.get(e);
    		} else {
@@ -1250,7 +1346,7 @@ function ViewAttributes() {
 	* @param e Enum
 	* @return size
 	*/
-   	this.getValue = function(e) {
+   	getValue(e) {
    		if(this.viewValue.has(e)) {
    			return this.viewValue.get(e);
    		} else {
@@ -1264,7 +1360,7 @@ function ViewAttributes() {
 	* @param e Enum
 	* @return toggle Boolean
 	*/
-	this.getToggle = function(e) {
+	getToggle(e) {
    		if(this.viewToggle.has(e)) {
    			return this.viewToggle.get(e);
    		} else {
@@ -1278,7 +1374,7 @@ function ViewAttributes() {
 	* @param e Enum
 	* @return new toggle status
 	*/
-	this.switchToggle = function(e) {
+	switchToggle(e) {
 		if(this.viewToggle.has(e)) {
 			let status = !this.viewToggle.get(e);
 			this.viewToggle.set(e, status);
@@ -1303,7 +1399,7 @@ function ViewAttributes() {
 	* @param sat1
 	* @param sat2
 	*/
-	this.mapToGradient = function(value, v1, v2, hue1, hue2, sat1, sat2) {
+	mapToGradient(value, v1, v2, hue1, hue2, sat1, sat2) {
 
 	   	let FULL = 255;
 	   	let ratio = (value - v1) / (v2 - v1);
@@ -1328,7 +1424,7 @@ function ViewAttributes() {
 	* @param y
 	* @param selectedDiamter Diameter of object you wish to select, in pixels
 	*/
-	this.drawSelection = function(x, y, selectedDiameter) {
+	drawSelection(x, y, selectedDiameter) {
 		let selectionStroke   = int(this.getValue(ViewParameter.TEXT_FILL));
 		let selectionAlpha    = int(this.getValue(ViewParameter.REDUCED_ALPHA));
 		let selectionWeight   = int(this.getValue(ViewParameter.SELECTION_WEIGHT));
