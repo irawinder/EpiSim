@@ -53,7 +53,7 @@ public class ViewAttributes {
    * Add a size association to a specified Enum
    *
    * @param e Enum
-   * @param size double
+   * @param toggle double
    */
   public void setToggle(Enum e, boolean toggle) {
     this.viewToggle.put(e, toggle);

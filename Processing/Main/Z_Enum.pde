@@ -62,7 +62,7 @@ public enum TimeUnit {
   DAY, 
   WEEK, 
   MONTH, 
-  YEAR;
+  YEAR
 }
 
 public enum Phase {

@@ -35,16 +35,16 @@ public class Result {
    */
   public Result(CityModel model) {
     
-    time = new Time();
-    step = new Time();
+    this.time = new Time();
+    this.step = new Time();
     
     this.peopleTally  = 0;
     
-    compartmentTally  = new HashMap<Demographic, HashMap<Pathogen, HashMap<Compartment, Integer>>>();
-    symptomTally      = new HashMap<Demographic, HashMap<Pathogen, HashMap<Symptom, Integer>>>();
-    hospitalizedTally = new HashMap<Demographic, Integer>();
-    encounterTally    = new HashMap<Demographic, Integer>();
-    tripTally         = new HashMap<Demographic, Integer>();
+    this.compartmentTally  = new HashMap<Demographic, HashMap<Pathogen, HashMap<Compartment, Integer>>>();
+    this.symptomTally      = new HashMap<Demographic, HashMap<Pathogen, HashMap<Symptom, Integer>>>();
+    this.hospitalizedTally = new HashMap<Demographic, Integer>();
+    this.encounterTally    = new HashMap<Demographic, Integer>();
+    this.tripTally         = new HashMap<Demographic, Integer>();
     
     // Initialize tallies with values of zero
     for(Demographic d : Demographic.values()) {
