@@ -52,7 +52,7 @@ public class Rate {
   @Override
   public String toString() {
     int decimalPlaces = 2;
-    double multiplier = 100 * rate * (int) Math.pow(10, decimalPlaces);
+    double multiplier = 100 * this.rate * (int) Math.pow(10, decimalPlaces);
     int truncate = (int) multiplier;
     double percent = truncate / Math.pow(10, decimalPlaces);
     return percent + "%";
