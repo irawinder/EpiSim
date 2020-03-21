@@ -262,6 +262,173 @@ function test() {
 	console.log(rate.roll());
 	console.log(rate.roll());
 	console.log(rate.roll());
+
+	let point1 = new Coordinate(0,0,0);
+	let jittered = point1.jitterXY(2);
+	console.log(point1.x + "," + point1.y + "," + point1.z);
+	console.log(jittered.x + "," + jittered.y + "," + jittered.z);
+
+	let point2 = new Coordinate(3,7,1);
+	console.log(point2.x + "," + point2.y + "," + point2.z);
+	console.log(point1.distance(point2));
+
+	let thing = new Element();
+	thing.setUID(23);
+	thing.setName("The Blob");
+	thing.setCoordinate(point2);
+	console.log(thing.toString())
+
+}
+
+/**
+* 3D coordinate object
+*/
+function Coordinate(x, y, z) {
+
+	this.x = x;
+	this.y = y;
+	this.z = z;
+
+	/**
+	* Set X Coordinate
+	*
+	* @param x
+	*/
+	this.setX = function(x) {
+		this.x = x;
+	}
+
+	/**
+	* Set Y Coordinate
+	*
+	* @param y
+	*/
+	this.setY = function(y) {
+		this.y = y;
+	}
+
+	/**
+	* Set Z Coordinate
+	*
+	* @param z
+	*/
+	this.setZ = function(z) {
+		this.z = z;
+	}
+
+	/**
+	* Get X Coordinate
+	*/
+	this.getX = function() {
+		return this.x;
+	}
+
+	/**
+	* Get Y Coordinate
+	*/
+	this.getY = function() {
+		return this.y;
+	}
+
+	/**
+	* Get Z Coordinate
+	*/
+	this.getZ = function() {
+		return this.z;
+	}
+
+	/**
+	* Return the distance between this and a specified coordinate
+	*
+	* @param other
+	*/
+	this.distance = function(other) {
+		let dX2 = Math.pow(this.x - other.x, 2);
+		let dY2 = Math.pow(this.y - other.y, 2);
+		let dZ2 = Math.pow(this.z - other.z, 2);
+		return Math.sqrt(dX2 + dY2 + dZ2);
+	}
+
+	/**
+	* Return a new Coordinate that is slightly jittered from the Parent
+	*
+	* @param jitter amount of jitter
+	*/
+	this.jitterXY = function(amount) {
+		let jittered = new Coordinate();
+		let jitterX = amount*(2*Math.random() - 1);
+		let jitterY = amount*(2*Math.random() - 1);
+		jittered.setX(this.getX() + jitterX);
+		jittered.setY(this.getY() + jitterY);
+		jittered.setZ(this.getZ());
+		return jittered;
+	}
+
+	this.toString = function() {
+    	return "[" + this.x + ", " + this.y + ", " + this.z + "]";
+  	}
+}
+
+/**
+* Abstraction of an individual element in our system
+*/
+function Element() {
+
+	this.UID 	  = -1;
+	this.name     = "";
+	this.location = new Coordinate();
+
+	/**
+	* Set the Name of the Element
+	*
+	* @param name
+	*/
+	this.setName = function(name) {
+		this.name = name;
+	}
+
+	/**
+	* Get the Name of the Element
+	*/
+	this.getName = function() {
+		return this.name;
+	}
+
+	/**
+	* Set the Unique ID of the Element
+	*
+	* @param UID unique ID
+	*/
+	this.setUID = function(UID) {
+		this.UID = UID;
+	}
+
+	/**
+	* Get the Unique ID of the Element
+	*/
+	this.getUID = function() {
+		return this.UID;
+	}
+
+	/**
+	* Set the Location of the Element
+	*
+	* @param location Coordinate
+	*/
+	this.setCoordinate = function(location) {
+		this.location = location;
+	}
+
+	/**
+	* Get the Location of the Element
+	*/
+	this.getCoordinate = function() {
+		return this.location;
+	}
+
+  	this.toString = function() {
+    	return this.UID + ": " + this.name + ", " + this.location.toString();
+  	}
 }
 
 /**
