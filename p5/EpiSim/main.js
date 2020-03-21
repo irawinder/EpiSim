@@ -249,6 +249,93 @@ function test() {
 
 	let interval = new TimeInterval(t1, t2);
 	console.log(interval.toString());
+
+	let distribution = new TimeDistribution(t1, t2);
+	console.log(distribution.toString());
+	console.log("Distribution Sample: " + distribution.sample().toString());
+	console.log("Distribution Sample: " + distribution.sample().toString());
+	console.log("Distribution Sample: " + distribution.sample().toString());
+}
+
+/**
+* Utility Class for Generating Time Values within a Gaussian Distribution
+*
+*                     1x Std. Dev.
+*
+* |                    |     |
+* |                  .-|-.   |
+* |                -   |  -  |
+* |               /    |    \|
+* |            _ |     |     | _
+* |         _    |     |     |    _ 
+* |__._._-_|_____|_____|_____|_____|_-_.__.__
+*                      ^
+*                   Average (mean)
+*/
+function TimeDistribution(mean, standardDeviation) {
+
+	this.mean 			   = mean;
+	this.standardDeviation = standardDeviation;
+
+	/**
+	* Set Mean Time
+	*
+	* @param mean Time
+	*/
+	this.setMean = function(mean) {
+		this.mean = mean; 
+	}
+
+	/**
+	* Get Mean Time
+	*/
+	this.getMean = function() {
+		return this.mean; 
+	}
+
+	/**
+	* Set Standard Deviation
+	*
+	* @param sD Standard Deviation
+	*/
+	this.setStandardDeviation = function(sD) {
+		this.standardDeviation = sD; 
+	}
+
+	/**
+	* Get Standard Deviation
+	*/
+	this.getStandardDeviation = function() {
+		return this.standardDeviation; 
+	}
+
+	/**
+	* Pick a Time value within the Gaussian distribution, using units of mean value
+	*/
+	this.sample = function() {
+		let variance = this.normal();
+		let unit = this.mean.getUnit();
+		let value = new Time(variance, unit);
+		value = value.multiply(this.standardDeviation);
+		value = value.add(this.mean);
+		return value; 
+	}
+
+	/**
+	* Generate number in a normal distribution
+	* https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
+	*/
+	this.normal = function() {
+	    let u = 0, v = 0;
+	    while(u === 0) u = Math.random(); //Converting [0,1) to (0,1)
+	    while(v === 0) v = Math.random();
+	    let num = Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+	    return num;
+	}
+
+	this.toString = function() {
+		return "Mean: " + this.mean + "; Standard Deviation: " + this.standardDeviation; 
+	}
 }
 
 /**
