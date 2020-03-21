@@ -296,85 +296,9 @@ function test() {
   	pathogen.setSymptomExpression(Symptom.COUGH,  new Rate(0.50));
   	console.log(pathogen.toString());
 
+  	let agent = new Agent(pathogen);
+  	console.log(agent.toString());
 }
-
-// /** 
-// * Instance of an Infectious Agent that can exist in Host or Environment
-// */
-// function Agent(pathogen) extends Element {
-
-// 	// Pathogen carried by this agent
-// 	private Pathogen pathogen;
-
-// 	// How long the agent will survive
-// 	private Time life;
-
-// 	// Environment or Host that this Agent is within
-// 	private Element vessel;
-
-// 	/**
-// 	* Get pathogen
-// 	*/
-// 	public Pathogen getPathogen() {
-// 		return this.pathogen;
-// 	}
-
-// 	/**
-// 	* Set remaining life span of agent
-// 	*
-// 	* @param lifeSpan
-// 	*/
-// 	public void setLifeSpan(Time lifeSpan) {
-// 		this.life = lifeSpan;
-// 	}
-
-// 	/**
-// 	* Get remaining life span of agent
-// 	*/
-// 	public Time getLifeSpan() {
-// 		return this.life;
-// 	}
-
-// 	/**
-// 	* Set Agent vessel (Environment or Host)
-// 	*
-// 	* @param vessel Element
-// 	*/
-// 	public void setVessel(Element v) {
-// 		this.vessel = v;
-// 	}
-
-// 	/**
-// 	* Get Agent vessel (Environment or Host)
-// 	*/
-// 	public Element getVessel() {
-// 		return this.vessel;
-// 	}
-
-// 	/**
-// 	* Returns true if agent is alive
-// 	*/
-// 	public boolean alive() {
-// 		return life.getAmount() > 0;
-// 	}
-
-// 	/**
-// 	* Update agent attributes 
-// 	*
-// 	* @param timeStep Time
-// 	*/
-// 	public void update(Time timeStep) {
-// 		this.life = this.life.subtract(timeStep);
-// 	}
-
-// 	@Override
-// 	public String toString() {
-// 		return 
-// 		"Agent UID: " + getUID() 
-// 		+ "; Name: " + getName()
-// 		;
-// 	}
-// }
 
 /**
 * Generic attributes of an Infectious Pathogen that can infect Hosts and Environments
@@ -769,6 +693,84 @@ class Element {
   	toString() {
     	return this.UID + ": " + this.name + ", " + this.location.toString();
   	}
+}
+
+/** 
+* Instance of an Infectious Agent that can exist in Host or Environment
+*/
+class Agent extends Element {
+
+	constructor(pathogen) {
+		super();
+
+		// Pathogen carried by this agent
+		this.pathogen 	= pathogen;
+
+		// How long the agent will survive
+		this.life 		= new Time(new Time(0, TimeUnit.HOUR));
+
+		// Environment or Host that this Agent is within
+		this.vessel 	= new Element();
+	}
+
+	/**
+	* Get pathogen
+	*/
+	getPathogen() {
+		return this.pathogen;
+	}
+
+	/**
+	* Set remaining life span of agent
+	*
+	* @param lifeSpan
+	*/
+	setLifeSpan(lifeSpan) {
+		this.life = lifeSpan;
+	}
+
+	/**
+	* Get remaining life span of agent
+	*/
+	getLifeSpan() {
+		return this.life;
+	}
+
+	/**
+	* Set Agent vessel (Environment or Host)
+	*
+	* @param vessel Element
+	*/
+	setVessel(v) {
+		this.vessel = v;
+	}
+
+	/**
+	* Get Agent vessel (Environment or Host)
+	*/
+	getVessel() {
+		return this.vessel;
+	}
+
+	/**
+	* Returns true if agent is alive
+	*/
+	alive() {
+		return life.getAmount() > 0;
+	}
+
+	/**
+	* Update agent attributes 
+	*
+	* @param timeStep Time
+	*/
+	update(timeStep) {
+		this.life = this.life.subtract(timeStep);
+	}
+
+	toString() {
+		return "Agent UID: " + this.getUID() + "; Name: " + this.getName();
+	}
 }
 
 /**
