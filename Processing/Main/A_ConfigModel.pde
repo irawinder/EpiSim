@@ -70,7 +70,7 @@ private void configModel() {
       
       //--- Valid Children Locations
       behavior.setMap(Demographic.CHILD,  PlaceCategory.PRIMARY,   LandUse.DWELLING,   BASE_DIST*100);
-      behavior.setMap(Demographic.CHILD,  PlaceCategory.SECONDARY, LandUse.SCHOOL,     BASE_DIST*2.0);
+      behavior.setMap(Demographic.CHILD,  PlaceCategory.SECONDARY, LandUse.SCHOOL,     BASE_DIST*5.0);
       behavior.setMap(Demographic.CHILD,  PlaceCategory.TERTIARY,  LandUse.PUBLIC,     BASE_DIST*1.0);
       behavior.setMap(Demographic.CHILD,  PlaceCategory.TERTIARY,  LandUse.RETAIL,     BASE_DIST*1.0);
       
@@ -94,7 +94,7 @@ private void configModel() {
 
   // Add randomly placed Places to Model within a specified rectangle (centerX, centerY, rangeX, rangeY)
   // Parameters (amount, name_prefix, type, x1, y1, x2, y2, minSize, maxSize)
-  int N          = 2;
+  int N          = 1;
   int CENTER_X   = 500;
   int CENTER_Y   = 500;
   int BASE_RANGE = 100;
