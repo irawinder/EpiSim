@@ -103,8 +103,8 @@ public void configView(CityModel model) {
   viz.setColor(Compartment.INCUBATING,         color(255, 150,   0, 255)); // Orange
   viz.setColor(Compartment.INFECTIOUS,         color(255,   0,   0, 255)); // Dark Red
   viz.setColor(Compartment.RECOVERED,          color(100, 100, 100, 255)); // Black
-  viz.setColor(Compartment.DEAD_TREATED,       color(  0, 255, 255, 255)); // Teal
-  viz.setColor(Compartment.DEAD_UNTREATED,     color(255,   0, 255, 255)); // Magenta
+  viz.setColor(Compartment.DEAD_TREATED,       color(  0,  50, 255, 255)); // Teal
+  viz.setColor(Compartment.DEAD_UNTREATED,     color(  0, 255,   0, 255)); // Green
   
   // Pathogen Names
   viz.setName(PathogenType.CORONAVIRUS,       "Coronavirus");
