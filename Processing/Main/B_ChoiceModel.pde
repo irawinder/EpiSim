@@ -196,7 +196,8 @@ public class ChoiceModel {
       Coordinate iCoord = current.getCoordinate();
       Coordinate fCoord = randomPlace.getCoordinate();
       LandUse use = randomPlace.getUse();
-      double maxDistance = this.distanceMap.get(d).get(c).get(use);
+      // search radius broadens by counter every loop
+      double maxDistance = this.distanceMap.get(d).get(c).get(use) + counter;
       boolean proximate = iCoord.distance(fCoord) < maxDistance;
       
       // If close enough ...
