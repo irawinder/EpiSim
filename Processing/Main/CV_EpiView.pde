@@ -64,6 +64,15 @@ public class EpiView extends ViewModel {
   }
   
   /**
+   * SetAutoRun
+   *
+   * @param state boolean
+   */ 
+  public void setAutoRun(boolean state) {
+    this.setToggle(ViewParameter.AUTO_RUN, state);
+  }
+  
+  /**
    * Toggle FrameRate
    */ 
   public void toggleFrameRate() {

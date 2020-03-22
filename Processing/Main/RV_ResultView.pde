@@ -6,8 +6,8 @@ public class ResultView extends CityView {
   private HashMap<TimePlot, Axes> plotLabels;
   private HashMap<TimePlot, PGraphics> plotAxes;
   
-  // Is there enough data to fill a whole graph?
-  private boolean fullSet;
+  // Should the simulation automatically stopp?
+  private boolean autoStop;
   
   public ResultView(CityModel model) {
     super(model);
@@ -17,7 +17,7 @@ public class ResultView extends CityView {
       plotLabels.put(tP, new Axes());
     }
     
-    this.fullSet = false;
+    this.autoStop = true;
   }
   
   public void initGraphs() {
@@ -120,10 +120,6 @@ public class ResultView extends CityView {
       text(otherStats, x + 2*textHeight, height - generalMargin);
       textAlign(LEFT);
     }
-    
-    if(this.fullSet && this.isRunning()) {
-      this.toggleAutoRun();
-    }
   }
   
   /**
@@ -179,8 +175,9 @@ public class ResultView extends CityView {
     noStroke();
     
     // Cycle through last n fields
-    if (outcome.getTimes().size() > numFields) {
-      fullSet = true;
+    if (outcome.getTimes().size() == numFields && this.autoStop) {
+      this.setAutoRun(false);
+      this.autoStop = false;
     }
     int initialIndex = Math.max(0, outcome.getTimes().size() - numFields);
     int xPos = 1;
@@ -297,12 +294,5 @@ public class ResultView extends CityView {
     stroke(textFill);
     point(xPos, h - dotHeight);
     noStroke(); 
-  }
-  
-  /**
-   * Check of the result set has filled the graph
-   */
-  public boolean fullSet() {
-    return this.fullSet;
   }
 }
