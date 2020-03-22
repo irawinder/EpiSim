@@ -146,7 +146,7 @@ private void configModel() {
   // Deploy Pathogens as Agents into the Host (Person) Population
   // Parameters: pathogen, initial host count
   epidemic.patientZero(covid19, 4);
-  epidemic.patientZero(coldA,   4);
+  epidemic.patientZero(coldA,   20);
   //epidemic.patientZero(coldB, 1);
   //epidemic.patientZero(flu,   4);
 }
@@ -199,7 +199,7 @@ public void configureRhinovirus(Pathogen p, String name) {
   // Attributes
   p.setName(name);
   p.setType(PathogenType.RHINOVIRUS);
-  p.setAttackRate(new Rate(0.3));
+  p.setAttackRate(new Rate(0.4));
   
   // Length of time that pathogen can survice outside of host via Agent
   Time agentLife = new Time(8, TimeUnit.HOUR);
@@ -208,7 +208,7 @@ public void configureRhinovirus(Pathogen p, String name) {
   // Host Pathogen Manifestations
   Time incubationMean              = new Time(  2, TimeUnit.DAY);
   Time incubationStandardDeviation = new Time(0.5, TimeUnit.DAY);
-  Time infectiousMean              = new Time(  5, TimeUnit.DAY);
+  Time infectiousMean              = new Time(  7, TimeUnit.DAY);
   Time infectiousStandardDeviation = new Time(1.5, TimeUnit.DAY);
   p.setIncubationDistribution(incubationMean, incubationStandardDeviation);
   p.setInfectiousDistribution(infectiousMean, infectiousStandardDeviation);
