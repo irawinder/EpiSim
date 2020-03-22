@@ -55,9 +55,8 @@ public void configView(CityModel model) {
     "EDGEof Planetary Insight Center" + "\n" +
     "by Ira Winder, F. Calalang, D. Goldman" + "\n\n" +
     
-    "A simple simulation of epidemic using an activity-based " +
-    "land use and transportation model. " + 
-    "Use keyboard commands:" + "\n\n" + 
+    "This is a simple simulation of a viral outbreak using " +
+    "an agent-based population activity model. " + "\n\n" +
     
     "Press 'r' to regenerate random city" + "\n\n" +
     
