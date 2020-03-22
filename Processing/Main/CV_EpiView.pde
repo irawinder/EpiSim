@@ -257,6 +257,20 @@ public class EpiView extends ViewModel {
     ellipseMode(CENTER);
     ellipse(x, y, w, w);
     strokeWeight(1); // back to default
+    
+    //ArrayList<Symptom> symptoms = h.getStatus(pathogen).getCurrentSymptoms();
+    //int hS = 0;
+    //for(Symptom s : symptoms) {
+    //  text("" + s, x + 10, y + hS);
+    //  hS +=15;
+    //}
+    
+    //ArrayList<Symptom> symptoms = h.getStatus(pathogen).getCurrentSymptoms();
+    //for(Symptom s : symptoms) {
+    //  if(s == Symptom.FEVER) {
+    //    text("" + s, x + 10, y);
+    //  }
+    //}
   }
   
   /**
