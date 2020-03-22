@@ -170,13 +170,12 @@ public class ViewAttributes {
    * @param selectedDiamter Diameter of object you wish to select, in pixels
    */
   protected void drawSelection(int x, int y, int selectedDiameter) {
-    color selectionStroke = (int) this.getValue(ViewParameter.TEXT_FILL);
-    int selectionAlpha = (int) this.getValue(ViewParameter.REDUCED_ALPHA);
+    color selectionStroke = (int) this.getColor(ViewParameter.SELECTION_COLOR);
     int selectionWeight = (int) this.getValue(ViewParameter.SELECTION_WEIGHT);
     int selectionDiameter = (int) (this.getValue(ViewParameter.SELECTION_SCALER) * selectedDiameter);
     
     strokeWeight(selectionWeight);
-    stroke(selectionStroke, selectionAlpha);
+    stroke(selectionStroke);
     noFill();
     ellipse(x, y, selectionDiameter, selectionDiameter);
     strokeWeight(1); // back to default stroke weight

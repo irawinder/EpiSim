@@ -218,7 +218,7 @@ public void draw() {
   
   if(viz.isRunning()) {
     // Update Model Simulation and outcome table
-    if(frameCounter % viz.framesPerSim() == 0 ) {
+    if(frameCounter % viz.getFramesPerSimulation() == 0 ) {
       epidemic.update(outcome);
     }
   }
@@ -239,18 +239,19 @@ public void keyPressed() {
   switch(key) {
     
     // View Controls
-    case '1':
-      viz.switchToggle(ViewParameter.SHOW_PLACES);
-      break;
-    case '2':
-      viz.switchToggle(ViewParameter.SHOW_PERSONS);
-      break;
-    case '3':
-      viz.switchToggle(ViewParameter.SHOW_COMMUTES);
-      break;
-    case '4':
-      viz.switchToggle(ViewParameter.SHOW_AGENTS);
-      break;
+    //case '1':
+    //  viz.switchToggle(ViewParameter.SHOW_PLACES);
+    //  break;
+    //case '2':
+    //  viz.switchToggle(ViewParameter.SHOW_PERSONS);
+    //  break;
+    //case '3':
+    //  viz.switchToggle(ViewParameter.SHOW_COMMUTES);
+    //  break;
+    //case '4':
+    //  viz.switchToggle(ViewParameter.SHOW_AGENTS);
+    //  break;
+      
     case 'n':
       switch(viz.getAgentMode()) {
         case PATHOGEN:
@@ -263,16 +264,30 @@ public void keyPressed() {
           break;
       }
       break;
-    case 'q':
-      viz.nextPersonMode();
+    case 'd':
+      viz.setPersonMode(PersonMode.DEMOGRAPHIC);
       break;
+    case 's':
+      viz.setPersonMode(PersonMode.COMPARTMENT);
+      break;
+    case 'l':
+      viz.setPlaceMode(PlaceMode.LANDUSE);
+      break;
+    case 'g':
+      viz.setPlaceMode(PlaceMode.DENSITY);
+      break;
+      
+    //case 'q':
+    //  viz.nextPersonMode();
+    //  break;
     //case 'e':
     //  viz.nextAgentMode();
     //  break;
-    case 'w':
-      viz.nextPlaceMode();
-      viz.preDraw(epidemic);
-      break;
+    //case 'w':
+    //  viz.nextPlaceMode();
+    //  viz.preDraw(epidemic);
+    //  break;
+    
     
     // Simulation Controls
     case 'r':
@@ -298,10 +313,18 @@ public void keyPressed() {
       frameCounter = 0;
       if(viz.isRunning()) viz.toggleAutoRun();
       break;
-    case 'a': // autoplay
+      
+    // Time Controls
+    case ' ': // autoplay
       viz.toggleAutoRun();
       break;
-    case 's': // step model forward by one tick
+    case '+': // speed up
+      viz.increaseSpeed();
+      break;
+    case '-': // slow down
+      viz.decreaseSpeed();
+      break;
+    case 't': // step model forward by one tick
       epidemic.update(outcome);
       frameCounter = 0;
       if(viz.isRunning()) viz.toggleAutoRun();

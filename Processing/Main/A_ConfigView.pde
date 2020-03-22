@@ -5,8 +5,17 @@
  */
 public void configView(CityModel model) {
   
-  // Simulation Rate
-  viz.setValue(ViewParameter.FRAMES_PER_SIMULATION, 2); // Frames
+  // Simulation Rates
+  viz.setValue(SimulationSpeed.SLOWEST,         60); // ~Frames per second
+  viz.setValue(SimulationSpeed.SLOWER,          30); // ~Frames per second
+  viz.setValue(SimulationSpeed.SLOW,            20); // ~Frames per second
+  viz.setValue(SimulationSpeed.NORMAL,          10); // ~Frames per second
+  viz.setValue(SimulationSpeed.FAST,             5); // ~Frames per second
+  viz.setValue(SimulationSpeed.FASTER,           3); // ~Frames per second
+  viz.setValue(SimulationSpeed.FASTEST,          1); // ~Frames per second
+  
+  // Simulation Speed
+  viz.setSpeed(SimulationSpeed.NORMAL);
   
   // Default Layer Settings
   viz.setToggle(ViewParameter.AUTO_RUN,         false);
@@ -37,35 +46,44 @@ public void configView(CityModel model) {
   
   // Vertical Locations of Application Elements (0 is top)
   viz.setValue(ViewParameter.INFO_Y,              50); // pixels
-  viz.setValue(ViewParameter.PATHOGEN_LEGEND_Y,  425); // pixels
-  viz.setValue(ViewParameter.PLACE_LEGEND_Y,     515); // pixels
-  viz.setValue(ViewParameter.PERSON_LEGEND_Y,    665); // pixels
+  viz.setValue(ViewParameter.PATHOGEN_LEGEND_Y,  440); // pixels
+  viz.setValue(ViewParameter.PLACE_LEGEND_Y,     520); // pixels
+  viz.setValue(ViewParameter.PERSON_LEGEND_Y,    655); // pixels
   
   String info = 
     "Epidemic Simulation" + "\n" +
     "EDGEof Planetary Insight Center" + "\n" +
     "by Ira Winder, F. Calalang, D. Goldman" + "\n\n" +
-    "Layers:" + "\n" +
-    "Press '1' to hide/show Places" + "\n" +
-    "Press '2' to hide/show Persons" + "\n" +
-    "Press '3' to hide/show Commutes" + "\n" +
-    "Press '4' to hide/show Pathogens" + "\n\n" +
+    //"Model Layers:" + "\n" +
+    //"Press '1' to hide/show Places" + "\n" +
+    //"Press '2' to hide/show Persons" + "\n" +
+    //"Press '3' to hide/show Commutes" + "\n" +
+    //"Press '4' to hide/show Contagions" + "\n\n" +
     
-    "Filters:" + "\n" +
-    "Press 'n' for next Infection Type" + "\n" +
-    "Press 'q' to toggle Person Legend" + "\n" +
-    "Press 'w' to toggle Place Legend" + "\n\n" +
-//    "Press 'e' to toggle Agent Legend" + "\n" +
+    "Infection:" + "\n" +
+    "Press 'n' for next infection type" + "\n\n" +
     
-    "Simulation:" + "\n" +
+    "Population:" + "\n" +
+    "Press 'd' to view demographics" + "\n" +
+    "Press 's' to view infection status" + "\n\n" +
+    
+    "Places:" + "\n" +
+    "Press 'l' to view land use" + "\n" +
+    "Press 'g' to view gathering density" + "\n\n" +
+    //"Press 'q' to toggle Person Legend" + "\n" +
+    //"Press 'w' to toggle Place Legend" + "\n" +
+    //"Press 'e' to toggle Agent Legend" + "\n" +
+
+    "Time:" + "\n" +
+    "Press 'SPACEBAR' to pause simulation" + "\n" +
+    "Press '-' or '+' to change speed" + "\n" +
+    "Press 't' to iterate one time step" + "\n\n" +
+    
+    "Model:" + "\n" +
     "Press 'r' to regenerate random city" + "\n" +
     "Press 'z' to teleport all to primary" + "\n" +
     "Press 'x' to teleport all to secondary" + "\n" +
-    "Press 'c' to teleport all to tertiary" + "\n\n" +
-    
-    "Time:" + "\n" +
-    "Press 'a' to autoplay simulation" + "\n" +
-    "Press 's' to iterate one time step" + "\n";
+    "Press 'c' to teleport all to tertiary" + "\n\n";
     
     
   viz.setInfo(info);
@@ -102,9 +120,9 @@ public void configView(CityModel model) {
   viz.setName(Demographic.SENIOR,              "Senior");
   
   // Host Demographic Colors
-  viz.setColor(Demographic.CHILD,              color(255, 255, 255, 255)); // Light Gray
-  viz.setColor(Demographic.ADULT,              color(100, 100, 100, 255)); // Dark Gray
-  viz.setColor(Demographic.SENIOR,             color(  0,   0,   0, 255)); // Black
+  viz.setColor(Demographic.CHILD,              color(150, 150,   0, 255)); // Yello
+  viz.setColor(Demographic.ADULT,              color(  0, 150, 150, 255)); // Dark Green
+  viz.setColor(Demographic.SENIOR,             color(150,   0, 150, 255)); // Magenta
   
   // Host Demographic Alphas
   viz.setValue(Demographic.CHILD,              255); // 0 - 255
@@ -137,7 +155,7 @@ public void configView(CityModel model) {
   
   // Text Settings
   viz.setValue(ViewParameter.TEXT_HEIGHT,       15);                        // pixels
-  viz.setValue(ViewParameter.TEXT_FILL,         color(  0,   0,   0, 200)); // Dark Gray
+  viz.setColor(ViewParameter.TEXT_FILL,         color( 75,  75,  75, 255)); // Dark Gray
   
   // Generic Place Parameters
   viz.setValue(ViewParameter.ENVIRONMENT_SCALER,      1.0);                       // scaler
@@ -150,7 +168,7 @@ public void configView(CityModel model) {
   viz.setValue(ViewParameter.MAX_DENSITY,       1/50.0);          // people per area
   viz.setValue(ViewParameter.MIN_DENSITY_HUE,   90);              // Green (0 - 255)
   viz.setValue(ViewParameter.MAX_DENSITY_HUE,   180);             // Blue  (0 - 255)
-  viz.setValue(ViewParameter.MIN_DENSITY_SAT,   50);              // Light (0 - 255)
+  viz.setValue(ViewParameter.MIN_DENSITY_SAT,   25);              // Light (0 - 255)
   viz.setValue(ViewParameter.MAX_DENSITY_SAT,   255);             // Dark  (0 - 255)
   
   // Generic Agent Parameters
@@ -159,18 +177,20 @@ public void configView(CityModel model) {
   viz.setValue(ViewParameter.AGENT_SCALER,      1.6);   // scaler
   
   // Generic Person Parameters
-  viz.setValue(ViewParameter.HOST_DIAMETER,     5);                         // pixels
-  viz.setColor(ViewParameter.HOST_STROKE,       color(200, 200, 200, 255)); // Light Gray
+  viz.setValue(ViewParameter.HOST_DIAMETER,     8);                         // pixels
+  viz.setColor(ViewParameter.HOST_STROKE,       color( 50,  50,  50, 255)); // Light Gray
   viz.setValue(ViewParameter.HOST_ALPHA,        255);                       // 0 - 255
+  viz.setValue(ViewParameter.HOST_WEIGHT,       2);                         // 0 - 255
   
   // Generic Commute Paramters
   viz.setColor(ViewParameter.COMMUTE_STROKE,    color(  0,   0,   0,  20)); // Light Gray
   viz.setValue(ViewParameter.COMMUTE_WEIGHT,    2);                         // pixels
   
   // Other Parameters
-  viz.setValue(ViewParameter.REDUCED_ALPHA,     75);  // 0 - 255
-  viz.setValue(ViewParameter.SELECTION_WEIGHT,  2);   // pixels
-  viz.setValue(ViewParameter.SELECTION_SCALER,  2.1); // scaler
+  viz.setValue(ViewParameter.REDUCED_ALPHA,     125);                       // 0 - 255
+  viz.setValue(ViewParameter.SELECTION_WEIGHT,  2);                         // pixels
+  viz.setValue(ViewParameter.SELECTION_SCALER,  1.6);                       // scaler
+  viz.setColor(ViewParameter.SELECTION_COLOR,   color( 75,  75,  75, 255)); // Black
   
   // Predraw Static Layers
   viz.preDraw(model);

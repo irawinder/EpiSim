@@ -15,12 +15,17 @@ public class ViewModel extends ViewAttributes{
   private double xMax;
   private double yMax;
   
+  private SimulationSpeed speed;
+  private int framesPerSimulation;
+  
   /**
    * Construct View Model
    */
   public ViewModel() {
     this.setModelExtents(0, 0, 100, 100);
     this.setModelLocation();
+    
+    this.setSpeed(SimulationSpeed.NORMAL);
   }
   
   /**
@@ -124,5 +129,73 @@ public class ViewModel extends ViewAttributes{
    */
   protected int modelV() {
     return this.vMin;
+  }
+  
+  /**
+   * Set Simulation Speed
+   */
+  public void setSpeed(SimulationSpeed speed) {
+    this.speed = speed;
+    
+    switch(speed) {
+      case SLOWEST:
+        this.framesPerSimulation = (int) this.getValue(SimulationSpeed.SLOWEST);
+        break;
+      case SLOWER:
+        this.framesPerSimulation = (int) this.getValue(SimulationSpeed.SLOWER);
+        break;
+      case SLOW:
+        this.framesPerSimulation = (int) this.getValue(SimulationSpeed.SLOW);
+        break;
+      case NORMAL:
+        this.framesPerSimulation = (int) this.getValue(SimulationSpeed.NORMAL);
+        break;
+      case FAST:
+        this.framesPerSimulation = (int) this.getValue(SimulationSpeed.FAST);
+        break;
+      case FASTER:
+        this.framesPerSimulation = (int) this.getValue(SimulationSpeed.FASTER);
+        break;
+      case FASTEST:
+        this.framesPerSimulation = (int) this.getValue(SimulationSpeed.FASTEST);
+        break;
+    }
+  }
+  
+  /**
+   * Get the enum SimulationSpeed
+   */
+  public SimulationSpeed getSpeed() {
+    return this.speed;
+  }
+  
+  /**
+   * Get the number of frames to render in between simulations
+   */
+  public int getFramesPerSimulation() {
+    return this.framesPerSimulation;
+  }
+  
+  /**
+   * Increment Speed by one
+   */
+  public void increaseSpeed() {
+    int index = this.speed.ordinal();
+    SimulationSpeed[] speedList = SimulationSpeed.values();
+    int numSpeeds = speedList.length;
+    if(index < numSpeeds - 1) {
+      this.setSpeed(speedList[index+1]);
+    }
+  }
+  
+  /**
+   * Decrease Speed by one
+   */
+  public void decreaseSpeed() {
+    int index = this.speed.ordinal();
+    SimulationSpeed[] speedList = SimulationSpeed.values();
+    if(index > 0) {
+      this.setSpeed(speedList[index-1]);
+    }
   }
 }

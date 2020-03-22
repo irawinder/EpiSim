@@ -91,7 +91,7 @@ public enum PlaceMode {
 
 public enum ViewParameter {
   AUTO_RUN,
-  FRAMES_PER_SIMULATION,
+  SIMULATION_SPEED,
   SHOW_PERSONS,
   SHOW_COMMUTES,
   SHOW_PLACES,
@@ -115,6 +115,7 @@ public enum ViewParameter {
   HOST_DIAMETER, 
   HOST_STROKE, 
   HOST_ALPHA, 
+  HOST_WEIGHT,
   COMMUTE_STROKE,
   COMMUTE_WEIGHT,
   REDUCED_ALPHA,
@@ -127,6 +128,7 @@ public enum ViewParameter {
   PLACE_LEGEND_Y,
   SELECTION_WEIGHT,
   SELECTION_SCALER,
+  SELECTION_COLOR,
   GRAPH_HEIGHT,
   GRAPH_LABEL_Y,
   GRAPH_BAR_WIDTH,
@@ -140,4 +142,14 @@ public enum TimePlot {
   ENCOUNTER,
   SYMPTOM,
   TRIP
+}
+
+public enum SimulationSpeed {
+  SLOWEST,
+  SLOWER,
+  SLOW,
+  NORMAL,
+  FAST,
+  FASTER,
+  FASTEST
 }

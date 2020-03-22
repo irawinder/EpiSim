@@ -107,7 +107,7 @@ public class CityView extends EpiView {
     boolean showAgents    = this.getToggle(ViewParameter.SHOW_AGENTS);
     boolean showFrameRate = this.getToggle(ViewParameter.SHOW_FRAMERATE);
     
-    int textFill = (int) this.getValue(ViewParameter.TEXT_FILL);
+    color textFill = this.getColor(ViewParameter.TEXT_FILL);
     int textHeight = (int) this.getValue(ViewParameter.TEXT_HEIGHT);
     
     boolean mapToScreen = true;
@@ -268,7 +268,7 @@ public class CityView extends EpiView {
       rect(width/2 + (leftPanelWidth - rightPanelWidth)/2 - 2, generalMargin - 2, 200, generalMargin, 10);
       
       fill(textFill);
-      text("Simulation Paused\nPress 'a' to play", width/2 + (leftPanelWidth - rightPanelWidth)/2, generalMargin);
+      text("Simulation Paused\nPress 'SPACEBAR' to play", width/2 + (leftPanelWidth - rightPanelWidth)/2, generalMargin);
       
       rectMode(CORNER);
       textAlign(LEFT);
@@ -395,9 +395,8 @@ public class CityView extends EpiView {
    * @param pathogenson
    */
   protected void drawDemographic(Person p, int frame, boolean mapToScreen) {
-    int framesPerSimulation = (int) this.getValue(ViewParameter.FRAMES_PER_SIMULATION);
     Animated dot = this.getAnimated(p);
-    Coordinate location = dot.position(framesPerSimulation, frame, p.getCoordinate());
+    Coordinate location = dot.position(this.getFramesPerSimulation(), frame, p.getCoordinate());
     int x = (int) location.getX();
     int y = (int) location.getY();
     if(mapToScreen) {
@@ -409,11 +408,14 @@ public class CityView extends EpiView {
     color viewFill = this.getColor(d);
     color viewStroke = this.getColor(ViewParameter.HOST_STROKE);
     int alpha = (int) this.getValue(ViewParameter.HOST_ALPHA);
+    int strokeWeight = (int) this.getValue(ViewParameter.HOST_WEIGHT);
     
+    strokeWeight(strokeWeight);
     stroke(viewStroke);
     fill(viewFill, alpha);
     ellipseMode(CENTER);
     ellipse(x, y, w, w);
+    strokeWeight(1); //back to default
   } 
   
   /**
@@ -518,6 +520,7 @@ public class CityView extends EpiView {
     String dayOfWeek = model.getCurrentTime().toDayOfWeek();
     
     String text = 
+      "Simulation Speed: " + viz.getSpeed() + "\n" + 
       "Simulation Day: " + (day+1) + "\n" +
       "Day of Week: " + dayOfWeek + "\n" +
       "Simulation Time: " + clock + "\n" +

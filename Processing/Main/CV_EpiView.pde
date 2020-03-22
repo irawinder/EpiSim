@@ -89,15 +89,6 @@ public class EpiView extends ViewModel {
   }
   
   /**
-   * Check Number Of Frames to visualize before iterating model
-   *
-   * @return frames per simulation
-   */
-  public int framesPerSim() {
-    return (int) this.getValue(ViewParameter.FRAMES_PER_SIMULATION);
-  }
-  
-  /**
    * Expect this to be Overridden by Child Class
    */
   public void draw(Model model) {
@@ -245,9 +236,8 @@ public class EpiView extends ViewModel {
    * @param pathogenson
    */
   protected void drawCompartment(Host h, Pathogen pathogen, int frame, boolean mapToScreen) {
-    int framesPerSimulation = (int) this.getValue(ViewParameter.FRAMES_PER_SIMULATION);
     Animated dot = this.getAnimated(h);
-    Coordinate location = dot.position(framesPerSimulation, frame, h.getCoordinate());
+    Coordinate location = dot.position(this.getFramesPerSimulation(), frame, h.getCoordinate());
     int x = (int) location.getX();
     int y = (int) location.getY();
     if(mapToScreen) {
@@ -259,11 +249,14 @@ public class EpiView extends ViewModel {
     color viewFill = this.getColor(c);
     color viewStroke = this.getColor(ViewParameter.HOST_STROKE);
     int alpha = (int) this.getValue(ViewParameter.HOST_ALPHA);
+    int strokeWeight = (int) this.getValue(ViewParameter.HOST_WEIGHT);
     
+    strokeWeight(strokeWeight);
     stroke(viewStroke);
     fill(viewFill, alpha);
     ellipseMode(CENTER);
     ellipse(x, y, w, w);
+    strokeWeight(1); // back to default
   }
   
   /**
@@ -309,6 +302,7 @@ public class EpiView extends ViewModel {
    */
   protected void drawPathogenLegend(String legendName, int x, int y, color textFill, int textHeight) {
     int w = (int) (this.getValue(ViewParameter.AGENT_SCALER) * this.getValue(ViewParameter.HOST_DIAMETER));
+    int strokeWeight = (int) (this.getValue(ViewParameter.AGENT_WEIGHT));
     boolean mapToScreen = false;
     
     // Draw Legend Name
@@ -316,9 +310,8 @@ public class EpiView extends ViewModel {
     text(legendName + ":", x, y);
     
     // Iterate through all possible Pathogen
-    int yOffset = textHeight/2;
+    int yOffset = 3*textHeight/2;
     for (Pathogen p : this.pathogenList) {
-      yOffset += textHeight;
       int aX = (int) (x + w/2);
       int aY = (int) (y + yOffset - 0.25*textHeight);
       
@@ -331,13 +324,19 @@ public class EpiView extends ViewModel {
       this.drawAgent(a, mapToScreen);
       
       // Draw Highlight
+      int alpha;
       if(p == this.getCurrentPathogen()) {
-        drawSelection(aX, aY, w);
+        drawSelection(aX, aY, w + strokeWeight/2);
+        alpha = 255;
+      } else {
+        alpha = (int) (this.getValue(ViewParameter.REDUCED_ALPHA));
       }
       
       // Draw Symbol Label
-      fill(textFill);
+      fill(textFill, alpha);
       text(p.getName(), x + 1.5*textHeight, y + yOffset);
+      
+      yOffset += textHeight + 2*strokeWeight;
     }
   }
   
@@ -351,6 +350,7 @@ public class EpiView extends ViewModel {
    */
   protected void drawPathogenTypeLegend(String legendName, int x, int y, color textFill, int textHeight) {
     int w = (int) (this.getValue(ViewParameter.AGENT_SCALER) * this.getValue(ViewParameter.HOST_DIAMETER));
+    int strokeWeight = (int) (this.getValue(ViewParameter.AGENT_WEIGHT));
     boolean mapToScreen = false;
     
     // Draw Legend Name
@@ -358,9 +358,8 @@ public class EpiView extends ViewModel {
     text(legendName + ":", x, y);
     
     // Iterate through all possible Pathogen
-    int yOffset = textHeight/2;
+    int yOffset = 3*textHeight/2;
     for (PathogenType pT : PathogenType.values()) {
-      yOffset += textHeight;
       int aX = (int) (x + w/2);
       int aY = (int) (y + yOffset - 0.25*textHeight);
       
@@ -375,15 +374,21 @@ public class EpiView extends ViewModel {
       drawAgent(a, mapToScreen);
       
       // Draw Highlight
+      int alpha;
       if(pT == this.getCurrentPathogenType()) {
-        drawSelection(aX, aY, w);
+        drawSelection(aX, aY, w + strokeWeight/2);
+        alpha = 255;
+      } else {
+        alpha = (int) (this.getValue(ViewParameter.REDUCED_ALPHA));
       }
       
       // Draw Symbol Label
       PathogenType aType = a.getPathogen().getType();
       String aName = this.getName(aType);
-      fill(textFill);
+      fill(textFill, alpha);
       text(aName, x + 1.5*textHeight, y + yOffset);
+      
+      yOffset += textHeight + 2*strokeWeight;
     }
   }
   
@@ -397,13 +402,13 @@ public class EpiView extends ViewModel {
    */
   protected void drawCompartmentLegend(String legendName, int x, int y, color textFill, int textHeight) {
     int w = (int) this.getValue(ViewParameter.HOST_DIAMETER);
-    int yOffset = textHeight/2;
     boolean mapToScreen = false;
     
     // Draw Legend Name
     fill(textFill);
     text(legendName + ":", x, y);
     
+    int yOffset = (int) textHeight/2;
     for (Compartment c : Compartment.values()) {
       yOffset += textHeight;
       
@@ -460,7 +465,7 @@ public class EpiView extends ViewModel {
     text(legendName + ":", x, y);
     
     // Iterate through all possible place types
-    int yOffset = textHeight/2;
+    int yOffset = (int) textHeight/2;
     for (int i=0; i<numRows; i++) {
       yOffset += textHeight;
       int xP = int(x + w);
@@ -483,9 +488,9 @@ public class EpiView extends ViewModel {
       rectMode(CORNER);
       
       // Draw Symbol Label
-      String suffix = " ppl per 1000sm";
+      String suffix = " people";
       if(i == numRows - 1) {
-        suffix = "+ " + suffix;
+        suffix = "+" + suffix;
       }
       String dName = "" + (int) (density * 1000) + suffix;
       fill(textFill);

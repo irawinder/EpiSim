@@ -111,13 +111,11 @@ public class ResultView extends CityView {
       otherStats += "Death Rate: " + deathRate + "\n\n";
       otherStats += "Survivable* Deaths: " + deathsSurvivable + "\n\n";
       otherStats += "*Survivable deaths are deaths that could have been\n prevented if hospitals had not been overburdened.";
-      
-      int textHeight = (int) this.getValue(ViewParameter.TEXT_HEIGHT);
-      color textFill = (int) this.getColor(ViewParameter.TEXT_FILL);
+      color textFill = this.getColor(ViewParameter.TEXT_FILL);
       
       fill(textFill);
       textAlign(LEFT, BOTTOM);
-      text(otherStats, x + 2*textHeight, height - generalMargin);
+      text(otherStats, x, height - generalMargin);
       textAlign(LEFT);
     }
   }
@@ -130,7 +128,7 @@ public class ResultView extends CityView {
    */
   private void renderAxes(PGraphics axes, Axes resultAxes) {
     int textHeight = (int) this.getValue(ViewParameter.TEXT_HEIGHT);
-    color textFill = (int) this.getColor(ViewParameter.TEXT_FILL);
+    color textFill = this.getColor(ViewParameter.TEXT_FILL);
     color axesStroke = (int) this.getColor(ViewParameter.AXES_STROKE);
     int w = axes.width;
     int h = axes.height;
@@ -138,7 +136,7 @@ public class ResultView extends CityView {
     
     axes.beginDraw();
     
-        // Axes LInes
+        // Axes Lines
         axes.stroke(axesStroke);
         axes.line(margin,     margin, margin, h - margin);
         axes.line(margin, h - margin,      w, h - margin);
@@ -151,7 +149,7 @@ public class ResultView extends CityView {
         axes.pushMatrix();
         axes.translate(margin/2, h/2);
         axes.rotate((float) - Math.PI / 2);
-        axes.textAlign(CENTER, CENTER);
+        axes.textAlign(CENTER, BOTTOM);
         axes.text(resultAxes.getLabelY(), 0, 0);
         axes.popMatrix();
     
@@ -207,7 +205,7 @@ public class ResultView extends CityView {
       if(i == outcome.getTimes().size() - 1) {
         
         int h = plotAxes.get(TimePlot.COMPARTMENT).height - 2*margin;
-        color textFill = (int) this.getColor(ViewParameter.TEXT_FILL);
+        color textFill = this.getColor(ViewParameter.TEXT_FILL);
         color axesStroke = (int) this.getColor(ViewParameter.AXES_STROKE);
         
         Time lastTime = r.getTime();
@@ -288,7 +286,7 @@ public class ResultView extends CityView {
     }
     
     // Hospital Capacity
-    color textFill = (int) this.getColor(ViewParameter.TEXT_FILL);
+    color textFill = this.getColor(ViewParameter.TEXT_FILL);
     int amount = r.getHospitalBeds();
     float dotHeight = scaler * (float) h * (float) amount / (float) r.getPeopleTally();
     stroke(textFill);
