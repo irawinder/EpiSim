@@ -208,8 +208,11 @@ public class CityView extends EpiView {
     rect(width - rightPanelWidth + generalMargin/2 - 2, generalMargin/2 - 2, rightPanelWidth - generalMargin, height - generalMargin, 10);
       
     // Draw Information
+    textAlign(LEFT, TOP);
     this.drawInfo(generalMargin, infoY, textFill);
+    textAlign(LEFT);
     
+    // Draw Time
     textAlign(LEFT, BOTTOM);
     if(height > 850) this.drawTime(model, generalMargin, height - generalMargin, textFill);
     textAlign(LEFT);
