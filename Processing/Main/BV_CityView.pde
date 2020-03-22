@@ -262,13 +262,13 @@ public class CityView extends EpiView {
       noStroke();
       
       fill(0, 50);
-      rect(width/2 + (leftPanelWidth - rightPanelWidth)/2, height/2, 200, 50, 10);
+      rect(width/2 + (leftPanelWidth - rightPanelWidth)/2, generalMargin, 200, generalMargin, 10);
       
       fill(255, 200);
-      rect(width/2 + (leftPanelWidth - rightPanelWidth)/2 - 2, height/2 - 2, 200, 50, 10);
+      rect(width/2 + (leftPanelWidth - rightPanelWidth)/2 - 2, generalMargin - 2, 200, generalMargin, 10);
       
       fill(textFill);
-      text("Simulation Paused\nPress 'a' to play", width/2 + (leftPanelWidth - rightPanelWidth)/2, height/2);
+      text("Simulation Paused\nPress 'a' to play", width/2 + (leftPanelWidth - rightPanelWidth)/2, generalMargin);
       
       rectMode(CORNER);
       textAlign(LEFT);
