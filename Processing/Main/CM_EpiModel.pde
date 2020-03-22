@@ -390,12 +390,16 @@ class EpiModel implements Model {
    *
    * @param h Host
    * @param p Pathogen
+   *
+   * @return whether host is already exposed
    */
-  protected void infectHost(Host h, Pathogen p) {
+  protected boolean infectHost(Host h, Pathogen p) {
     PathogenEffect pE = h.getStatus(p);
-    if(!pE.exposed()) {
+    boolean wasExposed = pE.exposed();
+    if(!wasExposed) {
       pE.expose(this.currentTime);
     }
+    return wasExposed;
   }
   
   /**

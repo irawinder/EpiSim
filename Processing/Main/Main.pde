@@ -264,6 +264,11 @@ public void keyPressed() {
           break;
       }
       break;
+    case 'a':
+      Pathogen p = viz.getCurrentPathogen();
+      epidemic.patientZero(p, 1);
+      break;
+      
     case 'd':
       viz.setPersonMode(PersonMode.DEMOGRAPHIC);
       break;
@@ -298,6 +303,7 @@ public void keyPressed() {
       epidemic = new CityModel();
       configModel();
       outcome = new ResultSeries();
+      epidemic.update(outcome);
       viz = new ResultView(epidemic);
       configView(epidemic);
       viz.preDraw(epidemic);

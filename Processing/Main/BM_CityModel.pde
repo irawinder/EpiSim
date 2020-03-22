@@ -415,25 +415,27 @@ public class CityModel extends EpiModel {
    */
   public void patientZero(Pathogen pathogen, int numHosts) {
     
-    //Adds new pathogen to model if first instance
-    if(!this.getPathogens().contains(pathogen)) {
-      this.addPathogen(pathogen);
-    }
-    
-    for(int i=0; i<numHosts; i++) {
-      ArrayList<Person> options = this.person.get(Demographic.ADULT);
-      int randomIndex = (int) (Math.random() * (options.size() - 1));
-      Person patientZero = options.get(randomIndex);
+    if(this.getPathogens().contains(pathogen)) {
       
-      this.infectHost(patientZero, pathogen);
-      this.putAgent(patientZero, pathogen);
-      
-      // Set Initial time such that agent is already infectious
-      PathogenEffect pE = patientZero.getStatus(pathogen);
-      Time incubationDuration = pE.getIncubationDuration();
-      Time negativeOne = new Time(-1, incubationDuration.getUnit());
-      Time initialTime = incubationDuration.multiply(negativeOne);
-      pE.setInitialTime(initialTime);
+      for(int i=0; i<numHosts; i++) {
+        ArrayList<Person> options = this.person.get(Demographic.ADULT);
+        int randomIndex = (int) (Math.random() * (options.size() - 1));
+        Person patientZero = options.get(randomIndex);
+        
+        boolean exposed = this.infectHost(patientZero, pathogen);
+        this.putAgent(patientZero, pathogen);
+        
+        if(!exposed) {
+          // Set Initial time such that agent is already infectious
+          PathogenEffect pE = patientZero.getStatus(pathogen);
+          Time incubationDuration = pE.getIncubationDuration();
+          Time negativeOne = new Time(-1, incubationDuration.getUnit());
+          Time initialTime = incubationDuration.multiply(negativeOne);
+          pE.setInitialTime(initialTime);
+        } else { 
+          println("Host is already exposed.");
+        }
+      }
     }
   }
   

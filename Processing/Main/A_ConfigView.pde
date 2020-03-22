@@ -59,12 +59,19 @@ public void configView(CityModel model) {
     "land use and transportation model. " + 
     "Use keyboard commands:" + "\n\n" + 
     
-    "Infection:" + "\n" +
-    "Press 'n' to toggle infection of focus" + "\n\n" +
+    "Press 'r' to regenerate random city" + "\n\n" +
+    
+    "Epidemic Model" + "\n" +
+    "Press 'a' to infect random person" + "\n" +
+    "Press 'q' to toggle quarantine" + "\n" +
+    "Press 'n' to view next pathogen" + "\n\n" +
     
     "Population:" + "\n" +
     "Press 'd' to view demographics" + "\n" +
-    "Press 's' to view infection status" + "\n\n" +
+    "Press 's' to view infection status" + "\n" +
+    "Press '1' to move all to home" + "\n" +
+    "Press '2' to move all to work" + "\n" +
+    "Press '3' to move all to 3rd place" + "\n\n" +
     
     "Places:" + "\n" +
     "Press 'l' to view land use" + "\n" +
@@ -73,16 +80,7 @@ public void configView(CityModel model) {
     "Time:" + "\n" +
     "Press 'SPACEBAR' to pause" + "\n" +
     "Press '-' or '+' to change speed" + "\n" +
-    "Press 't' to iterate one time step" + "\n\n" +
-    
-    "Quaurantine:" + "\n" +
-    "Press 'q' to toggle quarantine" + "\n\n" +
-    
-    "Model:" + "\n" +
-    "Press 'r' to regenerate random city" + "\n" +
-    "Press '1' to move all to primary" + "\n" +
-    "Press '2' to move all to secondary" + "\n" +
-    "Press '3' to move all to tertiary" + "\n\n";
+    "Press 't' to iterate one time step" + "\n\n";
     
     //"Model Layers:" + "\n" +
     //"Press '1' to hide/show Places" + "\n" +
@@ -214,8 +212,8 @@ public void configView(CityModel model) {
   
   // Other Parameters
   viz.setValue(ViewParameter.REDUCED_ALPHA,     125);                       // 0 - 255
-  viz.setValue(ViewParameter.SELECTION_WEIGHT,  2);                         // pixels
-  viz.setValue(ViewParameter.SELECTION_SCALER,  1.6);                       // scaler
+  viz.setValue(ViewParameter.SELECTION_WEIGHT,  4);                         // pixels
+  viz.setValue(ViewParameter.SELECTION_SCALER,  0.2);                       // scaler
   viz.setColor(ViewParameter.SELECTION_COLOR,   color( 75,  75,  75, 255)); // Black
   
   // Predraw Static Layers
@@ -229,7 +227,7 @@ public void configView(CityModel model) {
   viz.setName(TimePlot.COMPARTMENT,             "Pathogen Status");
   viz.setName(TimePlot.TRIP,                    "Trips Made");
   viz.setName(TimePlot.SYMPTOM,                 "Symptoms Expressed");
-  viz.setValue(ViewParameter.GRAPH_HEIGHT,      200);                        // pixels
+  viz.setValue(ViewParameter.GRAPH_HEIGHT,      250);                        // pixels
   viz.setValue(ViewParameter.GRAPH_BAR_WIDTH,   1);        
   viz.setValue(ViewParameter.GRAPH_ALPHA,       150);                        // 0 - 255
   viz.setName(ViewParameter.GRAPH_LABEL_Y,      "Amount");

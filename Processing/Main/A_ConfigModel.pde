@@ -65,7 +65,7 @@ private void configModel() {
       // Chance that Person will recover FROM a tertiary anomoly and return to their primary OR secondary state
       behavior.setRecoverAnomoly(new Rate(0.40));
       
-      // Chance that Person will disobey quarantine order
+      // Chance that Person will disobey quarantine order and proceed to regular activity
       behavior.setObeyanceAnomoly(new Rate(0.05));
       
       // Set whether or not a quarantine is in effect
@@ -149,9 +149,14 @@ private void configModel() {
   Pathogen flu = new Pathogen();
   configureInfluenza(flu, "Flu-2019");
   
+  epidemic.addPathogen(covid19);
+  epidemic.addPathogen(coldA);
+  //epidemic.addPathogen(coldB);
+  //epidemic.addPathogen(flu);
+  
   // Deploy Pathogens as Agents into the Host (Person) Population
   // Parameters: pathogen, initial host count
-  epidemic.patientZero(covid19, 4);
+  //epidemic.patientZero(covid19, 4);
   epidemic.patientZero(coldA,   20);
   //epidemic.patientZero(coldB, 1);
   //epidemic.patientZero(flu,   4);
