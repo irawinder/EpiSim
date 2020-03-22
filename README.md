@@ -1,7 +1,29 @@
 # EpiSim
-Epidemic Simulation for Planetary Insight Center
+This is a simple simulation of a viral outbreak using an agent-based population activity model.
 
 ![Epidemic Simulation by Ira Winder](screenshots/screenshot.png?raw=true "Epidemic Simulation by Ira Winder")
+
+Key features:
+- Includes simple city with reasonable land uses:
+  - Dwellings
+  - Offices
+  - Schools
+  - Retail
+  - Open Space
+  - Hospitals
+- Includes demographics
+  - Children
+  - Adults
+  - Seniors
+- Includes travel behavior model that implements a typical 5-day work week
+- Includes two prototypical pathogens:
+  - COVID-19
+  - Common Cold
+- User can enact quarantine of the population during run time
+- User can Speed up, slow down, or pause simulation speed during run time
+- User can view land use, demographics, gathering density, and infection status within the model
+- User can view summary statistics of the population in the form of graphs and numbers
+- Assumptions can be edited in the file 'A_ConfigModel.pde'
 
 ## How to open and run .PDE files (i.e. Processing scripts):
 
