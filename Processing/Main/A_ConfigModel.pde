@@ -65,6 +65,12 @@ private void configModel() {
       // Chance that Person will recover FROM a tertiary anomoly and return to their primary OR secondary state
       behavior.setRecoverAnomoly(new Rate(0.40));
       
+      // Chance that Person will disobey quarantine order
+      behavior.setObeyanceAnomoly(new Rate(0.05));
+      
+      // Set whether or not a quarantine is in effect
+      behavior.setQuarantine(Quarantine.NONE);
+      
       // Land Use Proclivities (Demographic, Travel Category, Land Use, Max Distance Willing to Travel)
       double BASE_DIST = 150; // base maximum distance that one is willing to travel to a land use
       

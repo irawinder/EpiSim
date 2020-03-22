@@ -153,3 +153,8 @@ public enum SimulationSpeed {
   FASTER,
   FASTEST
 }
+
+public enum Quarantine {
+  NONE,
+  STRICT
+}

@@ -74,6 +74,10 @@ public class ResultView extends CityView {
     // Draw Other Numerical Stats
     if(outcome.getTimes().size() > 0 && height > 850) {
       Time lastTime = outcome.getTimes().get(outcome.getTimes().size()-1);
+      
+      //String clock = lastTime.toClock();
+      //String dayOfWeek = lastTime.toDayOfWeek();
+    
       Result r = outcome.getResult(lastTime);
       Pathogen p = getCurrentPathogen();
       
@@ -101,6 +105,8 @@ public class ResultView extends CityView {
       Rate deathRate = new Rate((double) deaths / (recovered + deaths));
       
       String otherStats = "";
+      //otherStats += "Simulation Speed: " + viz.getSpeed() + "\n";
+      //otherStats += "Day of Week: " + dayOfWeek + "\n\n";
       otherStats += "Total Population: " + population + "\n";
       otherStats += "Hospital Capacity: " + hospitalPerCapita + " of population (" + hospitalCapacity + " beds)\n";
       otherStats += "Currently Hospitalized: " + hospitalized + "\n\n";
@@ -108,7 +114,7 @@ public class ResultView extends CityView {
       otherStats += "Total Infected: " + infected + "\n";
       otherStats += "Total Recovered: " + recovered + "\n";
       otherStats += "Total Deaths: " + deaths + "\n";
-      otherStats += "Death Rate: " + deathRate + "\n\n";
+      otherStats += "Death Rate [Dead]/[Rocovered+Dead]: " + deathRate + "\n\n";
       otherStats += "Survivable* Deaths: " + deathsSurvivable + "\n\n";
       otherStats += "*Survivable deaths are deaths that could have been\n prevented if hospitals had not been overburdened.";
       color textFill = this.getColor(ViewParameter.TEXT_FILL);
@@ -249,6 +255,11 @@ public class ResultView extends CityView {
     int h = plotAxes.get(TimePlot.COMPARTMENT).height - 2*margin;
     int barAlpha = (int) this.getValue(ViewParameter.GRAPH_ALPHA);
     
+    //Draw Quarantine Status
+    color qFill = this.getColor(r.getQuarantine());
+    fill(qFill);
+    rect(xPos, h, barWidth, 5);
+    
     float yPos = 0;
     for(Compartment c : Compartment.values()) {
       
@@ -274,6 +285,11 @@ public class ResultView extends CityView {
     int h = plotAxes.get(TimePlot.HOSPITALIZED).height - 2*margin;
     int scaler = (int) this.getValue(TimePlot.HOSPITALIZED);
     int barAlpha = (int) this.getValue(ViewParameter.GRAPH_ALPHA);
+    
+    //Draw Quarantine Status
+    color qFill = this.getColor(r.getQuarantine());
+    fill(qFill);
+    rect(xPos, h, barWidth, 5);
     
     float yPos = h;
     for(Demographic d : Demographic.values()) {

@@ -12,7 +12,7 @@
  *                e.g. currentPhase = Phase 1
  */
 public class CityModel extends EpiModel {
-
+  
   // Current phase of city
   private Phase currentPhase;
   
@@ -63,6 +63,38 @@ public class CityModel extends EpiModel {
     // Result Timers
     this.resultStep = new Time();
     this.timeSinceResult = new Time();
+  }
+  
+  /**
+   * Set Quarantine Level
+   *
+   * @param q quarantine
+   */
+  public void setQuarantine(Quarantine q) {
+    this.behavior.setQuarantine(q);
+  }
+  
+  /**
+   * Get Quarantine Level
+   *
+   * @param q quarantine
+   */
+  public Quarantine getQuarantine() {
+    return this.behavior.getQuarantine();
+  }
+  
+  /**
+   * Toggle Quarantine Level
+   */
+  public void toggleQuarantine() {
+    switch(this.behavior.getQuarantine()) {
+      case NONE:
+        this.behavior.setQuarantine(Quarantine.STRICT);
+        break;
+      case STRICT:
+        this.behavior.setQuarantine(Quarantine.NONE);
+        break;
+    }
   }
   
   /**
@@ -594,6 +626,9 @@ public class CityModel extends EpiModel {
     
     // Add Number of Hospital Beds to Results Table
     stats.setHospitalBeds(this.hospitalBeds);
+    
+    // Add Quarantine Status to Results Table
+    stats.setQuarantine(this.getQuarantine());
     
     // Add Result to ResultSeries
     if(timeSinceResult.subtract(resultStep).getAmount() > 0) {

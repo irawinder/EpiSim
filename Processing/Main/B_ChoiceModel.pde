@@ -5,6 +5,9 @@ import java.util.Random;
  */ 
 public class ChoiceModel {
   
+  // Quarantine Status
+  private Quarantine quarantine;
+  
   // Hospitals in Model
   private ArrayList<Place> hospitalList;
   
@@ -25,6 +28,9 @@ public class ChoiceModel {
   
   // Chance that person will return to primary or secondary state if pursuing a dalliance
   private Rate recoverAnomoly;
+  
+  // Rate at which people disobey the quarantine
+  private Rate obeyanceAnomoly;
   
   // Anomoly Rate Unit (e.g. unit of TimeUnit.HOUR corresponds to [probability rate PER Hour])
   private TimeUnit anomolyUnit;
@@ -59,11 +65,29 @@ public class ChoiceModel {
     this.anomolyUnit = TimeUnit.HOUR;
   }
   
- /**
-  * Add Hospital
-  *
-  * @param hospital Place
-  */
+  /**
+   * Set Quarantine Level
+   *
+   * @param q quarantine
+   */
+  public void setQuarantine(Quarantine q) {
+    this.quarantine = q;
+  }
+  
+  /**
+   * Get Quarantine Level
+   *
+   * @param q quarantine
+   */
+  public Quarantine getQuarantine() {
+    return this.quarantine;
+  }
+  
+  /**
+   * Add Hospital
+   *
+   * @param hospital Place
+   */
   public void addHospital(Place hospital) {
     if(!hospitalList.contains(hospital)) {
       this.hospitalList.add(hospital);
@@ -71,10 +95,10 @@ public class ChoiceModel {
   }
   
   /**
-  * Remove Hospital
-  *
-  * @param hospital Place
-  */
+   * Remove Hospital
+   *
+   * @param hospital Place
+   */
   public void removeHospital(Place hospital) {
     if(hospitalList.contains(hospital)) {
       this.hospitalList.remove(hospital);
@@ -255,7 +279,7 @@ public class ChoiceModel {
   }
   
   /**
-   * Set Chance that Person will return to primary or secondary state if pursuing a dalliance (per HOUR)
+   * Set Chance that Person will return to primary or secondary state if pursuing a dalliance
    *
    * @param p Phase
    * @param anomoly Rate
@@ -265,13 +289,30 @@ public class ChoiceModel {
   }
   
   /**
-   * Get Chance that Person will return to primary or secondary state if pursuing a dalliance (per HOUR)
+   * Get Chance that Person will return to primary or secondary state if pursuing a dalliance
    *
    * @param p Phase
    */
   public Rate getRecoverAnomoly() {
     return this.recoverAnomoly;
   }
+  
+  /**
+   * Set Chance that Person will disobey quarantine command
+   *
+   * @param anomoly Rate
+   */
+  public void setObeyanceAnomoly(Rate anomoly) {
+    this.obeyanceAnomoly = anomoly;
+  }
+  
+/**
+   * Get Chance that Person will disobey quarantine command
+   */
+  public Rate getObeyanceAnomoly() {
+    return this.obeyanceAnomoly;
+  }
+  
   
   /**
    * Set Anomoly Rate Unit (e.g. unit of TimeUnit.HOUR corresponds to [probability rate PER Hour])
@@ -319,16 +360,23 @@ public class ChoiceModel {
   public boolean apply(Person p, Phase currentPhase, Time duration) {
     
     // Calculate Anomoly Rates
-    Time oneUnit = new Time(1, this.getAnomolyUnit());
-    Time rateUnitPerStep = duration.divide(oneUnit);
-    Rate anomolyPerUnit = this.getPhaseAnomoly(currentPhase);
-    Rate recoverPerUnit = this.getRecoverAnomoly();
-    Rate anomolyPerStep = new Rate(rateUnitPerStep.getAmount() * anomolyPerUnit.toDouble());
-    Rate recoverPerStep = new Rate(rateUnitPerStep.getAmount() * recoverPerUnit.toDouble());
+    Time oneUnit           = new Time(1, this.getAnomolyUnit());
+    Time rateUnitPerStep   = duration.divide(oneUnit);
+    
+    Rate anomolyPerUnit    = this.getPhaseAnomoly(currentPhase);
+    Rate recoverPerUnit    = this.getRecoverAnomoly();
+    Rate disobeyancePerUnit   = this.getObeyanceAnomoly();
+    
+    Rate anomolyPerStep    = new Rate(rateUnitPerStep.getAmount() * anomolyPerUnit.toDouble());
+    Rate recoverPerStep    = new Rate(rateUnitPerStep.getAmount() * recoverPerUnit.toDouble());
+    Rate disobeyancePerStep   = new Rate(rateUnitPerStep.getAmount() * disobeyancePerUnit.toDouble());
       
     // Track whether trip is made
     boolean tripMade = false;
-      
+    
+    // If there's a quarantine, will you obey?
+    boolean disobeyQuarantine = disobeyancePerStep.roll();
+    
     // Are you dead?
     if(!p.alive()) {
       p.moveToPrimary();
@@ -337,7 +385,11 @@ public class ChoiceModel {
     } else if(p.hospitalized()) {
       p.moveToHospital();
       
-    // If you're alive, carry on!
+    // Are you Obeying a Strict Quarantine?
+    } else if(quarantine == Quarantine.STRICT && !disobeyQuarantine) {
+      p.moveToPrimary();
+      
+    // Carry one!
     } else {
       // Current Place
       Place currentPlace = p.getPlace();

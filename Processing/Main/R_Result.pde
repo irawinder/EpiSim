@@ -30,6 +30,9 @@ public class Result {
   // Average Trips Per Demographic
   private HashMap<Demographic, Integer> tripTally;
   
+  // Quarantine Status
+  private Quarantine quarantine;
+  
   /**
    * Constructor for Result()
    */
@@ -66,6 +69,24 @@ public class Result {
       this.encounterTally.put(d, 0);
       this.tripTally.put(d, 0);
     }
+  }
+  
+  /**
+   * Set Quarantine Level
+   *
+   * @param q quarantine
+   */
+  public void setQuarantine(Quarantine q) {
+    this.quarantine = q;
+  }
+  
+  /**
+   * Get Quarantine Level
+   *
+   * @param q quarantine
+   */
+  public Quarantine getQuarantine() {
+    return this.quarantine;
   }
   
   /**

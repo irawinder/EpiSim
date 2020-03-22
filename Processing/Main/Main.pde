@@ -277,6 +277,11 @@ public void keyPressed() {
       viz.setPlaceMode(PlaceMode.DENSITY);
       break;
       
+    // Quarantine:
+    case 'q':
+      epidemic.toggleQuarantine();
+      break;
+      
     //case 'q':
     //  viz.nextPersonMode();
     //  break;
@@ -288,7 +293,6 @@ public void keyPressed() {
     //  viz.preDraw(epidemic);
     //  break;
     
-    
     // Simulation Controls
     case 'r':
       epidemic = new CityModel();
@@ -298,17 +302,17 @@ public void keyPressed() {
       configView(epidemic);
       viz.preDraw(epidemic);
       break;
-    case 'z':
+    case '1':
       epidemic.allToPrimary();
       frameCounter = 0;
       if(viz.isRunning()) viz.toggleAutoRun();
       break;
-    case 'x':
+    case '2':
       epidemic.allToSecondary();
       frameCounter = 0;
       if(viz.isRunning()) viz.toggleAutoRun();
       break;
-    case 'c':
+    case '3':
       epidemic.allToTertiary();
       frameCounter = 0;
       if(viz.isRunning()) viz.toggleAutoRun();

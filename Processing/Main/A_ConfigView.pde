@@ -15,7 +15,7 @@ public void configView(CityModel model) {
   viz.setValue(SimulationSpeed.FASTEST,          1); // ~Frames per second
   
   // Simulation Speed
-  viz.setSpeed(SimulationSpeed.NORMAL);
+  viz.setSpeed(SimulationSpeed.SLOW);
   
   // Default Layer Settings
   viz.setToggle(ViewParameter.AUTO_RUN,         false);
@@ -37,7 +37,7 @@ public void configView(CityModel model) {
   viz.setModelLocation();                              // Set Screen location of model
   
   // Set extents of model to view in "real" units
-  double buffer = 25;
+  double buffer = 50;
   double xMin = model.xMin() - buffer;
   double xMax = model.xMax() + buffer;
   double yMin = model.yMin() - buffer;
@@ -46,17 +46,21 @@ public void configView(CityModel model) {
   
   // Vertical Locations of Application Elements (0 is top)
   viz.setValue(ViewParameter.INFO_Y,              50); // pixels
-  viz.setValue(ViewParameter.PATHOGEN_LEGEND_Y,  440); // pixels
-  viz.setValue(ViewParameter.PLACE_LEGEND_Y,     520); // pixels
-  viz.setValue(ViewParameter.PERSON_LEGEND_Y,    655); // pixels
+  viz.setValue(ViewParameter.PATHOGEN_LEGEND_Y,  530); // pixels
+  viz.setValue(ViewParameter.PLACE_LEGEND_Y,     610); // pixels
+  viz.setValue(ViewParameter.PERSON_LEGEND_Y,    745); // pixels
   
   String info = 
     "Epidemic Simulation" + "\n" +
     "EDGEof Planetary Insight Center" + "\n" +
     "by Ira Winder, F. Calalang, D. Goldman" + "\n\n" +
     
+    "A simple simulation of epidemic using an activity-based " +
+    "land use and transportation model. " + 
+    "Use keyboard commands:" + "\n\n" + 
+    
     "Infection:" + "\n" +
-    "Press 'n' for next infection type" + "\n\n" +
+    "Press 'n' to toggle infection of focus" + "\n\n" +
     
     "Population:" + "\n" +
     "Press 'd' to view demographics" + "\n" +
@@ -67,15 +71,18 @@ public void configView(CityModel model) {
     "Press 'g' to view gathering density" + "\n\n" +
 
     "Time:" + "\n" +
-    "Press 'SPACEBAR' to pause simulation" + "\n" +
+    "Press 'SPACEBAR' to pause" + "\n" +
     "Press '-' or '+' to change speed" + "\n" +
     "Press 't' to iterate one time step" + "\n\n" +
     
+    "Quaurantine:" + "\n" +
+    "Press 'q' to toggle quarantine" + "\n\n" +
+    
     "Model:" + "\n" +
     "Press 'r' to regenerate random city" + "\n" +
-    "Press 'z' to teleport all to primary" + "\n" +
-    "Press 'x' to teleport all to secondary" + "\n" +
-    "Press 'c' to teleport all to tertiary" + "\n\n";
+    "Press '1' to move all to primary" + "\n" +
+    "Press '2' to move all to secondary" + "\n" +
+    "Press '3' to move all to tertiary" + "\n\n";
     
     //"Model Layers:" + "\n" +
     //"Press '1' to hide/show Places" + "\n" +
@@ -122,9 +129,9 @@ public void configView(CityModel model) {
   viz.setName(Demographic.SENIOR,              "Senior");
   
   // Host Demographic Colors
-  viz.setColor(Demographic.CHILD,              color(150, 150,   0, 255)); // Yello
-  viz.setColor(Demographic.ADULT,              color(  0, 150, 150, 255)); // Dark Green
-  viz.setColor(Demographic.SENIOR,             color(150,   0, 150, 255)); // Magenta
+  viz.setColor(Demographic.CHILD,              color(255, 150,   0, 255)); // Yello
+  viz.setColor(Demographic.ADULT,              color(  0, 255, 150, 255)); // Dark Green
+  viz.setColor(Demographic.SENIOR,             color(150,   0, 255, 255)); // Magenta
   
   // Host Demographic Alphas
   viz.setValue(Demographic.CHILD,              255); // 0 - 255
@@ -146,7 +153,16 @@ public void configView(CityModel model) {
   viz.setColor(LandUse.SCHOOL,                  color(200, 100,  50, 150)); // Brown
   viz.setColor(LandUse.PUBLIC,                  color( 50, 200,  50, 150)); // Green
   viz.setColor(LandUse.HOSPITAL,                color(  0, 255, 255, 150)); // Teal
-
+  
+  // Phase Names
+  viz.setName(Phase.SLEEP,                      "Asleep");
+  viz.setName(Phase.HOME,                       "At Home");
+  viz.setName(Phase.GO_WORK,                    "Morning Commute");
+  viz.setName(Phase.WORK,                       "Working Day");
+  viz.setName(Phase.WORK_LUNCH,                 "Lunch Break");
+  viz.setName(Phase.LEISURE,                    "Free Time");
+  viz.setName(Phase.GO_HOME,                    "Evening Commute");
+  
   // View Mode Names
   viz.setName(AgentMode.PATHOGEN,               "Infectious Agent");
   viz.setName(AgentMode.PATHOGEN_TYPE,          "Pathogen Type");
@@ -154,6 +170,14 @@ public void configView(CityModel model) {
   viz.setName(PersonMode.COMPARTMENT,           "Pathogen Status");
   viz.setName(PlaceMode.LANDUSE,                "Land Use Type");
   viz.setName(PlaceMode.DENSITY,                "Gathering Denisty");
+  
+  // Quarantine Paramters
+  viz.setName(Quarantine.NONE,                  "Business As Usual\nPress 'q' to quarantine");
+  viz.setName(Quarantine.STRICT,                "Quarantine In Effect");
+  viz.setColor(Quarantine.NONE,                 color(200, 200, 200, 255)); // Gray
+  viz.setColor(Quarantine.STRICT,               color(200,   0, 200, 255)); // Red
+  viz.setValue(Quarantine.NONE,                 0);                         // stroke weight
+  viz.setValue(Quarantine.STRICT,               4);                         // stroke weight
   
   // Text Settings
   viz.setValue(ViewParameter.TEXT_HEIGHT,       15);                        // pixels
@@ -205,7 +229,7 @@ public void configView(CityModel model) {
   viz.setName(TimePlot.COMPARTMENT,             "Pathogen Status");
   viz.setName(TimePlot.TRIP,                    "Trips Made");
   viz.setName(TimePlot.SYMPTOM,                 "Symptoms Expressed");
-  viz.setValue(ViewParameter.GRAPH_HEIGHT,      250);                        // pixels
+  viz.setValue(ViewParameter.GRAPH_HEIGHT,      200);                        // pixels
   viz.setValue(ViewParameter.GRAPH_BAR_WIDTH,   1);        
   viz.setValue(ViewParameter.GRAPH_ALPHA,       150);                        // 0 - 255
   viz.setName(ViewParameter.GRAPH_LABEL_Y,      "Amount");

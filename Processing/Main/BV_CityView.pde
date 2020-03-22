@@ -199,14 +199,16 @@ public class CityView extends EpiView {
     int placeLegendY       = (int) this.getValue(ViewParameter.PLACE_LEGEND_Y);
     
     // Draw Panel Rectangles
-    noStroke();
+    strokeWeight(0);
+    stroke(textFill);
     fill(0, 50);
     rect(generalMargin/2, generalMargin/2, leftPanelWidth - generalMargin, height - generalMargin, 10);
     rect(width - rightPanelWidth + generalMargin/2, generalMargin/2, rightPanelWidth - generalMargin, height - generalMargin, 10);
     fill(255, 200);
     rect(generalMargin/2 - 2, generalMargin/2 - 2, leftPanelWidth - generalMargin, height - generalMargin, 10);
     rect(width - rightPanelWidth + generalMargin/2 - 2, generalMargin/2 - 2, rightPanelWidth - generalMargin, height - generalMargin, 10);
-      
+    strokeWeight(1);
+    
     // Draw Information
     textAlign(LEFT, TOP);
     this.drawInfo(generalMargin, infoY, textFill);
@@ -214,7 +216,12 @@ public class CityView extends EpiView {
     
     // Draw Time
     textAlign(LEFT, BOTTOM);
-    if(height > 850) this.drawTime(model, generalMargin, height - generalMargin, textFill);
+    if(height > 850) this.drawTime(model, leftPanelWidth, height - generalMargin/2 - 10, textFill);
+    textAlign(LEFT);
+    
+    // Draw SPEED
+    textAlign(LEFT, TOP);
+    if(height > 850) this.drawSpeed(model, leftPanelWidth, generalMargin/2 + 10, textFill);
     textAlign(LEFT);
     
     String legendName;
@@ -262,7 +269,8 @@ public class CityView extends EpiView {
     if(!this.isRunning()) {
       rectMode(CENTER);
       textAlign(CENTER, CENTER);
-      noStroke();
+      strokeWeight(0);
+      stroke(textFill);
       
       fill(0, 50);
       rect(width/2 + (leftPanelWidth - rightPanelWidth)/2, generalMargin, 200, generalMargin, 10);
@@ -271,11 +279,37 @@ public class CityView extends EpiView {
       rect(width/2 + (leftPanelWidth - rightPanelWidth)/2 - 2, generalMargin - 2, 200, generalMargin, 10);
       
       fill(textFill);
-      text("Simulation Paused\nPress 'SPACEBAR' to play", width/2 + (leftPanelWidth - rightPanelWidth)/2, generalMargin);
+      text("Simulation Paused\nPress 'SPACEBAR' to play", width/2 + (leftPanelWidth - rightPanelWidth)/2 - 2, generalMargin - 2);
       
       rectMode(CORNER);
       textAlign(LEFT);
+      strokeWeight(1);
     }
+    
+    // Draw Quarantine Notification
+    Quarantine qStatus = model.getQuarantine();
+    color viewColor = this.getColor(qStatus);
+    int strokeWeight = (int) this.getValue(qStatus);
+    String qText = this.getName(qStatus);
+    stroke(textFill);
+    strokeWeight(0);
+    rectMode(CENTER);
+    textAlign(CENTER, CENTER);
+    
+    fill(0, 50);
+    rect(width/2 + (leftPanelWidth - rightPanelWidth)/2, height - generalMargin, 200, generalMargin, 10);
+    
+    fill(255, 200);
+    stroke(viewColor);
+    strokeWeight(strokeWeight);
+    rect(width/2 + (leftPanelWidth - rightPanelWidth)/2 - 2, height - generalMargin - 2, 200, generalMargin, 10);
+    
+    fill(viewColor);
+    text(qText, width/2 + (leftPanelWidth - rightPanelWidth)/2 - 2, height - generalMargin - 2);
+    
+    strokeWeight(1);
+    rectMode(CORNER);
+    textAlign(LEFT);
   }
   
   /**
@@ -337,8 +371,10 @@ public class CityView extends EpiView {
    * @param textFill color
    */
   private void drawInfo(int x, int y, color textFill) {
+    int generalMargin      = (int) this.getValue(ViewParameter.GENERAL_MARGIN);
+    int leftPanelWidth     = (int) this.getValue(ViewParameter.LEFT_PANEL_WIDTH);
     fill(textFill);
-    text(info, x, y);
+    text(info, x, y, leftPanelWidth - 2*generalMargin, height - 2*generalMargin);
   }
   
   /**
@@ -523,11 +559,33 @@ public class CityView extends EpiView {
     String dayOfWeek = model.getCurrentTime().toDayOfWeek();
     
     String text = 
+      //"Simulation Speed: " + viz.getSpeed() + "\n" + 
+      //"Simulation Day: " + (day+1) + "\n" +
+      
+      "Day: " + dayOfWeek + "\n" +
+      "Time: " + clock + "\n" +
+      "Phase: " + this.getName(model.getCurrentPhase());
+    
+    fill(textFill);
+    text(text, x, y);
+  }
+  
+  /**
+   * Render Simuation Speed
+   *
+   * @param model CityModel
+   * @param x
+   * @param y
+   * @param textFill color
+   * @praam textHeight int
+   */
+  protected void drawSpeed(CityModel model, int x, int y, color textFill) {
+    
+    String day = model.getCurrentTime().convert(TimeUnit.DAY).toString();
+    
+    String text = 
       "Simulation Speed: " + viz.getSpeed() + "\n" + 
-      "Simulation Day: " + (day+1) + "\n" +
-      "Day of Week: " + dayOfWeek + "\n" +
-      "Simulation Time: " + clock + "\n" +
-      "Current City Phase: " + model.getCurrentPhase();
+      "Simulation Time: " + day;
     
     fill(textFill);
     text(text, x, y);
