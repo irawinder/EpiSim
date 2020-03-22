@@ -219,7 +219,7 @@ public class ResultView extends CityView {
         String day = "Day " + (int)lastTime.convert(TimeUnit.DAY).getAmount();
         String clock = lastTime.toClock();
         int timeX = xPos;
-        int timeY = h + textHeight/2;
+        int timeY = h + textHeight;
         
         fill(textFill);
         textAlign(RIGHT, TOP);
@@ -258,7 +258,7 @@ public class ResultView extends CityView {
     //Draw Quarantine Status
     color qFill = this.getColor(r.getQuarantine());
     fill(qFill);
-    rect(xPos, h, barWidth, 5);
+    rect(xPos, h+5, barWidth, 5);
     
     float yPos = 0;
     for(Compartment c : Compartment.values()) {
@@ -289,7 +289,7 @@ public class ResultView extends CityView {
     //Draw Quarantine Status
     color qFill = this.getColor(r.getQuarantine());
     fill(qFill);
-    rect(xPos, h, barWidth, 5);
+    rect(xPos, h+5, barWidth, 5);
     
     float yPos = h;
     for(Demographic d : Demographic.values()) {
