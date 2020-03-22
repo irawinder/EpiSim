@@ -70,7 +70,7 @@ private void configModel() {
       
       //--- Valid Children Locations
       behavior.setMap(Demographic.CHILD,  PlaceCategory.PRIMARY,   LandUse.DWELLING,   BASE_DIST*100);
-      behavior.setMap(Demographic.CHILD,  PlaceCategory.SECONDARY, LandUse.SCHOOL,     BASE_DIST*5.0);
+      behavior.setMap(Demographic.CHILD,  PlaceCategory.SECONDARY, LandUse.SCHOOL,     BASE_DIST*1.0);
       behavior.setMap(Demographic.CHILD,  PlaceCategory.TERTIARY,  LandUse.PUBLIC,     BASE_DIST*1.0);
       behavior.setMap(Demographic.CHILD,  PlaceCategory.TERTIARY,  LandUse.RETAIL,     BASE_DIST*1.0);
       
@@ -100,9 +100,9 @@ private void configModel() {
   int BASE_RANGE = 100;
   epidemic.randomPlaces(N*25,       "Public Space",    LandUse.PUBLIC,    CENTER_X, CENTER_Y, 5*BASE_RANGE, 5*BASE_RANGE, 500,  2000);
   epidemic.randomPlaces(N*250,      "Dwelling Unit",   LandUse.DWELLING,  CENTER_X, CENTER_Y, 5*BASE_RANGE, 5*BASE_RANGE, 50,   200);
-  epidemic.randomPlaces(N*10,       "Office Space",    LandUse.OFFICE,    CENTER_X, CENTER_Y, 2*BASE_RANGE, 2*BASE_RANGE, 500,  1000);
+  epidemic.randomPlaces(N*20,       "Office Space",    LandUse.OFFICE,    CENTER_X, CENTER_Y, 4*BASE_RANGE, 4*BASE_RANGE, 500,  1000);
   epidemic.randomPlaces(N*4,        "School",          LandUse.SCHOOL,    CENTER_X, CENTER_Y, 5*BASE_RANGE, 5*BASE_RANGE, 500,  2000);
-  epidemic.randomPlaces(N*25,       "Retail Shopping", LandUse.RETAIL,    CENTER_X, CENTER_Y, 3*BASE_RANGE, 3*BASE_RANGE, 50,   1000);
+  epidemic.randomPlaces(N*25,       "Retail Shopping", LandUse.RETAIL,    CENTER_X, CENTER_Y, 4*BASE_RANGE, 4*BASE_RANGE, 50,   1000);
   epidemic.randomPlaces(N*1,        "Hospital",        LandUse.HOSPITAL,  CENTER_X, CENTER_Y, 1*BASE_RANGE, 1*BASE_RANGE, 2000, 2000);
   
   // Resilience*: Impact of Demographic on Pathogen Intensities (1.0 == no impact; < 1 == less resilient; > 1 == more resilient)
