@@ -201,7 +201,7 @@ public void configView(CityModel model) {
   
   // Generic Person Parameters
   viz.setValue(ViewParameter.HOST_DIAMETER,     8);                         // pixels
-  viz.setColor(ViewParameter.HOST_STROKE,       color( 50,  50,  50, 255)); // Light Gray
+  viz.setColor(ViewParameter.HOST_STROKE,       color( 75,  75,  75, 255)); // Dark Gray
   viz.setValue(ViewParameter.HOST_ALPHA,        255);                       // 0 - 255
   viz.setValue(ViewParameter.HOST_WEIGHT,       2);                         // 0 - 255
   
