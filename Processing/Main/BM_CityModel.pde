@@ -357,7 +357,12 @@ public class CityModel extends EpiModel {
         person.setPrimaryPlace(l);
         
         // Set Secondary Place
-        Place secondaryPlace = this.behavior.getRandomPlace(person, PlaceCategory.SECONDARY);
+        Place secondaryPlace;
+        if(person.getDemographic() == Demographic.SENIOR) { // seniors stay at home
+          secondaryPlace = person.getPrimaryPlace();
+        } else {
+          secondaryPlace = this.behavior.getRandomPlace(person, PlaceCategory.SECONDARY);
+        }
         person.setSecondaryPlace(secondaryPlace);
         
         // Set Closest Hospital
