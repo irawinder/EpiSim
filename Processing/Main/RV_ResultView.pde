@@ -143,7 +143,8 @@ public class ResultView extends CityView {
         
         // Title
         axes.fill(textFill);
-        axes.text(resultAxes.getTitle(), margin, textHeight);
+        axes.textAlign(LEFT, TOP);
+        axes.text(resultAxes.getTitle(), 0, 0);
         
         // Y-Axis Label
         axes.pushMatrix();
