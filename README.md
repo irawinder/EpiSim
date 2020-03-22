@@ -3,8 +3,8 @@ This is a simple simulation of a viral outbreak using an agent-based population 
 
 ![Epidemic Simulation by Ira Winder](screenshots/screenshot.png?raw=true "Epidemic Simulation by Ira Winder")
 
-Key features:
-- Includes simple city with reasonable land uses:
+## Key features
+- Includes simple city with reasonable land uses
   - Dwellings
   - Offices
   - Schools
@@ -25,7 +25,8 @@ Key features:
 - User can view summary statistics of the population in the form of graphs and numbers
 - Assumptions can be edited in the file 'A_ConfigModel.pde'
 
-## How to open and run .PDE files (i.e. Processing scripts):
+## How to open and run
+Follow these steps to open and run the simulation in Processing. No coding skills are required.
 
 	1. Make sure you have installed the latest version of Java
 	https://www.java.com/verify/
