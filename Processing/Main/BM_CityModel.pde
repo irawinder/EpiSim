@@ -432,8 +432,6 @@ public class CityModel extends EpiModel {
           Time negativeOne = new Time(-1, incubationDuration.getUnit());
           Time initialTime = incubationDuration.multiply(negativeOne);
           pE.setInitialTime(initialTime);
-        } else { 
-          println("Host is already exposed.");
         }
       }
     }
