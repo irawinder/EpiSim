@@ -54,11 +54,6 @@ public void configView(CityModel model) {
     "Epidemic Simulation" + "\n" +
     "EDGEof Planetary Insight Center" + "\n" +
     "by Ira Winder, F. Calalang, D. Goldman" + "\n\n" +
-    //"Model Layers:" + "\n" +
-    //"Press '1' to hide/show Places" + "\n" +
-    //"Press '2' to hide/show Persons" + "\n" +
-    //"Press '3' to hide/show Commutes" + "\n" +
-    //"Press '4' to hide/show Contagions" + "\n\n" +
     
     "Infection:" + "\n" +
     "Press 'n' for next infection type" + "\n\n" +
@@ -70,9 +65,6 @@ public void configView(CityModel model) {
     "Places:" + "\n" +
     "Press 'l' to view land use" + "\n" +
     "Press 'g' to view gathering density" + "\n\n" +
-    //"Press 'q' to toggle Person Legend" + "\n" +
-    //"Press 'w' to toggle Place Legend" + "\n" +
-    //"Press 'e' to toggle Agent Legend" + "\n" +
 
     "Time:" + "\n" +
     "Press 'SPACEBAR' to pause simulation" + "\n" +
@@ -85,6 +77,16 @@ public void configView(CityModel model) {
     "Press 'x' to teleport all to secondary" + "\n" +
     "Press 'c' to teleport all to tertiary" + "\n\n";
     
+    //"Model Layers:" + "\n" +
+    //"Press '1' to hide/show Places" + "\n" +
+    //"Press '2' to hide/show Persons" + "\n" +
+    //"Press '3' to hide/show Commutes" + "\n" +
+    //"Press '4' to hide/show Contagions" + "\n" +
+    
+    //"View Modes:" + "\n" +
+    //"Press 'q' to toggle Person Legend" + "\n" +
+    //"Press 'w' to toggle Place Legend" + "\n" +
+    //"Press 'e' to toggle Agent Legend" + "\n" +
     
   viz.setInfo(info);
 
