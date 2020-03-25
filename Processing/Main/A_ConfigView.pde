@@ -171,7 +171,7 @@ public void configView(CityModel model) {
   // Quarantine Paramters
   viz.setName(Quarantine.NONE,                  "Business As Usual\nPress 'q' to quarantine");
   viz.setName(Quarantine.STRICT,                "Quarantine In Effect");
-  viz.setColor(Quarantine.NONE,                 color( 75,  75,  75, 255)); // Dark Gray
+  viz.setColor(Quarantine.NONE,                 color(200, 200, 200, 255)); // Dark Gray
   viz.setColor(Quarantine.STRICT,               color(200,   0, 200, 255)); // Red
   viz.setValue(Quarantine.NONE,                 0);                         // stroke weight
   viz.setValue(Quarantine.STRICT,               4);                         // stroke weight

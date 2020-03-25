@@ -304,7 +304,11 @@ public class CityView extends EpiView {
     strokeWeight(strokeWeight);
     rect(width/2 + (leftPanelWidth - rightPanelWidth)/2 - 2, height - generalMargin - 2, 200, generalMargin, 10);
     
-    fill(viewColor);
+    if(qStatus == Quarantine.NONE) {
+      fill(textFill);
+    } else {
+      fill(viewColor);
+    }
     text(qText, width/2 + (leftPanelWidth - rightPanelWidth)/2 - 2, height - generalMargin - 2);
     
     strokeWeight(1);
