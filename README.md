@@ -39,3 +39,6 @@ Follow these steps to open and run the simulation in Processing. No coding skill
 - User can view land use, demographics, gathering density, and infection status within the model
 - User can view summary statistics of the population in the form of graphs and numbers
 - Assumptions can be edited in the file 'A_ConfigModel.pde'
+
+## Support
+This project with built with support from the EDGEof Planetary Insight Center
