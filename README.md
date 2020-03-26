@@ -12,9 +12,11 @@ Follow these steps to open and run the simulation in Processing. No coding skill
 	2. Download Processing 3
 	https://processing.org/download/
 
-	3. Clone this repository, preserving any files and folder structure
+	3. Download this repository (Click Clone or download > Download ZIP). 
 	
-	4. Open and run "/Episim/Processing/Main/Main.pde" with Processing 3
+	4. Unzip the files and preserve any files and folder structure
+	
+	5. Open and run "/Episim/Processing/Main/Main.pde" with Processing 3
 	
 ## Key features
 - Includes simple city with reasonable land uses
