@@ -42,3 +42,8 @@ Follow these steps to open and run the simulation in Processing. No coding skill
 
 ## Support
 This project with built with support from the EDGEof Planetary Insight Center
+
+## Related Work
+Daniel Goldman of Planetary Insight Center @ EDGEof is creating a "kid-friendly" simulation for web:
+- Video Walkthrough: https://youtu.be/cA7OmbG1Bt4
+- Website: http://xgo.szy.mybluehost.me/sim/ctest/
