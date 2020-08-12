@@ -298,6 +298,14 @@ public class PathogenEffect {
     }
   }
   
+  public boolean isInfected() {
+    if(this.compartment == Compartment.INCUBATING || this.compartment == Compartment.INFECTIOUS) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
   /**
    * Check if currently hospitalized
    *

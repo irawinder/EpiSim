@@ -170,6 +170,20 @@ public class Host extends Element {
     return true;
   }
   
+    /**
+   * Check if Host is Infected
+   *
+   * @return true if infected
+   */
+  public boolean isInfected() {
+    for(HashMap.Entry<Pathogen, PathogenEffect> entry : this.status.entrySet()) {
+      if(entry.getValue().isInfected()) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
   @Override
   public String toString() {
     return "Host UID: " + this.getUID() + "; Name: " + this.getName();

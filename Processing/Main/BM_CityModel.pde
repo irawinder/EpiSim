@@ -352,7 +352,7 @@ public class CityModel extends EpiModel {
    * @param minDwellingSize smallest household size of a dwelling unit
    * @param maxDwellingSize largest household size of a dwelling unit
    */
-  public void populate(int minAge, int maxAge, int adultAge, int seniorAge, Rate childResilience, Rate adultResilience, Rate seniorResilience, int minDwellingSize, int maxDwellingSize) {
+  public void populate(int minAge, int maxAge, int adultAge, int seniorAge, int contactTracingAppInstallationPercentage, Rate childResilience, Rate adultResilience, Rate seniorResilience, int minDwellingSize, int maxDwellingSize) {
     
     for(Place l : this.place.get(LandUse.DWELLING)) {
       int numTenants = (int) random(minDwellingSize, maxDwellingSize+1);
@@ -365,6 +365,13 @@ public class CityModel extends EpiModel {
         // Set Age
         int age = (int) random(minAge, maxAge);
         person.setAge(age);
+        
+        if((int) random(0, 100) < contactTracingAppInstallationPercentage) {
+          person.setContactTracingApp(true);
+        }
+        else {
+          person.setContactTracingApp(false);
+        }
         
         // Set Demographic
         person.setDemographic(adultAge, seniorAge);
@@ -517,6 +524,11 @@ public class CityModel extends EpiModel {
             // Add Person encounter to results
             if(h instanceof Person && h2 instanceof Person) {
               stats.tallyEncounter((Person)h, (Person)h2);
+              
+              if(((Person)h).hasContactTracingApp() == true && ((Person)h2).hasContactTracingApp()) {
+                stats.registerContactTracingExposure((Person)h, (Person)h2);
+              }
+              
             }
             
             // 1. Transmit pathogen from Host to Host if one is infectious
@@ -602,6 +614,11 @@ public class CityModel extends EpiModel {
         }
         
         h.update(current, treated);
+        for(Pathogen pt : this.getPathogens()) {  
+          if(h.getStatus(pt).infectious()) {        
+            stats.notifyExposureToPersons((Person) h);
+          }
+        }
       }
     }
     
@@ -621,6 +638,21 @@ public class CityModel extends EpiModel {
     for(Demographic d : Demographic.values()) {
       for(Person p : this.person.get(d)) {
         stats.tallyPerson(p);
+      }
+    }
+    
+    // Also quarantine people living in the same house as someone notified
+    for(Demographic d1 : Demographic.values()) {
+      for(Person p1 : this.person.get(d1)) {
+        for(Demographic d2 : Demographic.values()) {
+          for(Person p2 : this.person.get(d2)) {
+            if(p1.getPrimaryPlace() == p2.getPrimaryPlace() &&
+              (p1.hasBeenExposedToInfected() || p2.hasBeenExposedToInfected())) {
+               p1.notifyExposure();
+               p2.notifyExposure();
+            }
+          }
+        }
       }
     }
     
