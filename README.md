@@ -1,8 +1,8 @@
 # EpiSim
 This is a simple simulation of a viral outbreak using an agent-based population activity model.
 
-* Added: Simulate contact tracing apps effects on pandemy (adoption % is configurable, being by default 20%)
-* Added: R0 calculation in real time based on S-R-I model
+* New: Simulate contact tracing apps effects on pandemy (adoption % is configurable, being by default 20%)
+* New: R0 calculation in real time based on S-R-I model
 
 ![Epidemic Simulation by Ira Winder](screenshots/screenshot.png?raw=true "Epidemic Simulation by Ira Winder")
 
