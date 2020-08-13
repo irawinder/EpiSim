@@ -246,7 +246,12 @@ public class EpiView extends ViewModel {
     }
     int w = (int) this.getValue(ViewParameter.HOST_DIAMETER);
     Compartment c = h.getStatus(pathogen).getCompartment();
+    
     color viewFill = this.getColor(c);
+    if(h instanceof Person && ((Person) h).hasBeenExposedToInfected() && h.isInfected()) {
+      viewFill = this.getColor(Compartment.EXPOSURE_NOTIFIED);
+    }
+    
     color viewStroke = this.getColor(ViewParameter.HOST_STROKE);
     int alpha = (int) this.getValue(ViewParameter.HOST_ALPHA);
     int strokeWeight = (int) this.getValue(ViewParameter.HOST_WEIGHT);

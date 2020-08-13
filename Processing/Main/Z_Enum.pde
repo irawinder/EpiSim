@@ -22,10 +22,16 @@ public enum Demographic {
 public enum Compartment {
   SUSCEPTIBLE, 
   RECOVERED, 
+  EXPOSURE_NOTIFIED,
   INCUBATING, 
   INFECTIOUS,
   DEAD_TREATED,
   DEAD_UNTREATED
+}
+
+public enum ExposureNotified {
+  NONE,
+  NOTIFIED
 }
 
 public enum Symptom {

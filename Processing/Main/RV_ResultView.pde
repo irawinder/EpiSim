@@ -89,6 +89,10 @@ public class ResultView extends CityView {
       int deaths = 0;
       int deathsSurvivable = 0;
       int recovered = 0;
+      double r0 = 0;
+      double avgR0 = 0;
+      double medianR0 = 0;
+      double maxR0 = 0;
       for(Demographic d : Demographic.values()) {
         hospitalized     += r.getHospitalizedTally(d);
         infected         += r.getCompartmentTally(d, p, Compartment.INCUBATING);
@@ -102,6 +106,36 @@ public class ResultView extends CityView {
         deathsSurvivable += r.getCompartmentTally(d, p, Compartment.DEAD_UNTREATED);
       }
       
+      if(outcome.getTimes().size() > 24) {
+        r0 = this.calculateR0(outcome, outcome.getTimes().size());
+        
+        double[] historicalR0 = new double[outcome.getTimes().size() - 1];
+        for(int i = 1; i < outcome.getTimes().size(); i++) {
+          historicalR0[i - 1] = this.calculateR0(outcome, i);
+          avgR0 += historicalR0[i - 1];
+          if(historicalR0[i - 1] > maxR0) {
+            maxR0 = historicalR0[i - 1];
+          }
+        }
+        maxR0 = (double) Math.round(maxR0 * 100) / 100; //round
+        
+        avgR0 = avgR0 / outcome.getTimes().size();
+        avgR0 = (double) Math.round(avgR0 * 100) / 100; //round
+        
+        this.bubbleSort(historicalR0);
+        if (historicalR0.length % 2 == 0) {
+            medianR0 = ((double)historicalR0[historicalR0.length/2] + (double)historicalR0[historicalR0.length/2 - 1])/2;
+        }
+        else {
+            medianR0 = (double) historicalR0[historicalR0.length/2];        
+        }
+
+        medianR0 = (double) Math.round(medianR0 * 100) / 100; //round
+      }
+      
+      //String clock = lastTime.toClock();
+      //String dayOfWeek = lastTime.toDayOfWeek();
+          
       Rate deathRate = new Rate((double) deaths / (recovered + deaths));
       
       String otherStats = "";
@@ -112,9 +146,11 @@ public class ResultView extends CityView {
       otherStats += "Currently Hospitalized: " + hospitalized + "\n\n";
       otherStats += "Pathogen: " + p.getName() + "\n";
       otherStats += "Total Infected: " + infected + "\n";
+      otherStats += "Total Notified (exposured): " + r.getExposureNotified() + "\n";
       otherStats += "Total Recovered: " + recovered + "\n";
       otherStats += "Total Deaths: " + deaths + "\n";
       otherStats += "Death Rate [Dead]/[Rocovered+Dead]: " + deathRate + "\n\n";
+      otherStats += "R0: " + r0 + "   (avg: " + avgR0 + ", median: " + medianR0 + ", peak: " + maxR0 + ")\n\n";
       otherStats += "Survivable* Deaths: " + deathsSurvivable + "\n\n";
       otherStats += "*Survivable deaths are deaths that could have been\n prevented if hospitals had not been overburdened.";
       color textFill = this.getColor(ViewParameter.TEXT_FILL);
@@ -124,6 +160,82 @@ public class ResultView extends CityView {
       text(otherStats, x, height - generalMargin);
       textAlign(LEFT);
     }
+  }
+  
+  /**
+   * Calculates the R0 of a given moment based on the S-I-R model
+   * 
+   */
+  private double calculateR0(ResultSeries outcome, int momentTick) {
+
+      double r0 = 0;
+    
+      int previousS = 0;
+      int previousI = 0;
+      int previousR = 0;
+      int currentS = 0;
+      int currentI = 0;
+      int currentR = 0;
+      int dS = 0;
+      int dI = 0;
+      int dR = 0;
+            
+      Time lastTime = outcome.getTimes().get(momentTick - 1);
+      
+      //String clock = lastTime.toClock();
+      //String dayOfWeek = lastTime.toDayOfWeek();
+    
+      Result r = outcome.getResult(lastTime);
+      int population = r.getPeopleTally();
+      Pathogen p = getCurrentPathogen();
+      if(momentTick > 24) {
+        for(int i = 0; i < momentTick; i++) {
+          
+          Time time = outcome.getTimes().get(i);
+          Result result = outcome.getResult(time);
+
+          int dInfected = 0;
+          int dRemoval = 0;
+          for(Demographic d : Demographic.values()) {
+            dInfected         += result.getCompartmentTally(d, p, Compartment.INCUBATING);
+            dInfected         += result.getCompartmentTally(d, p, Compartment.INFECTIOUS);
+            dRemoval          += result.getCompartmentTally(d, p, Compartment.RECOVERED);
+            dRemoval          += result.getCompartmentTally(d, p, Compartment.DEAD_TREATED);
+            dRemoval          += result.getCompartmentTally(d, p, Compartment.DEAD_UNTREATED);
+          }
+          
+          if(i == momentTick - 24) {
+            previousS = population - dInfected - dRemoval;
+            previousI = dInfected;
+            previousR = dRemoval;
+          }
+          else if(i == momentTick - 1) {
+            currentS = population - dInfected - dRemoval;
+            currentI = dInfected;
+            currentR = dRemoval;
+          }
+              
+        }
+        
+        dS = currentS - previousS;
+        dI = currentI - previousI;
+        dR = currentR - previousR;
+
+        if(dI + dS == 0) {
+          dI++;
+        }
+        
+        double vValue = -1 * dR / (dI + dS); 
+        double iValue = dR / vValue;
+        double betaValue = -1 * dS / iValue; 
+        
+        r0 = betaValue / vValue;
+        
+        r0 = (double) Math.round(r0 * 100) / 100; //round
+        
+      }
+      
+      return r0;
   }
   
   /**
@@ -161,6 +273,24 @@ public class ResultView extends CityView {
         axes.popMatrix();
     
     axes.endDraw();
+  }
+  
+  public void bubbleSort(double[] array) {
+    boolean swapped = true;
+    int j = 0;
+    double tmp;
+    while (swapped) {
+        swapped = false;
+        j++;
+        for (int i = 0; i < array.length - j; i++) {
+            if (array[i] > array[i + 1]) {
+                tmp = array[i];
+                array[i] = array[i + 1];
+                array[i + 1] = tmp;
+                swapped = true;
+            }
+        }
+    }
   }
   
   /**

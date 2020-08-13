@@ -15,6 +15,9 @@ public class Result {
   // Number of HospitalBeds
   private int numHospitalBeds;
   
+  // Number of exposure notification
+  private int exposureNotificationsCount;
+  
   // Tally of compartment statuses itemized by pathogen and demographic
   private HashMap<Demographic, HashMap<Pathogen, HashMap<Compartment, Integer>>> compartmentTally;
   
@@ -30,6 +33,9 @@ public class Result {
   // Average Trips Per Demographic
   private HashMap<Demographic, Integer> tripTally;
   
+  // Encounters of people having the tracing app installed
+  private HashMap<Integer, ArrayList<Person>> contactTracingExposures;
+  
   // Quarantine Status
   private Quarantine quarantine;
   
@@ -42,12 +48,14 @@ public class Result {
     this.step = new Time();
     
     this.peopleTally  = 0;
+    this.exposureNotificationsCount = 0;
     
     this.compartmentTally  = new HashMap<Demographic, HashMap<Pathogen, HashMap<Compartment, Integer>>>();
     this.symptomTally      = new HashMap<Demographic, HashMap<Pathogen, HashMap<Symptom, Integer>>>();
     this.hospitalizedTally = new HashMap<Demographic, Integer>();
     this.encounterTally    = new HashMap<Demographic, Integer>();
     this.tripTally         = new HashMap<Demographic, Integer>();
+    this.contactTracingExposures = new HashMap<Integer, ArrayList<Person>>();
     
     // Initialize tallies with values of zero
     for(Demographic d : Demographic.values()) {
@@ -135,6 +143,10 @@ public class Result {
       int hTally = this.hospitalizedTally.get(d);
       this.hospitalizedTally.put(d, hTally + 1);
     }
+    
+    if(person.hasBeenExposedToInfected()) {
+      this.exposureNotificationsCount ++;
+    }
       
     for(HashMap.Entry<Pathogen, PathogenEffect> entry : person.getStatusMap().entrySet()) {
       Pathogen pathogen = entry.getKey();
@@ -177,6 +189,27 @@ public class Result {
     tripTally.put(d2, p2Tally + 1);
   }
   
+  public void registerContactTracingExposure(Person p1, Person p2) {
+    if(!contactTracingExposures.keySet().contains(p1.getUID())) {
+      contactTracingExposures.put(p1.getUID(), new ArrayList<Person>());
+    }
+    contactTracingExposures.get(p1.getUID()).add(p2);
+    if(!contactTracingExposures.keySet().contains(p2.getUID())) {
+      contactTracingExposures.put(p2.getUID(), new ArrayList<Person>());
+    }
+    contactTracingExposures.get(p2.getUID()).add(p1);
+  }
+  
+  public void notifyExposureToPersons(Person p1) {
+    if(contactTracingExposures.keySet().contains(p1.getUID())) {
+      for(Person p2 : this.contactTracingExposures.get(p1.getUID())) {
+        if(!p2.hasBeenExposedToInfected()) {
+          p2.notifyExposure();
+        }
+      }
+    }
+  }
+    
   @Override
   public String toString() {
     return "Results at " + this.getTime();
@@ -211,6 +244,10 @@ public class Result {
    */
   public int getHospitalizedTally(Demographic d) {
     return this.hospitalizedTally.get(d);
+  }
+  
+  public int getExposureNotified() {
+    return this.exposureNotificationsCount;
   }
   
   /**
