@@ -163,12 +163,12 @@ public class ResultView extends CityView {
   }
   
   /**
-   * Calculates the R0 of a given moment based on the S-R-I model
+   * Calculates the R0 of a given moment based on the S-I-R model
    * 
    */
   private double calculateR0(ResultSeries outcome, int momentTick) {
 
-      double returnValue = 0;
+      double r0 = 0;
     
       int previousS = 0;
       int previousI = 0;
@@ -224,18 +224,18 @@ public class ResultView extends CityView {
         if(dI + dS == 0) {
           dI++;
         }
+        
         double vValue = -1 * dR / (dI + dS); 
         double iValue = dR / vValue;
         double betaValue = -1 * dS / iValue; 
         
+        r0 = betaValue / vValue;
         
-        returnValue = betaValue / vValue;
-        
-        returnValue = (double) Math.round(returnValue * 100) / 100; //round
+        r0 = (double) Math.round(r0 * 100) / 100; //round
         
       }
       
-      return returnValue;
+      return r0;
   }
   
   /**

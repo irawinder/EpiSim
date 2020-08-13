@@ -124,14 +124,15 @@ private void configModel() {
   int minDwellingSize = 1;
   int maxDwellingSize = 4;
 
-  int contactTracingAppInstallationPercentage = 20;
+  Rate contactTracingAppAdoptionRate = new Rate(0.2);
+  
   // Add people to Model assigned to one random primary location (home) and one random secondary location (job or school)
-  epidemic.populate(minAge, maxAge, adultAge, seniorAge, contactTracingAppInstallationPercentage, childResilience, adultResilience, seniorResilience, minDwellingSize, maxDwellingSize);
+  epidemic.populate(minAge, maxAge, adultAge, seniorAge, contactTracingAppAdoptionRate, childResilience, adultResilience, seniorResilience, minDwellingSize, maxDwellingSize);
   
   // Number of Ventilator ICU Beds Per Capita:
   // In actuality, this rate is only about 0.04% in the United States according to NYTimes!!!
   // https://www.nytimes.com/2020/03/18/business/coronavirus-ventilator-shortage.html
-  Rate bedsPerCapita = new Rate(0.008);
+  Rate bedsPerCapita = new Rate(0.004);
   epidemic.setBedsPerCapita(bedsPerCapita);
   
   // Configure Covid Pathogen

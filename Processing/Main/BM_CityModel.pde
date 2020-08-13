@@ -352,7 +352,7 @@ public class CityModel extends EpiModel {
    * @param minDwellingSize smallest household size of a dwelling unit
    * @param maxDwellingSize largest household size of a dwelling unit
    */
-  public void populate(int minAge, int maxAge, int adultAge, int seniorAge, int contactTracingAppInstallationPercentage, Rate childResilience, Rate adultResilience, Rate seniorResilience, int minDwellingSize, int maxDwellingSize) {
+  public void populate(int minAge, int maxAge, int adultAge, int seniorAge, Rate contactTracingAppAdoptionRate, Rate childResilience, Rate adultResilience, Rate seniorResilience, int minDwellingSize, int maxDwellingSize) {
     
     for(Place l : this.place.get(LandUse.DWELLING)) {
       int numTenants = (int) random(minDwellingSize, maxDwellingSize+1);
@@ -366,7 +366,7 @@ public class CityModel extends EpiModel {
         int age = (int) random(minAge, maxAge);
         person.setAge(age);
         
-        if((int) random(0, 100) < contactTracingAppInstallationPercentage) {
+        if(random(0, 100) < 100 * contactTracingAppAdoptionRate.rate) {
           person.setContactTracingApp(true);
         }
         else {
@@ -615,7 +615,7 @@ public class CityModel extends EpiModel {
         
         h.update(current, treated);
         for(Pathogen pt : this.getPathogens()) {  
-          if(h.getStatus(pt).infectious()) {        
+          if(pt.getType() == PathogenType.CORONAVIRUS && h.getStatus(pt).infectious()) {        
             stats.notifyExposureToPersons((Person) h);
           }
         }
