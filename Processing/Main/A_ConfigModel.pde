@@ -66,7 +66,7 @@ private void configModel() {
       behavior.setRecoverAnomoly(new Rate(0.40));
       
       // Chance that Person will disobey quarantine order and proceed to regular activity
-      behavior.setObeyanceAnomoly(new Rate(0.00));
+      behavior.setObeyanceAnomoly(new Rate(0.05));
       
       // Set whether or not a quarantine is in effect
       behavior.setQuarantine(Quarantine.NONE);
