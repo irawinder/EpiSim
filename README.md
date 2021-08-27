@@ -41,7 +41,7 @@ Follow these steps to open and run the simulation in Processing. No coding skill
 - Assumptions can be edited in the file 'A_ConfigModel.pde'
 
 ## Support
-This project with built with support from the EDGEof Planetary Insight Center
+This project was built with support from the EDGEof Planetary Insight Center
 
 ## Related Work
 Daniel Goldman of Planetary Insight Center @ EDGEof is creating a "kid-friendly" simulation for web:
