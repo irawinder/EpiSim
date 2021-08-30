@@ -12,7 +12,7 @@ Follow these steps to open and run the simulation in Processing. No coding skill
 	2. Download Processing 3
 	https://processing.org/download/
 
-	3. Download this repository (Click Clone or download > Download ZIP). 
+	3. Download this repository (e.g. Click 'Code' > 'Download ZIP'). 
 	
 	4. Unzip the files and preserve any files and folder structure
 	
