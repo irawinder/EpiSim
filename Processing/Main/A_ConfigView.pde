@@ -53,7 +53,7 @@ public void configView(CityModel model) {
   String info = 
     "Epidemic Simulation" + "\n" +
     "EDGEof Planetary Insight Center" + "\n" +
-    "by Ira Winder, F. Calalang, D. Goldman" + "\n\n" +
+    "by Ira Winder, F. Calalang, D. Goldman and Antonio Parraga" + "\n\n" +
     
     "This is a simple simulation of a viral outbreak using " +
     "an agent-based population activity model. " + "\n\n" +
@@ -96,6 +96,7 @@ public void configView(CityModel model) {
 
   // Compartment Names
   viz.setName(Compartment.SUSCEPTIBLE,         "Susceptible");
+  viz.setName(Compartment.EXPOSURE_NOTIFIED,   "Exposure notified");
   viz.setName(Compartment.INCUBATING,          "Incubating");
   viz.setName(Compartment.INFECTIOUS,          "Infectious");
   viz.setName(Compartment.RECOVERED,           "Recovered");
@@ -104,12 +105,13 @@ public void configView(CityModel model) {
   
   // Compartment Colors
   viz.setColor(Compartment.SUSCEPTIBLE,        color(250, 250, 250, 255)); // White;
+  viz.setColor(Compartment.EXPOSURE_NOTIFIED,           color( 255, 255, 0, 255));  // Yellow
   viz.setColor(Compartment.INCUBATING,         color(255, 150,   0, 255)); // Orange
   viz.setColor(Compartment.INFECTIOUS,         color(255,   0,   0, 255)); // Dark Red
   viz.setColor(Compartment.RECOVERED,          color(100, 100, 100, 255)); // Black
   viz.setColor(Compartment.DEAD_TREATED,       color(  0,  50, 255, 255)); // Teal
   viz.setColor(Compartment.DEAD_UNTREATED,     color(  0, 255,   0, 255)); // Green
-  
+
   // Pathogen Names
   viz.setName(PathogenType.CORONAVIRUS,       "Coronavirus");
   viz.setName(PathogenType.RHINOVIRUS,        "Rhinovirus");

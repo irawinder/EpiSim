@@ -386,13 +386,15 @@ public class ChoiceModel {
       p.moveToHospital();
       
     // Are you Obeying a Strict Quarantine?
-    } else if(quarantine == Quarantine.STRICT && !disobeyQuarantine) {
+    } else if((quarantine == Quarantine.STRICT || (p.hasBeenExposedToInfected() && p.isInfected())) && !disobeyQuarantine) {
       p.moveToPrimary();
       
     // Carry one!
     } else {
       // Current Place
       Place currentPlace = p.getPlace();
+      
+      
       
       // Dominant Place
       PlaceCategory phaseDomain = this.getPhaseDomain(currentPhase);

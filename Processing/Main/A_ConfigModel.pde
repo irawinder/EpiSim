@@ -104,12 +104,12 @@ private void configModel() {
   int CENTER_X   = 500;
   int CENTER_Y   = 500;
   int BASE_RANGE = 100;
-  epidemic.randomPlaces(N*25,       "Public Space",    LandUse.PUBLIC,    CENTER_X, CENTER_Y, 5*BASE_RANGE, 5*BASE_RANGE, 500,  2000);
-  epidemic.randomPlaces(N*250,      "Dwelling Unit",   LandUse.DWELLING,  CENTER_X, CENTER_Y, 5*BASE_RANGE, 5*BASE_RANGE, 50,   200);
-  epidemic.randomPlaces(N*20,       "Office Space",    LandUse.OFFICE,    CENTER_X, CENTER_Y, 4*BASE_RANGE, 4*BASE_RANGE, 500,  1000);
-  epidemic.randomPlaces(N*4,        "School",          LandUse.SCHOOL,    CENTER_X, CENTER_Y, 5*BASE_RANGE, 5*BASE_RANGE, 500,  2000);
-  epidemic.randomPlaces(N*25,       "Retail Shopping", LandUse.RETAIL,    CENTER_X, CENTER_Y, 4*BASE_RANGE, 4*BASE_RANGE, 50,   1000);
-  epidemic.randomPlaces(N*1,        "Hospital",        LandUse.HOSPITAL,  CENTER_X, CENTER_Y, 1*BASE_RANGE, 1*BASE_RANGE, 2000, 2000);
+  epidemic.randomPlaces(N*25*2,       "Public Space",    LandUse.PUBLIC,    CENTER_X, CENTER_Y, 5*BASE_RANGE, 5*BASE_RANGE, 500,  2000);
+  epidemic.randomPlaces(N*250*2,      "Dwelling Unit",   LandUse.DWELLING,  CENTER_X, CENTER_Y, 5*BASE_RANGE, 5*BASE_RANGE, 50,   200);
+  epidemic.randomPlaces(N*20*2,       "Office Space",    LandUse.OFFICE,    CENTER_X, CENTER_Y, 4*BASE_RANGE, 4*BASE_RANGE, 500,  1000);
+  epidemic.randomPlaces(N*4*2,        "School",          LandUse.SCHOOL,    CENTER_X, CENTER_Y, 5*BASE_RANGE, 5*BASE_RANGE, 500,  2000);
+  epidemic.randomPlaces(N*25*2,       "Retail Shopping", LandUse.RETAIL,    CENTER_X, CENTER_Y, 4*BASE_RANGE, 4*BASE_RANGE, 50,   1000);
+  epidemic.randomPlaces(N*1*2,        "Hospital",        LandUse.HOSPITAL,  CENTER_X, CENTER_Y, 1*BASE_RANGE, 1*BASE_RANGE, 2000, 2000);
   
   // Resilience*: Impact of Demographic on Pathogen Intensities (1.0 == no impact; < 1 == less resilient; > 1 == more resilient)
   Rate childResilience  = new Rate(1.5);
@@ -123,9 +123,11 @@ private void configModel() {
   int maxAge          = 85;
   int minDwellingSize = 1;
   int maxDwellingSize = 4;
+
+  Rate contactTracingAppAdoptionRate = new Rate(0.2);
   
   // Add people to Model assigned to one random primary location (home) and one random secondary location (job or school)
-  epidemic.populate(minAge, maxAge, adultAge, seniorAge, childResilience, adultResilience, seniorResilience, minDwellingSize, maxDwellingSize);
+  epidemic.populate(minAge, maxAge, adultAge, seniorAge, contactTracingAppAdoptionRate, childResilience, adultResilience, seniorResilience, minDwellingSize, maxDwellingSize);
   
   // Number of Ventilator ICU Beds Per Capita:
   // In actuality, this rate is only about 0.04% in the United States according to NYTimes!!!

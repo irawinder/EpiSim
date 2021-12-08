@@ -24,6 +24,10 @@ public class Person extends Host {
   // Demographic of Person
   private Demographic demographic;
   
+  private Boolean contactTracingApp;
+  
+  private Boolean exposedToInfected;
+  
   // Primary Environment (e.g. home, dwelling, etc)
   private Place primaryPlace;
   
@@ -40,6 +44,8 @@ public class Person extends Host {
     super();
     this.age = 18;
     this.setDemographic(18, 65);
+    this.contactTracingApp = false; //by default
+    this.exposedToInfected = false; //by default
     this.primaryPlace = new Place();
     this.secondaryPlace = new Place();
     this.closestHospital = new Place();
@@ -64,6 +70,14 @@ public class Person extends Host {
    */
   public int getAge() {
     return this.age;
+  }
+  
+  public void setContactTracingApp(Boolean contactTracingApp) {
+    this.contactTracingApp = contactTracingApp;
+  }
+  
+  public Boolean hasContactTracingApp() {
+    return this.contactTracingApp;
   }
   
   /**
@@ -163,6 +177,14 @@ public class Person extends Host {
   public void moveToPrimary() {
     Place destination = this.getPrimaryPlace();
     this.move(destination);
+  }
+  
+  public void notifyExposure() {
+    this.exposedToInfected = true;
+  }
+  
+  public Boolean hasBeenExposedToInfected() {
+    return this.exposedToInfected;
   }
   
   /**
